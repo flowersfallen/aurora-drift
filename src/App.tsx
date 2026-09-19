@@ -167,10 +167,6 @@ export const App: React.FC = () => {
           <div className="w-10 h-10 rounded-2xl bg-sky-950/80 border border-sky-400/40 flex items-center justify-center shadow-lg overflow-hidden p-0.5">
             <svg viewBox="0 0 64 64" className="w-full h-full drop-shadow-sm">
               <defs>
-                <radialGradient id="logoBgGlow" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stopColor="#0c4a6e" />
-                  <stop offset="100%" stopColor="#082f49" />
-                </radialGradient>
                 <linearGradient id="logoIceTop" x1="0%" y1="0%" x2="0%" y2="100%">
                   <stop offset="0%" stopColor="#e0f2fe" />
                   <stop offset="100%" stopColor="#bae6fd" />
@@ -180,9 +176,6 @@ export const App: React.FC = () => {
                   <stop offset="100%" stopColor="#38bdf8" />
                 </linearGradient>
               </defs>
-
-              {/* Soft ambient circular backdrop */}
-              <circle cx="32" cy="32" r="30" fill="url(#logoBgGlow)" stroke="#38bdf8" strokeWidth="1.5" strokeOpacity="0.4" />
 
               {/* Tiny Ears (Centered around Y=17) */}
               <ellipse cx="20" cy="17" rx="4.5" ry="6" fill="#3c4556" stroke="#2e384d" strokeWidth="2" transform="rotate(-18 20 17)" />

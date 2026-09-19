@@ -14,8 +14,8 @@
     </linearGradient>
   </defs>
 
-  <!-- Soft ambient circular backdrop -->
-  <circle cx="32" cy="32" r="30" fill="url(#favBgGlow)" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.4" />
+  <!-- Squircle App Icon Backdrop -->
+  <rect width="60" height="60" x="2" y="2" rx="16" fill="url(#favBgGlow)" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.4" />
 
   <!-- Tiny Ears (Centered around Y=17) -->
   <ellipse cx="20" cy="17" rx="4.5" ry="6" fill="#3c4556" stroke="#2e384d" stroke-width="2" transform="rotate(-18 20 17)" />
