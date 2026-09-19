@@ -96,10 +96,10 @@ export const FocusTimer: React.FC<FocusTimerProps> = ({
               <button
                 key={p.minutes}
                 onClick={() => handleSelectPreset(p.minutes)}
-                className={`px-2 sm:px-3 py-1 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-semibold transition-all ${
+                className={`px-2 sm:px-3 py-1 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-semibold transition-all border-none outline-none ${
                   selectedMinutes === p.minutes
                     ? 'bg-sky-400 text-sky-950 shadow-md scale-105'
-                    : 'text-sky-300/80 hover:text-white hover:bg-sky-900/40'
+                    : 'bg-transparent text-sky-300/80 hover:text-white hover:bg-sky-900/40'
                 }`}
               >
                 {p.label}
@@ -116,7 +116,7 @@ export const FocusTimer: React.FC<FocusTimerProps> = ({
 
       {/* Timer Display & Submarine Depth Meter */}
       <div className="relative flex flex-col items-center my-0.5 sm:my-1">
-        <div className="text-3xl sm:text-4xl font-bold tracking-wider font-mono text-white drop-shadow-[0_0_12px_rgba(56,189,248,0.5)]">
+        <div className="text-3xl sm:text-4xl font-bold tracking-wider font-sans tabular-nums text-white drop-shadow-[0_0_12px_rgba(56,189,248,0.5)]">
           {formatTime(timeLeft)}
         </div>
 

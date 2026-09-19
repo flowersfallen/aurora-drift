@@ -224,7 +224,7 @@ export const App: React.FC = () => {
             </svg>
           </div>
           <div>
-            <h1 className="text-sm sm:text-base font-bold text-white tracking-wide flex items-center gap-1.5 leading-tight">
+            <h1 className="text-sm sm:text-base font-bold text-white tracking-wide flex items-center gap-1.5 leading-tight whitespace-nowrap">
               Aurora Drift
               <span className="hidden sm:inline-block text-[10px] px-2 py-0.5 rounded-full bg-sky-400/20 text-sky-300 font-semibold border border-sky-400/30">
                 Cozy Web
@@ -250,8 +250,8 @@ export const App: React.FC = () => {
           <div className="flex items-center glass-panel rounded-2xl p-0.5 sm:p-1 border border-sky-800/40">
             <button
               onClick={() => setTimeOfDay('aurora')}
-              className={`p-1 sm:p-1.5 rounded-xl text-xs transition-all ${
-                timeOfDay === 'aurora' ? 'bg-sky-400 text-sky-950 shadow-sm' : 'text-sky-300 hover:text-white'
+              className={`p-1 sm:p-1.5 rounded-xl text-xs transition-all border-none outline-none ${
+                timeOfDay === 'aurora' ? 'bg-sky-400 text-sky-950 shadow-sm' : 'bg-transparent text-sky-300 hover:text-white'
               }`}
               title="Northern Lights Aurora"
             >
@@ -259,8 +259,8 @@ export const App: React.FC = () => {
             </button>
             <button
               onClick={() => setTimeOfDay('sunset')}
-              className={`p-1 sm:p-1.5 rounded-xl text-xs transition-all ${
-                timeOfDay === 'sunset' ? 'bg-amber-400 text-amber-950 shadow-sm' : 'text-sky-300 hover:text-white'
+              className={`p-1 sm:p-1.5 rounded-xl text-xs transition-all border-none outline-none ${
+                timeOfDay === 'sunset' ? 'bg-amber-400 text-amber-950 shadow-sm' : 'bg-transparent text-sky-300 hover:text-white'
               }`}
               title="Polar Sunset"
             >
@@ -268,8 +268,8 @@ export const App: React.FC = () => {
             </button>
             <button
               onClick={() => setTimeOfDay('night')}
-              className={`p-1 sm:p-1.5 rounded-xl text-xs transition-all ${
-                timeOfDay === 'night' ? 'bg-indigo-400 text-indigo-950 shadow-sm' : 'text-sky-300 hover:text-white'
+              className={`p-1 sm:p-1.5 rounded-xl text-xs transition-all border-none outline-none ${
+                timeOfDay === 'night' ? 'bg-indigo-400 text-indigo-950 shadow-sm' : 'bg-transparent text-sky-300 hover:text-white'
               }`}
               title="Quiet Midnight"
             >
@@ -338,7 +338,7 @@ export const App: React.FC = () => {
       </main>
 
       {/* 4. Bottom Focus & Dive Control Dock */}
-      <footer className="relative z-30 pb-3 sm:pb-6 px-3 sm:px-4 w-full">
+      <footer className="relative z-30 pb-5 sm:pb-6 pb-[max(1.25rem,env(safe-area-inset-bottom))] px-3 sm:px-4 w-full">
         <FocusTimer
           otterState={otterState}
           onStartDive={handleStartDive}
