@@ -588,7 +588,16 @@ export const IceOtter: React.FC<IceOtterProps> = ({ state, decorations, onOtterC
 
           {isDiving && (
             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-40 bg-sky-950/90 text-sky-200 font-bold px-4 py-1.5 rounded-full text-xs shadow-xl border border-sky-400/40 animate-pulse flex items-center gap-2 whitespace-nowrap backdrop-blur-sm">
-              <span className="animate-spin text-sm">🫧</span>
+              <span className="flex items-center justify-center shrink-0">
+                <svg viewBox="0 0 20 20" className="w-4 h-4 drop-shadow-sm" fill="none">
+                  {/* Big Translucent Bubble */}
+                  <circle cx="8" cy="12" r="6" stroke="#38bdf8" strokeWidth="1.8" fill="#38bdf8" fillOpacity="0.25" />
+                  <ellipse cx="5.5" cy="9.5" rx="1.5" ry="0.8" fill="#ffffff" opacity="0.9" transform="rotate(-30 5.5 9.5)" />
+                  {/* Small Rising Bubble */}
+                  <circle cx="15" cy="6" r="3.5" stroke="#7dd3fc" strokeWidth="1.5" fill="#7dd3fc" fillOpacity="0.3" />
+                  <ellipse cx="13.8" cy="4.8" rx="0.9" ry="0.5" fill="#ffffff" opacity="0.9" transform="rotate(-30 13.8 4.8)" />
+                </svg>
+              </span>
               <span>Diving in polar waters...</span>
             </div>
           )}
