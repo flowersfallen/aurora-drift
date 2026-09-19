@@ -35,33 +35,33 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-2xl max-h-[88vh] glass-panel-glow rounded-3xl p-4 sm:p-6 flex flex-col overflow-hidden border border-sky-400/30 shadow-2xl"
+        className="relative w-full max-w-2xl max-h-[88vh] bg-[#0a1b2e] rounded-3xl p-4 sm:p-6 flex flex-col overflow-hidden border border-sky-400/40 shadow-2xl modal-crisp"
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-sky-800/40">
+        <div className="flex items-center justify-between pb-4 border-b border-sky-800/50">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-2xl bg-sky-500/20 text-sky-300 border border-sky-400/30">
+            <div className="p-2.5 rounded-2xl bg-sky-900/80 text-sky-300 border border-sky-500/40 shadow-sm">
               <BookOpen className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
+              <h3 className="text-lg sm:text-xl font-bold text-white tracking-wide flex items-center gap-2">
                 Polar Memory Album
               </h3>
-              <p className="text-xs text-sky-300/80">
+              <p className="text-xs text-sky-300 font-medium mt-0.5">
                 Unlocked {unlockedCount} of {totalCount} polar treasures ({Math.round((unlockedCount / totalCount) * 100)}%)
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl text-sky-400 hover:text-white hover:bg-sky-800/40 transition-all"
+            className="p-2 rounded-xl text-sky-300 hover:text-white hover:bg-sky-800/50 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Category Tabs */}
-        <div className="flex items-center gap-1.5 sm:gap-2 py-2.5 overflow-x-auto no-scrollbar scrollbar-none">
+        <div className="flex items-center gap-2.5 sm:gap-3 py-3 px-1 overflow-x-auto no-scrollbar scrollbar-none">
           {[
             { id: 'all', label: 'All Items', shortLabel: 'All', icon: Sparkles },
             { id: 'postcard', label: 'Postcards', shortLabel: 'Postcards', icon: BookOpen },
@@ -74,10 +74,10 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as TreasureType | 'all')}
-                className={`shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all border-none outline-none ${
+                className={`shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold transition-colors border-none outline-none ${
                   isActive
-                    ? 'bg-sky-400 text-sky-950 shadow-md font-bold scale-105'
-                    : 'glass-panel text-sky-300/80 hover:text-white hover:bg-sky-900/40'
+                    ? 'bg-sky-400 text-sky-950 shadow-md shadow-sky-400/25 border border-sky-300'
+                    : 'bg-sky-900/50 text-sky-300 hover:text-white hover:bg-sky-800/60 border border-sky-700/50'
                 }`}
               >
                 <IconComp className="w-3.5 h-3.5 shrink-0" />
@@ -99,8 +99,8 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
                 onClick={() => isUnlocked && setSelectedTreasure(treasure)}
                 className={`relative rounded-2xl p-3.5 flex flex-col items-center text-center transition-all border ${
                   isUnlocked
-                    ? 'bg-sky-950/50 hover:bg-sky-900/60 border-sky-400/40 cursor-pointer shadow-lg hover:scale-105 group'
-                    : 'bg-sky-950/20 border-sky-900/30 opacity-60 cursor-not-allowed'
+                    ? 'bg-sky-950/60 hover:bg-sky-900/60 border-sky-400/40 cursor-pointer shadow-lg hover:scale-105 group'
+                    : 'bg-sky-950/30 border-sky-900/40 opacity-60 cursor-not-allowed'
                 }`}
               >
                 {/* Icon box */}
@@ -140,7 +140,7 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
 
         {/* Detail Inspection Modal */}
         {selectedTreasure && (
-          <div className="absolute inset-0 z-20 bg-sky-950/95 backdrop-blur-md rounded-3xl p-6 flex flex-col items-center justify-center text-center animate-scaleUp">
+          <div className="absolute inset-0 z-20 bg-[#0a1b2e]/98 rounded-3xl p-6 flex flex-col items-center justify-center text-center animate-scaleUp border border-sky-400/40">
             <button
               onClick={() => setSelectedTreasure(null)}
               className="absolute top-4 right-4 p-2 rounded-xl text-sky-300 hover:text-white hover:bg-sky-900/50"

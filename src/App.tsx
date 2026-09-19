@@ -392,7 +392,7 @@ export const App: React.FC = () => {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-md glass-panel-glow rounded-3xl p-6 text-center flex flex-col items-center border border-sky-400/30 shadow-2xl"
+            className="relative w-full max-w-md bg-[#0a1b2e] rounded-3xl p-6 text-center flex flex-col items-center border border-sky-400/40 shadow-2xl modal-crisp"
           >
             <div className="w-16 h-16 rounded-2xl bg-sky-400/20 border border-sky-300/30 flex items-center justify-center text-3xl mb-3 shadow-inner">
               🦦

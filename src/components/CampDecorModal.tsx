@@ -179,31 +179,31 @@ export const CampDecorModal: React.FC<CampDecorModalProps> = ({
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-md glass-panel-glow rounded-3xl p-4 sm:p-6 flex flex-col overflow-hidden border border-sky-400/30 shadow-2xl"
+        className="relative w-full max-w-md bg-[#0a1b2e] rounded-3xl p-4 sm:p-6 flex flex-col overflow-hidden border border-sky-400/40 shadow-2xl modal-crisp"
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-sky-800/40">
+        <div className="flex items-center justify-between pb-4 border-b border-sky-800/50">
           <div>
             <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <span>⛺</span> Iceberg Camp Decor
             </h3>
-            <p className="text-xs text-sky-300/80">Make your floating ice sanctuary warm & cozy</p>
+            <p className="text-xs text-sky-300">Make your floating ice sanctuary warm & cozy</p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl text-sky-400 hover:text-white hover:bg-sky-800/40"
+            className="p-2 rounded-xl text-sky-300 hover:text-white hover:bg-sky-800/50 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Currency Display */}
-        <div className="flex items-center justify-between py-3 px-4 bg-sky-950/70 rounded-2xl border border-sky-800/40 my-3">
-          <span className="text-xs text-sky-200">Your Ice Pearls:</span>
+        <div className="flex items-center justify-between py-3 px-4 bg-sky-900/40 rounded-2xl border border-sky-700/50 my-3">
+          <span className="text-xs text-sky-200 font-medium">Your Ice Pearls:</span>
           <span className="text-sm font-bold text-amber-300 flex items-center gap-1.5">
             <span>🦪</span> {pearls} Pearls
           </span>
@@ -218,32 +218,36 @@ export const CampDecorModal: React.FC<CampDecorModalProps> = ({
             return (
               <div
                 key={item.key}
-                className="flex items-center justify-between p-3 sm:p-3.5 rounded-2xl bg-sky-950/40 border border-sky-800/40 gap-3 sm:gap-4"
+                className="flex items-center justify-between p-3.5 rounded-2xl bg-sky-950/70 border border-sky-800/60 shadow-md gap-2.5 sm:gap-3"
               >
-                <div className="flex items-center gap-3.5 sm:gap-4 flex-1 min-w-0 mr-1.5">
-                  <div className="w-12 h-12 rounded-2xl bg-sky-900/60 border border-sky-700/40 flex items-center justify-center p-1.5 shadow-inner shrink-0">
+                {/* Left: Thumbnail and Description with clean, guaranteed separation */}
+                <div className="flex items-start flex-1 min-w-0">
+                  {/* Dedicated, spacious thumbnail box */}
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-900/80 to-sky-950/90 border border-sky-400/35 flex items-center justify-center p-2 shadow-inner shrink-0 mr-3.5 sm:mr-4">
                     {renderDecorThumbnail(item.key)}
                   </div>
-                  <div className="flex-1 min-w-0 pr-1">
-                    <h4 className="text-sm font-bold text-white">{item.title}</h4>
-                    <p className="text-[11px] text-sky-200/75 leading-relaxed mt-1 break-words">
+                  {/* Text Details */}
+                  <div className="flex-1 min-w-0 pr-1.5">
+                    <h4 className="text-sm font-bold text-white leading-snug">{item.title}</h4>
+                    <p className="text-xs text-sky-200/80 leading-relaxed mt-1 break-words">
                       {item.desc}
                     </p>
                   </div>
                 </div>
 
+                {/* Right: Buy / Placed Button */}
                 {isOwned ? (
-                  <span className="px-3 py-1.5 rounded-xl bg-teal-500/20 text-teal-300 text-xs font-bold border border-teal-400/30 flex items-center gap-1 shrink-0">
+                  <span className="px-3 py-2 rounded-xl bg-teal-500/20 text-teal-300 text-xs font-bold border border-teal-400/30 flex items-center gap-1 shrink-0 ml-1">
                     <Check className="w-3.5 h-3.5" /> Placed
                   </span>
                 ) : (
                   <button
                     onClick={() => canAfford && onUnlockItem(item.key, item.cost)}
                     disabled={!canAfford}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-1 shrink-0 ${
+                    className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-1.5 shrink-0 ml-1 ${
                       canAfford
-                        ? 'bg-amber-400 hover:bg-amber-300 text-sky-950 shadow-amber-500/20 active:scale-95'
-                        : 'bg-sky-900/40 text-sky-600 border border-sky-800/30 cursor-not-allowed'
+                        ? 'bg-amber-400 hover:bg-amber-300 text-sky-950 shadow-amber-500/25 active:scale-95 cursor-pointer'
+                        : 'bg-sky-900/30 text-sky-600 border border-sky-800/40 cursor-not-allowed'
                     }`}
                   >
                     <span>🦪</span> {item.cost}

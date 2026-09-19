@@ -66,14 +66,14 @@ export const AudioMixerModal: React.FC<AudioMixerModalProps> = ({
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-md glass-panel-glow rounded-3xl p-4 sm:p-6 flex flex-col overflow-hidden border border-sky-400/30 shadow-2xl"
+        className="relative w-full max-w-md bg-[#0a1b2e] rounded-3xl p-4 sm:p-6 flex flex-col overflow-hidden border border-sky-400/40 shadow-2xl modal-crisp"
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-sky-800/40">
+        <div className="flex items-center justify-between pb-4 border-b border-sky-800/50">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-xl bg-sky-500/20 text-sky-300">
               <Volume2 className="w-5 h-5" />

@@ -213,3 +213,104 @@ input[type="range"]::-moz-range-thumb {
   animation: emberRise1 2.8s ease-out infinite 1.5s;
 }
 
+/* --- High-DPI Crisp Rendering for WeChat & Mobile WebViews --- */
+.modal-crisp {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* --- ASMR Clam Cracking: Otter Lucky Pebble Smash & Clam Recoil --- */
+@keyframes pebbleHoverIdle {
+  0%, 100% {
+    transform: translateY(0px) rotate(-6deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(4deg);
+  }
+}
+
+.animate-pebble-idle {
+  animation: pebbleHoverIdle 2.6s ease-in-out infinite;
+}
+
+@keyframes pebbleSmashStrike {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  18% {
+    /* Paw winds up pebble high and back */
+    transform: translate(16px, -24px) rotate(-35deg) scale(1.18);
+  }
+  46% {
+    /* Violent hammer smash right onto the clam shell center! */
+    transform: translate(-88px, 77px) rotate(42deg) scale(1.15);
+  }
+  54% {
+    /* Impact contact hold */
+    transform: translate(-88px, 77px) rotate(42deg) scale(1.15);
+  }
+  68% {
+    /* Elastic recoil bounce off shell */
+    transform: translate(-65px, 50px) rotate(20deg) scale(1.06);
+  }
+  84% {
+    /* Returning glide */
+    transform: translate(-20px, 15px) rotate(8deg) scale(1.02);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+}
+
+.animate-pebble-strike {
+  animation: pebbleSmashStrike 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes clamRecoilImpact {
+  0%, 42% {
+    transform: scale(1) translateY(0);
+  }
+  48% {
+    /* Heavy impact squash downwards */
+    transform: scale(1.14, 0.86) translateY(9px);
+  }
+  64% {
+    /* Elastic rebound vibration */
+    transform: scale(0.92, 1.08) translateY(-5px);
+  }
+  80% {
+    /* Damped wobble */
+    transform: scale(1.03, 0.98) translateY(2px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-clam-recoil {
+  animation: clamRecoilImpact 0.42s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes sparkFlash {
+  0% {
+    transform: scale(0.3) rotate(0deg);
+    opacity: 0;
+  }
+  35% {
+    transform: scale(1.3) rotate(35deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.2) rotate(70deg);
+    opacity: 0;
+  }
+}
+
+.animate-spark-flash {
+  animation: sparkFlash 0.38s ease-out forwards;
+}
+
