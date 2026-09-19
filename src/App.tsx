@@ -7,7 +7,6 @@ import {
   Maximize2,
   Sun,
   Moon,
-  Flame,
   HelpCircle,
 } from 'lucide-react';
 import { ArcticCanvas } from './components/ArcticCanvas';
@@ -288,15 +287,6 @@ export const App: React.FC = () => {
             title="Ambient Sound Mixer"
           >
             {audioSettings.isMuted ? <VolumeX className="w-4 h-4 text-rose-400" /> : <Volume2 className="w-4 h-4" />}
-          </button>
-
-          {/* Camp Decor Shop */}
-          <button
-            onClick={() => setActiveModal('decor')}
-            className="p-1.5 sm:p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all hover:scale-105"
-            title="Camp Decorations"
-          >
-            <Flame className="w-4 h-4 text-amber-400" />
           </button>
 
           {/* Collection Album Button */}
