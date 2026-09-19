@@ -198,25 +198,68 @@ export const IceOtter: React.FC<IceOtterProps> = ({ state, decorations, onOtterC
             {/* 6. PROPS ON THE SNOW PLATEAU                                          */}
             {/* --------------------------------------------------------------------- */}
 
-            {/* Decor: Vintage Polar Gramophone (Left rear snow shelf, X=90, Y=195) */}
+            {/* ========================================================================= */}
+            {/* VINTAGE POLAR GRAMOPHONE (Moved inward to X=135, Y=190, safe from edge!)  */}
+            {/* Features mahogany soundbox, spinning record, brass morning-glory horn,     */}
+            {/* and floating musical notes (♪ ♫) rising into the arctic night              */}
+            {/* ========================================================================= */}
             {decorations.hasGramophone && (
-              <g transform="translate(90, 195)">
-                <rect x="-14" y="-12" width="28" height="14" rx="3" fill="#854d0e" stroke="#2d3748" strokeWidth="2" />
-                <circle cx="0" cy="-12" r="9" fill="#1e293b" />
-                <circle cx="0" cy="-12" r="3" fill="#fbbf24" />
-                {/* Brass horn */}
-                <path d="M 6 -12 Q 18 -26 24 -24 Q 22 -14 12 -12 Z" fill="#eab308" stroke="#2d3748" strokeWidth="1.8" />
-                {/* Music note floating */}
-                <text x="18" y="-30" fontSize="14" fill="#38bdf8" className="animate-bounce">♪</text>
+              <g transform="translate(135, 190)">
+                {/* Base Shadow on Snow */}
+                <ellipse cx="0" cy="4" rx="16" ry="5" fill="#0f172a" opacity="0.28" />
+
+                {/* Mahogany Soundbox Cabinet */}
+                <rect x="-14" y="-7" width="28" height="13" rx="3" fill="#78350f" stroke="#1e1005" strokeWidth="1.8" />
+                {/* Box Top Trim */}
+                <rect x="-15" y="-9" width="30" height="3" rx="1.5" fill="#9a3412" stroke="#1e1005" strokeWidth="1.2" />
+                {/* Brass side crank handle */}
+                <line x1="-14" y1="-1" x2="-18" y2="-1" stroke="#eab308" strokeWidth="1.5" strokeLinecap="round" />
+                <circle cx="-18" cy="-1" r="1.5" fill="#ca8a04" />
+
+                {/* Turntable & Spinning Record */}
+                <ellipse cx="0" cy="-9" rx="12" ry="4" fill="#334155" />
+                <ellipse cx="0" cy="-9.5" rx="10.5" ry="3.5" fill="#0f172a" />
+                <circle cx="0" cy="-9.5" r="2.8" fill="#f59e0b" />
+                {/* Tone Arm */}
+                <path d="M 8 -9.5 L 4 -9.5 L 1 -8.5" stroke="#cbd5e1" strokeWidth="1.2" strokeLinecap="round" fill="none" />
+
+                {/* Flared Morning-Glory Brass Horn */}
+                <path d="M -6 -9 C -6 -18 -2 -22 4 -23" stroke="#ca8a04" strokeWidth="2.2" fill="none" strokeLinecap="round" />
+                {/* Flared Horn Bell */}
+                <path d="M 4 -23 C 14 -32 24 -30 26 -20 C 22 -14 12 -17 4 -23 Z" fill="#eab308" stroke="#854d0e" strokeWidth="1.5" />
+                <ellipse cx="21" cy="-22" rx="4.5" ry="7.5" fill="#ca8a04" stroke="#854d0e" strokeWidth="1" transform="rotate(18 21 -22)" />
+                <path d="M 8 -24 Q 16 -28 22 -26" stroke="#fef08a" strokeWidth="1.2" fill="none" opacity="0.8" />
+
+                {/* Floating Musical Notes */}
+                <text x="24" y="-32" fontSize="13" fill="#38bdf8" className="animate-bounce" style={{ animationDuration: '2.5s' }}>♪</text>
+                <text x="34" y="-40" fontSize="11" fill="#7dd3fc" className="animate-bounce" style={{ animationDuration: '3.2s', animationDelay: '0.6s' }}>♫</text>
               </g>
             )}
 
-            {/* Decor: Nordic Wool Blanket (Left snow corner, X=140, Y=222) */}
+            {/* ========================================================================= */}
+            {/* NORDIC WOOL BLANKET (Moved to X=115, Y=225, generous room from otter!)    */}
+            {/* Features soft layered folds, Scandinavian winter stitches, and soft fringes */}
+            {/* ========================================================================= */}
             {decorations.hasCozyQuilt && (
-              <g transform="translate(140, 222)">
-                <ellipse cx="0" cy="0" rx="20" ry="8" fill="#38bdf8" stroke="#1e293b" strokeWidth="2" />
-                <path d="M -16 -2 Q 0 4 16 -2" stroke="#ffffff" strokeWidth="2" fill="none" strokeDasharray="3 3" />
-                <path d="M -18 2 L -22 6 M -14 3 L -17 7 M -10 3 L -12 8" stroke="#38bdf8" strokeWidth="2" strokeLinecap="round" />
+              <g transform="translate(115, 225)">
+                {/* Base Shadow on Snow */}
+                <ellipse cx="0" cy="3" rx="22" ry="7" fill="#0f172a" opacity="0.25" />
+
+                {/* Bottom Fold Layer */}
+                <ellipse cx="0" cy="0" rx="20" ry="7.5" fill="#0284c7" stroke="#1e293b" strokeWidth="1.8" />
+                {/* Top Folded Quilt Surface */}
+                <ellipse cx="-1" cy="-3" rx="18" ry="6.5" fill="#38bdf8" stroke="#1e293b" strokeWidth="1.8" />
+
+                {/* Scandinavian Woven Pattern Stripes */}
+                <path d="M -14 -3 Q 0 2 14 -3" stroke="#ffffff" strokeWidth="1.8" strokeDasharray="3 2" fill="none" />
+                <path d="M -12 -5 Q 0 -1 12 -5" stroke="#fde047" strokeWidth="1.2" fill="none" opacity="0.85" />
+
+                {/* Soft Fluffy Fringe Tassels */}
+                <line x1="-16" y1="2" x2="-20" y2="7" stroke="#bae6fd" strokeWidth="2" strokeLinecap="round" />
+                <line x1="-12" y1="3" x2="-15" y2="9" stroke="#bae6fd" strokeWidth="2" strokeLinecap="round" />
+                <line x1="-7" y1="4" x2="-9" y2="10" stroke="#bae6fd" strokeWidth="2" strokeLinecap="round" />
+                <line x1="-2" y1="4.5" x2="-3" y2="10.5" stroke="#bae6fd" strokeWidth="2" strokeLinecap="round" />
+                <line x1="3" y1="4.5" x2="3" y2="10.5" stroke="#bae6fd" strokeWidth="2" strokeLinecap="round" />
               </g>
             )}
 
