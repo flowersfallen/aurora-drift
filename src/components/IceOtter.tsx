@@ -45,16 +45,16 @@ export const IceOtter: React.FC<IceOtterProps> = ({ state, decorations, onOtterC
     <div className="relative flex flex-col items-center justify-end select-none">
       {/* Speech Bubble - Floats right above otter's head */}
       {dialogue && !isDiving && (
-        <div className="absolute top-2 z-50 animate-bounce px-4 py-2 rounded-2xl bg-white/95 text-slate-800 text-xs font-semibold max-w-[240px] text-center border-2 border-sky-300 shadow-xl shadow-sky-950/40">
+        <div className="absolute top-1 sm:top-2 z-50 animate-bounce px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl bg-white/95 text-slate-800 text-[11px] sm:text-xs font-semibold max-w-[85vw] sm:max-w-[240px] text-center border-2 border-sky-300 shadow-xl shadow-sky-950/40">
           {dialogue}
           <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[7px] border-l-transparent border-r-[7px] border-r-transparent border-t-[9px] border-t-white"></div>
         </div>
       )}
 
-      {/* Main Unified Stage: Fixed dimensions so it NEVER shifts during diving */}
+      {/* Main Unified Stage: Fluid width on mobile, max 460px on desktop */}
       <div
         onClick={handleInteraction}
-        className="relative w-[460px] h-[320px] flex items-center justify-center"
+        className="relative w-[94vw] max-w-[460px] aspect-[460/320] flex items-center justify-center"
       >
         {/* Soft, natural water bobbing physics applied to the whole floe */}
         <div className="animate-float-slow relative w-full h-full">

@@ -156,15 +156,15 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden flex flex-col justify-between select-none">
+    <div className="relative w-screen h-screen h-[100dvh] overflow-hidden flex flex-col justify-between select-none">
       {/* 1. Dynamic Canvas Layer (Aurora, Stars, Snow, Waves) */}
       <ArcticCanvas timeOfDay={timeOfDay} isDiving={otterState === 'diving'} />
 
       {/* 2. Top Header Navigation Bar */}
-      <header className="relative z-30 px-4 py-3 flex items-center justify-between w-full max-w-6xl mx-auto">
+      <header className="relative z-30 px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between w-full max-w-6xl mx-auto">
         {/* Brand & Mascot */}
-        <div className="flex items-center gap-2.5">
-          <div className="w-10 h-10 rounded-2xl bg-sky-950/80 border border-sky-400/40 flex items-center justify-center shadow-lg overflow-hidden p-0.5">
+        <div className="flex items-center gap-2 sm:gap-2.5">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-2xl bg-sky-950/80 border border-sky-400/40 flex items-center justify-center shadow-lg overflow-hidden p-0.5 shrink-0">
             <svg viewBox="0 0 64 64" className="w-full h-full drop-shadow-sm">
               <defs>
                 <linearGradient id="logoIceTop" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -225,22 +225,22 @@ export const App: React.FC = () => {
             </svg>
           </div>
           <div>
-            <h1 className="text-base font-bold text-white tracking-wide flex items-center gap-1.5 leading-tight">
+            <h1 className="text-sm sm:text-base font-bold text-white tracking-wide flex items-center gap-1.5 leading-tight">
               Aurora Drift
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-sky-400/20 text-sky-300 font-semibold border border-sky-400/30">
+              <span className="hidden sm:inline-block text-[10px] px-2 py-0.5 rounded-full bg-sky-400/20 text-sky-300 font-semibold border border-sky-400/30">
                 Cozy Web
               </span>
             </h1>
-            <p className="text-[11px] text-sky-300/80 font-medium">iceotter.com</p>
+            <p className="text-[10px] sm:text-[11px] text-sky-300/80 font-medium leading-none mt-0.5">iceotter.com</p>
           </div>
         </div>
 
         {/* Currency & Quick Toggles */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           {/* Pearls Currency Badge */}
           <div
             onClick={() => setActiveModal('decor')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl glass-panel text-xs font-bold text-amber-300 hover:scale-105 cursor-pointer transition-all border border-amber-400/30"
+            className="flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 rounded-2xl glass-panel text-xs font-bold text-amber-300 hover:scale-105 cursor-pointer transition-all border border-amber-400/30"
             title="Your Ice Pearls - Click to open Camp Shop"
           >
             <span>🦪</span>
@@ -248,10 +248,10 @@ export const App: React.FC = () => {
           </div>
 
           {/* Sky / Time Switcher */}
-          <div className="flex items-center glass-panel rounded-2xl p-1 border border-sky-800/40">
+          <div className="flex items-center glass-panel rounded-2xl p-0.5 sm:p-1 border border-sky-800/40">
             <button
               onClick={() => setTimeOfDay('aurora')}
-              className={`p-1.5 rounded-xl text-xs transition-all ${
+              className={`p-1 sm:p-1.5 rounded-xl text-xs transition-all ${
                 timeOfDay === 'aurora' ? 'bg-sky-400 text-sky-950 shadow-sm' : 'text-sky-300 hover:text-white'
               }`}
               title="Northern Lights Aurora"
@@ -260,7 +260,7 @@ export const App: React.FC = () => {
             </button>
             <button
               onClick={() => setTimeOfDay('sunset')}
-              className={`p-1.5 rounded-xl text-xs transition-all ${
+              className={`p-1 sm:p-1.5 rounded-xl text-xs transition-all ${
                 timeOfDay === 'sunset' ? 'bg-amber-400 text-amber-950 shadow-sm' : 'text-sky-300 hover:text-white'
               }`}
               title="Polar Sunset"
@@ -269,7 +269,7 @@ export const App: React.FC = () => {
             </button>
             <button
               onClick={() => setTimeOfDay('night')}
-              className={`p-1.5 rounded-xl text-xs transition-all ${
+              className={`p-1 sm:p-1.5 rounded-xl text-xs transition-all ${
                 timeOfDay === 'night' ? 'bg-indigo-400 text-indigo-950 shadow-sm' : 'text-sky-300 hover:text-white'
               }`}
               title="Quiet Midnight"
@@ -284,7 +284,7 @@ export const App: React.FC = () => {
               audioEngine.init();
               setActiveModal('audio');
             }}
-            className="p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all hover:scale-105"
+            className="p-1.5 sm:p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all hover:scale-105"
             title="Ambient Sound Mixer"
           >
             {audioSettings.isMuted ? <VolumeX className="w-4 h-4 text-rose-400" /> : <Volume2 className="w-4 h-4" />}
@@ -293,7 +293,7 @@ export const App: React.FC = () => {
           {/* Camp Decor Shop */}
           <button
             onClick={() => setActiveModal('decor')}
-            className="p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all hover:scale-105"
+            className="p-1.5 sm:p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all hover:scale-105"
             title="Camp Decorations"
           >
             <Flame className="w-4 h-4 text-amber-400" />
@@ -302,7 +302,7 @@ export const App: React.FC = () => {
           {/* Collection Album Button */}
           <button
             onClick={() => setActiveModal('collection')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl glass-panel text-xs font-semibold text-sky-200 hover:text-white hover:scale-105 transition-all border border-sky-400/30"
+            className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-2xl glass-panel text-xs font-semibold text-sky-200 hover:text-white hover:scale-105 transition-all border border-sky-400/30"
             title="Open Polar Memory Album"
           >
             <BookOpen className="w-4 h-4 text-sky-400" />
@@ -315,7 +315,7 @@ export const App: React.FC = () => {
           {/* Info Modal */}
           <button
             onClick={() => setActiveModal('info')}
-            className="p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all"
+            className="p-1.5 sm:p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all"
             title="About Ice Otter"
           >
             <HelpCircle className="w-4 h-4" />
@@ -333,7 +333,7 @@ export const App: React.FC = () => {
       </header>
 
       {/* 3. Center Interactive World (Ice Otter & Floating Campsite) */}
-      <main className="relative z-10 flex-1 flex items-center justify-center mt-6 md:mt-10 pb-4">
+      <main className="relative z-10 flex-1 flex items-center justify-center mt-1 sm:mt-4 md:mt-8 pb-1 sm:pb-4">
         <IceOtter
           state={otterState}
           decorations={progress.decorations}
@@ -348,7 +348,7 @@ export const App: React.FC = () => {
       </main>
 
       {/* 4. Bottom Focus & Dive Control Dock */}
-      <footer className="relative z-30 pb-6 px-4 w-full">
+      <footer className="relative z-30 pb-3 sm:pb-6 px-3 sm:px-4 w-full">
         <FocusTimer
           otterState={otterState}
           onStartDive={handleStartDive}
