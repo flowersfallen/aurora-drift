@@ -553,74 +553,93 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       ctx.roundRect(plateX, plateY, plateW, plateH, 18);
       ctx.stroke();
 
-      // 2. Headline (Aligned with Mode A)
-      const headY = plateY + plateH + 28;
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 30px "Outfit", sans-serif';
+      // 2. Starry Milestone Banner (Matching Mode A's Star Banner)
+      const starY = plateY + plateH + 26; // 441
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = 'bold 13px "Outfit", sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('POLAR FOCUS MILESTONE', w / 2, headY);
+      ctx.fillText('★ ★ ★  DAILY FOCUS MILESTONE  ★ ★ ★', w / 2, starY);
 
-      // Subtitle
-      const subY = headY + 26;
+      // 3. Title (Matching Mode A's Title Position & Font)
+      const titleY = starY + 38; // 479
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 31px "Outfit", sans-serif';
+      ctx.fillText('Polar Focus Milestone', w / 2, titleY);
+
+      // 4. Subtitle (Matching Mode A's Subtitle Position)
+      const subY = titleY + 26; // 505
       ctx.fillStyle = '#7dd3fc';
       ctx.font = '600 15px "Quicksand", sans-serif';
       ctx.fillText('— Deep Work & Ambient Ocean Journey —', w / 2, subY);
 
-      // 3. Stats Triple Cards
-      const statsY = subY + 18;
+      // 5. Stats Triple Cards (Sleek, Proportional, Starting at y = 523)
+      const statsY = subY + 18; // 523
+      const statH = 80;
       const colWidth = (plateW - 16) / 3;
 
       const drawStatBox = (x: number, title: string, value: string, icon: string) => {
         ctx.fillStyle = 'rgba(14, 165, 233, 0.12)';
         ctx.beginPath();
-        ctx.roundRect(x, statsY, colWidth, 106, 16);
+        ctx.roundRect(x, statsY, colWidth, statH, 14);
         ctx.fill();
         ctx.strokeStyle = 'rgba(56, 189, 248, 0.3)';
         ctx.stroke();
 
         ctx.fillStyle = '#bae6fd';
-        ctx.font = '14px "Quicksand", sans-serif';
+        ctx.font = '13.5px "Quicksand", sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(icon + ' ' + title, x + colWidth / 2, statsY + 34);
+        ctx.fillText(icon + ' ' + title, x + colWidth / 2, statsY + 28);
 
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 26px "Outfit", sans-serif';
-        ctx.fillText(value, x + colWidth / 2, statsY + 78);
+        ctx.font = 'bold 24px "Outfit", sans-serif';
+        ctx.fillText(value, x + colWidth / 2, statsY + 62);
       };
 
       drawStatBox(plateX, 'Focus Time', `${progress.totalFocusMinutes} mins`, '⏱️');
       drawStatBox(plateX + colWidth + 8, 'Shells Cracked', `${progress.totalShellsCracked}`, '🦪');
       drawStatBox(plateX + (colWidth + 8) * 2, 'Treasures', `${progress.unlockedTreasureIds.length} / 16`, '✨');
 
-      // 4. Arctic Otter Wisdom Box
-      const quoteBoxY = statsY + 120;
+      // 6. Arctic Otter Wisdom & Journal Box (Starting at y = 617, ending at 725, matching Mode A!)
+      const quoteBoxY = statsY + statH + 14; // 617
       const quoteW = plateW;
-      const quoteH = 92;
+      const quoteH = 108; // ends at 725
 
       ctx.fillStyle = 'rgba(2, 11, 23, 0.88)';
       ctx.beginPath();
       ctx.roundRect(plateX, quoteBoxY, quoteW, quoteH, 16);
       ctx.fill();
       ctx.strokeStyle = 'rgba(56, 189, 248, 0.28)';
+      ctx.lineWidth = 1.5;
       ctx.stroke();
 
       ctx.fillStyle = '#38bdf8';
       ctx.font = 'bold 11px "Outfit", sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('❄️ ARCTIC OTTER WISDOM ❄️', w / 2, quoteBoxY + 26);
+      ctx.fillText('📜 ARCTIC OTTER JOURNAL & WISDOM', w / 2, quoteBoxY + 24);
+
+      // Divider line
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.2)';
+      ctx.beginPath();
+      ctx.moveTo(w / 2 - 130, quoteBoxY + 38);
+      ctx.lineTo(w / 2 + 130, quoteBoxY + 38);
+      ctx.stroke();
 
       ctx.fillStyle = '#fef08a';
-      ctx.font = 'italic 16px "Quicksand", sans-serif';
+      ctx.font = 'italic 15.5px "Quicksand", sans-serif';
       const quotes = [
         '“Slide on your belly whenever you find snow. Keep your favourite stone close.”',
         '“In this bustling world, give yourself a quiet ocean of peaceful stars.”',
         '“Take a deep breath and listen to the waves. Calm waters run deep.”',
       ];
       const selectedQuote = quotes[progress.totalFocusMinutes % quotes.length];
-      wrapText(ctx, selectedQuote, w / 2, quoteBoxY + 58, quoteW - 50, 24);
+      wrapText(ctx, selectedQuote, w / 2, quoteBoxY + 64, quoteW - 50, 22);
 
-      // 5. Bottom Badges Row for Mode B
-      const badgeY = quoteBoxY + quoteH + 16;
+      ctx.fillStyle = '#7dd3fc';
+      ctx.font = '600 12px "Quicksand", sans-serif';
+      ctx.fillText('— The Arctic Otter Creed —', w / 2, quoteBoxY + 94);
+
+      // 7. Bottom Badges Row (At y = 741, exactly matching Mode A!)
+      const badgeY = quoteBoxY + quoteH + 16; // 741
       const bColW = (plateW - 16) / 3;
 
       const drawFocusBadge = (x: number, label: string, val: string) => {
@@ -643,9 +662,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       };
 
       const decorCount = Object.values(progress.decorations).filter(Boolean).length;
-      drawFocusBadge(plateX, 'STREAK', `${progress.streakDays} DAYS`);
-      drawFocusBadge(plateX + bColW + 8, 'PEARLS', `${progress.pearls} 🦪`);
-      drawFocusBadge(plateX + (bColW + 8) * 2, 'DECOR', `${decorCount}/4 CAMP`);
+      drawFocusBadge(plateX, 'STREAK', `${progress.streakDays} ${progress.streakDays === 1 ? 'DAY' : 'DAYS'}`);
+      drawFocusBadge(plateX + bColW + 8, 'PEARLS', `${progress.pearls} FOUND`);
+      drawFocusBadge(plateX + (bColW + 8) * 2, 'CAMP DECOR', `${decorCount} / 4 UNLOCKED`);
     }
 
     // ==========================================
