@@ -20,50 +20,66 @@ const renderDecorThumbnail = (key: keyof CampDecorations) => {
   switch (key) {
     case 'hasHotCocoa':
       return (
-        <svg viewBox="0 0 40 40" className="w-9 h-9 drop-shadow-md">
-          {/* Shadow */}
-          <ellipse cx="20" cy="34" rx="12" ry="3.5" fill="#0f172a" opacity="0.4" />
+        <svg viewBox="0 0 40 40" className="w-10 h-10 drop-shadow-md">
+          {/* Base Shadow */}
+          <ellipse cx="19" cy="33.5" rx="11" ry="3.2" fill="#0f172a" opacity="0.4" />
           {/* Mug Handle */}
-          <path d="M 28 20 C 35 20 35 29 28 29" stroke="#991b1b" strokeWidth="2.8" fill="none" strokeLinecap="round" />
-          <path d="M 28 20 C 33 20 33 29 28 29" stroke="#ef4444" strokeWidth="1.4" fill="none" strokeLinecap="round" />
-          {/* Mug Body */}
-          <rect x="11" y="16" width="18" height="16" rx="3.5" fill="#b91c1c" stroke="#7f1d1d" strokeWidth="1.8" />
-          {/* Gloss highlight */}
-          <path d="M 13 18 L 13 28" stroke="#fca5a5" strokeWidth="1.2" strokeLinecap="round" opacity="0.6" />
-          {/* Snowflake motif */}
-          <text x="20" y="26.5" fontSize="7.5" fill="#ffffff" opacity="0.9" textAnchor="middle" fontWeight="bold">❄</text>
-          {/* Rim */}
-          <ellipse cx="20" cy="16" rx="9" ry="3.5" fill="#991b1b" stroke="#7f1d1d" strokeWidth="1.4" />
+          <path d="M 27 19 C 33.5 19 33.5 28 27 28" stroke="#991b1b" strokeWidth="2.8" fill="none" strokeLinecap="round" />
+          <path d="M 27 19 C 31.5 19 31.5 28 27 28" stroke="#ef4444" strokeWidth="1.4" fill="none" strokeLinecap="round" />
+          {/* Ceramic Mug Body */}
+          <rect x="10.5" y="16" width="17" height="15.5" rx="3.5" fill="#b91c1c" stroke="#7f1d1d" strokeWidth="1.8" />
+          {/* Mug Gloss Highlight */}
+          <path d="M 12.5 18 L 12.5 27" stroke="#fca5a5" strokeWidth="1.2" strokeLinecap="round" opacity="0.6" />
+          {/* Snowflake Motif */}
+          <text x="19" y="26" fontSize="7.5" fill="#ffffff" opacity="0.9" textAnchor="middle" fontWeight="bold">❄</text>
+          {/* Mug Rim */}
+          <ellipse cx="19" cy="16" rx="8.5" ry="3.2" fill="#991b1b" stroke="#7f1d1d" strokeWidth="1.4" />
           {/* Hot Chocolate */}
-          <ellipse cx="20" cy="16" rx="7.8" ry="2.8" fill="#451a03" />
-          <ellipse cx="20" cy="16" rx="6.2" ry="2" fill="#78350f" />
-          {/* Marshmallows */}
-          <ellipse cx="17" cy="15" rx="2.2" ry="1.5" fill="#ffffff" />
-          <ellipse cx="23" cy="16.5" rx="2" ry="1.4" fill="#fef08a" />
-          <circle cx="20.5" cy="15.2" r="1.4" fill="#ffffff" />
-          {/* Steam wisps */}
-          <path d="M 17 12 C 14 8 18 5 16 2" stroke="#bae6fd" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.85" />
-          <path d="M 23 11 C 26 7 22 4 25 1" stroke="#ffffff" strokeWidth="1.6" strokeLinecap="round" fill="none" opacity="0.9" />
+          <ellipse cx="19" cy="16" rx="7.4" ry="2.5" fill="#451a03" />
+          <ellipse cx="19" cy="16" rx="5.8" ry="1.8" fill="#78350f" />
+          {/* 3 Marshmallows */}
+          <ellipse cx="16" cy="15" rx="2.2" ry="1.5" fill="#ffffff" />
+          <ellipse cx="22" cy="16.2" rx="2" ry="1.4" fill="#fef08a" />
+          <circle cx="19.5" cy="15.2" r="1.3" fill="#ffffff" />
+          {/* Rising Steam Wisps */}
+          <path d="M 16 12 C 13.5 8.5 17 6 15.5 3" stroke="#bae6fd" strokeWidth="1.6" strokeLinecap="round" fill="none" opacity="0.85" />
+          <path d="M 22 11 C 24.5 7.5 21 5 23.5 2" stroke="#ffffff" strokeWidth="1.6" strokeLinecap="round" fill="none" opacity="0.9" />
+          <path d="M 19 11.5 C 17.5 8 20.5 6 19 3.5" stroke="#e0f2fe" strokeWidth="1.3" strokeLinecap="round" fill="none" opacity="0.75" />
         </svg>
       );
 
     case 'hasFairyLights':
       return (
-        <svg viewBox="0 0 40 40" className="w-9 h-9 drop-shadow-md">
-          {/* Wire String */}
-          <path d="M 4 14 Q 20 28 36 14" stroke="#94a3b8" strokeWidth="1.6" fill="none" opacity="0.8" />
-          {/* Bulbs with soft glow */}
+        <svg viewBox="0 0 40 40" className="w-10 h-10 drop-shadow-md">
+          {/* Festive Twin Garland Wires */}
+          <path d="M 3 13 Q 20 24 37 13" stroke="#94a3b8" strokeWidth="1.5" fill="none" opacity="0.8" />
+          <path d="M 5 22 Q 20 33 35 22" stroke="#64748b" strokeWidth="1.2" fill="none" opacity="0.65" />
+
+          {/* Top Tier Bulbs */}
           {[
-            { cx: 8, cy: 17, col: '#38bdf8', glow: 'rgba(56,189,248,0.4)' },
-            { cx: 16, cy: 23, col: '#fde047', glow: 'rgba(253,224,71,0.4)' },
-            { cx: 24, cy: 23, col: '#c084fc', glow: 'rgba(192,132,252,0.4)' },
-            { cx: 32, cy: 17, col: '#f472b6', glow: 'rgba(244,114,182,0.4)' },
+            { cx: 7, cy: 15.5, col: '#38bdf8', glow: 'rgba(56,189,248,0.45)' },
+            { cx: 15, cy: 19.5, col: '#fde047', glow: 'rgba(253,224,71,0.45)' },
+            { cx: 25, cy: 19.5, col: '#c084fc', glow: 'rgba(192,132,252,0.45)' },
+            { cx: 33, cy: 15.5, col: '#f472b6', glow: 'rgba(244,114,182,0.45)' },
           ].map((b, i) => (
-            <g key={i}>
-              <circle cx={b.cx} cy={b.cy} r="6" fill={b.glow} />
-              <rect x={b.cx - 1.2} y={b.cy - 4} width="2.4" height="2" fill="#64748b" rx="0.5" />
-              <circle cx={b.cx} cy={b.cy} r="3.2" fill={b.col} stroke="#ffffff" strokeWidth="0.8" />
-              <circle cx={b.cx - 1} cy={b.cy - 1} r="1" fill="#ffffff" opacity="0.8" />
+            <g key={`top-${i}`}>
+              <circle cx={b.cx} cy={b.cy} r="5.5" fill={b.glow} />
+              <rect x={b.cx - 1} y={b.cy - 3.5} width="2" height="1.8" fill="#475569" rx="0.4" />
+              <circle cx={b.cx} cy={b.cy} r="2.8" fill={b.col} stroke="#ffffff" strokeWidth="0.8" />
+              <circle cx={b.cx - 0.8} cy={b.cy - 0.8} r="0.9" fill="#ffffff" opacity="0.8" />
+            </g>
+          ))}
+
+          {/* Bottom Tier Bulbs */}
+          {[
+            { cx: 10, cy: 24.5, col: '#f472b6', glow: 'rgba(244,114,182,0.4)' },
+            { cx: 20, cy: 28, col: '#38bdf8', glow: 'rgba(56,189,248,0.4)' },
+            { cx: 30, cy: 24.5, col: '#fde047', glow: 'rgba(253,224,71,0.4)' },
+          ].map((b, i) => (
+            <g key={`bot-${i}`}>
+              <circle cx={b.cx} cy={b.cy} r="5" fill={b.glow} />
+              <rect x={b.cx - 0.9} y={b.cy - 3} width="1.8" height="1.5" fill="#475569" rx="0.4" />
+              <circle cx={b.cx} cy={b.cy} r="2.4" fill={b.col} stroke="#ffffff" strokeWidth="0.7" />
             </g>
           ))}
         </svg>
@@ -71,47 +87,57 @@ const renderDecorThumbnail = (key: keyof CampDecorations) => {
 
     case 'hasCozyQuilt':
       return (
-        <svg viewBox="0 0 40 40" className="w-9 h-9 drop-shadow-md">
-          {/* Shadow */}
-          <ellipse cx="20" cy="31" rx="16" ry="4.5" fill="#0f172a" opacity="0.35" />
+        <svg viewBox="0 0 40 40" className="w-10 h-10 drop-shadow-md">
+          {/* Base Contact Shadow */}
+          <ellipse cx="20" cy="30" rx="17" ry="4.5" fill="#0f172a" opacity="0.35" />
+
           {/* Bottom Fold Layer */}
-          <ellipse cx="20" cy="24" rx="15" ry="6" fill="#0284c7" stroke="#1e293b" strokeWidth="1.6" />
+          <ellipse cx="20" cy="23" rx="16" ry="6.5" fill="#0284c7" stroke="#1e293b" strokeWidth="1.6" />
           {/* Top Folded Quilt Surface */}
-          <ellipse cx="19" cy="20" rx="13.5" ry="5.2" fill="#38bdf8" stroke="#1e293b" strokeWidth="1.6" />
+          <ellipse cx="19" cy="18" rx="14.5" ry="5.8" fill="#38bdf8" stroke="#1e293b" strokeWidth="1.6" />
+
           {/* Scandinavian Stitch Pattern */}
-          <path d="M 9 20 Q 20 24 29 20" stroke="#ffffff" strokeWidth="1.5" strokeDasharray="2.5 1.5" fill="none" />
-          <path d="M 11 18 Q 20 21 27 18" stroke="#fde047" strokeWidth="1" fill="none" opacity="0.85" />
-          {/* Tassels */}
-          <line x1="8" y1="26" x2="5" y2="30" stroke="#bae6fd" strokeWidth="1.8" strokeLinecap="round" />
-          <line x1="12" y1="27" x2="10" y2="32" stroke="#bae6fd" strokeWidth="1.8" strokeLinecap="round" />
-          <line x1="17" y1="28" x2="16" y2="33" stroke="#bae6fd" strokeWidth="1.8" strokeLinecap="round" />
-          <line x1="22" y1="28" x2="22" y2="33" stroke="#bae6fd" strokeWidth="1.8" strokeLinecap="round" />
-          <line x1="27" y1="27" x2="28" y2="32" stroke="#bae6fd" strokeWidth="1.8" strokeLinecap="round" />
+          <path d="M 8 18 Q 20 22 30 18" stroke="#ffffff" strokeWidth="1.5" strokeDasharray="2.5 1.5" fill="none" />
+          <path d="M 10 16 Q 20 19.5 28 16" stroke="#fde047" strokeWidth="1.2" fill="none" opacity="0.85" />
+
+          {/* Soft Fringe Tassels */}
+          <line x1="8" y1="25" x2="5" y2="29" stroke="#bae6fd" strokeWidth="1.8" strokeLinecap="round" />
+          <line x1="12" y1="26" x2="10" y2="31" stroke="#bae6fd" strokeWidth="1.8" strokeLinecap="round" />
+          <line x1="17" y1="27" x2="16" y2="32" stroke="#bae6fd" strokeWidth="1.8" strokeLinecap="round" />
+          <line x1="22" y1="27" x2="22" y2="32" stroke="#bae6fd" strokeWidth="1.8" strokeLinecap="round" />
+          <line x1="27" y1="26" x2="28" y2="31" stroke="#bae6fd" strokeWidth="1.8" strokeLinecap="round" />
         </svg>
       );
 
     case 'hasGramophone':
       return (
-        <svg viewBox="0 0 40 40" className="w-9 h-9 drop-shadow-md">
-          {/* Shadow */}
-          <ellipse cx="20" cy="33" rx="14" ry="4" fill="#0f172a" opacity="0.35" />
+        <svg viewBox="0 0 40 40" className="w-10 h-10 drop-shadow-md">
+          {/* Base Shadow */}
+          <ellipse cx="19" cy="33.5" rx="14" ry="4" fill="#0f172a" opacity="0.35" />
+
           {/* Mahogany Cabinet */}
-          <rect x="8" y="22" width="22" height="10" rx="2.5" fill="#78350f" stroke="#1e1005" strokeWidth="1.5" />
-          <rect x="7" y="20.5" width="24" height="2.5" rx="1" fill="#9a3412" stroke="#1e1005" strokeWidth="1" />
-          {/* Crank */}
-          <line x1="8" y1="27" x2="4" y2="27" stroke="#eab308" strokeWidth="1.2" strokeLinecap="round" />
-          <circle cx="4" cy="27" r="1.2" fill="#ca8a04" />
-          {/* Turntable & Record */}
-          <ellipse cx="18" cy="20.5" rx="9" ry="3" fill="#0f172a" />
-          <circle cx="18" cy="20.5" r="2.2" fill="#f59e0b" />
-          {/* Brass Horn Pipe */}
-          <path d="M 13 20.5 C 13 14 17 11 21 10" stroke="#ca8a04" strokeWidth="1.8" fill="none" strokeLinecap="round" />
-          {/* Morning Glory Horn Bell */}
-          <path d="M 21 10 C 28 4 35 5 36 12 C 33 16 26 14 21 10 Z" fill="#eab308" stroke="#854d0e" strokeWidth="1.4" />
-          <ellipse cx="32" cy="11" rx="3.5" ry="5.5" fill="#ca8a04" stroke="#854d0e" strokeWidth="0.8" transform="rotate(20 32 11)" />
-          <path d="M 23 9 Q 29 6 33 7.5" stroke="#fef08a" strokeWidth="1" fill="none" opacity="0.8" />
-          {/* Tiny Music Note */}
-          <text x="33" y="6" fontSize="9" fill="#38bdf8">♪</text>
+          <rect x="7.5" y="21.5" width="23" height="10.5" rx="2.5" fill="#78350f" stroke="#1e1005" strokeWidth="1.5" />
+          <rect x="6.5" y="20" width="25" height="2.5" rx="1" fill="#9a3412" stroke="#1e1005" strokeWidth="1" />
+          {/* Brass Crank Handle */}
+          <line x1="7.5" y1="26.5" x2="3.5" y2="26.5" stroke="#eab308" strokeWidth="1.3" strokeLinecap="round" />
+          <circle cx="3.5" cy="26.5" r="1.3" fill="#ca8a04" />
+
+          {/* Turntable & Vinyl Record */}
+          <ellipse cx="17.5" cy="20" rx="9" ry="3" fill="#0f172a" />
+          <circle cx="17.5" cy="20" r="2.2" fill="#f59e0b" />
+          {/* Tone Arm */}
+          <path d="M 24 20 L 21 20 L 19 21" stroke="#cbd5e1" strokeWidth="1" strokeLinecap="round" fill="none" />
+
+          {/* Brass Horn Neck */}
+          <path d="M 12.5 20 C 12.5 13.5 17 10 21 9.5" stroke="#ca8a04" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+          {/* Flared Horn Bell */}
+          <path d="M 21 9.5 C 28 4 35 5 36.5 12 C 33.5 16 26.5 14 21 9.5 Z" fill="#eab308" stroke="#854d0e" strokeWidth="1.4" />
+          <ellipse cx="32.5" cy="11" rx="3.5" ry="5.5" fill="#ca8a04" stroke="#854d0e" strokeWidth="0.8" transform="rotate(20 32.5 11)" />
+          <path d="M 23 8.5 Q 29 5.5 33.5 7" stroke="#fef08a" strokeWidth="1" fill="none" opacity="0.8" />
+
+          {/* Balanced Floating Musical Notes */}
+          <text x="33" y="5.5" fontSize="8.5" fill="#38bdf8" fontWeight="bold">♪</text>
+          <text x="7" y="12" fontSize="7.5" fill="#7dd3fc" fontWeight="bold">♫</text>
         </svg>
       );
   }
