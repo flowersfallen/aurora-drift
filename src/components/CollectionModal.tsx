@@ -39,8 +39,8 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
       >
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-sky-800/50">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-2xl bg-sky-900/80 text-sky-300 border border-sky-500/40 shadow-sm">
+          <div className="flex items-center gap-4 sm:gap-4.5">
+            <div className="p-2.5 sm:p-3 rounded-2xl bg-sky-900/80 text-sky-300 border border-sky-500/40 shadow-sm shrink-0 mr-1">
               <BookOpen className="w-5 h-5" />
             </div>
             <div>
@@ -61,7 +61,7 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
         </div>
 
         {/* Category Tabs */}
-        <div className="flex items-center gap-2.5 sm:gap-3 py-3 px-1 overflow-x-auto no-scrollbar scrollbar-none">
+        <div className="flex items-center gap-3 sm:gap-3.5 py-3.5 px-1 overflow-x-auto no-scrollbar scrollbar-none">
           {[
             { id: 'all', label: 'All Items', shortLabel: 'All', icon: Sparkles },
             { id: 'postcard', label: 'Postcards', shortLabel: 'Postcards', icon: BookOpen },
@@ -74,7 +74,7 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as TreasureType | 'all')}
-                className={`shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold transition-colors border-none outline-none ${
+                className={`shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs font-bold transition-colors border-none outline-none ${
                   isActive
                     ? 'bg-sky-400 text-sky-950 shadow-md shadow-sky-400/25 border border-sky-300'
                     : 'bg-sky-900/50 text-sky-300 hover:text-white hover:bg-sky-800/60 border border-sky-700/50'

@@ -210,7 +210,7 @@ export const CampDecorModal: React.FC<CampDecorModalProps> = ({
         </div>
 
         {/* Shop Items List */}
-        <div className="flex flex-col gap-3 py-1 overflow-y-auto max-h-[50vh]">
+        <div className="flex flex-col gap-4 sm:gap-4.5 py-2 overflow-y-auto max-h-[50vh] pr-0.5">
           {SHOP_ITEMS.map((item) => {
             const isOwned = decorations[item.key];
             const canAfford = pearls >= item.cost;
@@ -218,7 +218,7 @@ export const CampDecorModal: React.FC<CampDecorModalProps> = ({
             return (
               <div
                 key={item.key}
-                className="flex items-center justify-between p-3.5 rounded-2xl bg-sky-950/70 border border-sky-800/60 shadow-md gap-2.5 sm:gap-3"
+                className="flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-sky-950/85 border border-sky-800/70 shadow-lg gap-3 sm:gap-4"
               >
                 {/* Left: Thumbnail and Description vertically centered with clean separation */}
                 <div className="flex items-center flex-1 min-w-0">

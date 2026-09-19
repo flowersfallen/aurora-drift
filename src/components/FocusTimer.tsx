@@ -132,7 +132,7 @@ export const FocusTimer: React.FC<FocusTimerProps> = ({
       </div>
 
       {/* Main Action Buttons */}
-      <div className="flex items-center gap-2.5 sm:gap-3">
+      <div className="flex items-center gap-4 sm:gap-5">
         <button
           onClick={handleToggleStart}
           className={`flex items-center gap-2 px-5 sm:px-6 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm shadow-lg transition-all transform active:scale-95 ${
@@ -155,7 +155,7 @@ export const FocusTimer: React.FC<FocusTimerProps> = ({
         {!isDiving && (
           <button
             onClick={handleReset}
-            className="p-2.5 rounded-2xl glass-panel text-sky-300 hover:text-white hover:bg-sky-800/40 transition-all active:scale-95"
+            className="p-2.5 rounded-2xl bg-sky-950/80 border border-sky-700/50 text-sky-300 hover:text-white hover:bg-sky-800/50 shadow-md transition-all active:scale-95 flex items-center justify-center"
             title="Reset timer"
           >
             <RotateCcw className="w-4 h-4" />

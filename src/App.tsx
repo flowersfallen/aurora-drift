@@ -162,8 +162,8 @@ export const App: React.FC = () => {
       {/* 2. Top Header Navigation Bar */}
       <header className="relative z-30 px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between w-full max-w-6xl mx-auto">
         {/* Brand & Mascot */}
-        <div className="flex items-center gap-2 sm:gap-2.5">
-          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-2xl bg-sky-950/80 border border-sky-400/40 flex items-center justify-center shadow-lg overflow-hidden p-0.5 shrink-0">
+        <div className="flex items-center gap-3 sm:gap-3.5">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-2xl bg-sky-950/80 border border-sky-400/40 flex items-center justify-center shadow-lg overflow-hidden p-0.5 shrink-0 mr-0.5">
             <svg viewBox="0 0 64 64" className="w-full h-full drop-shadow-sm">
               <defs>
                 <linearGradient id="logoIceTop" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -235,46 +235,63 @@ export const App: React.FC = () => {
         </div>
 
         {/* Currency & Quick Toggles */}
-        <div className="flex items-center gap-1.5 sm:gap-2">
+        <div className="flex items-center gap-2 sm:gap-2.5">
           {/* Pearls Currency Badge */}
           <div
             onClick={() => setActiveModal('decor')}
-            className="flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 rounded-2xl glass-panel text-xs font-bold text-amber-300 hover:scale-105 cursor-pointer transition-all border border-amber-400/30"
+            className="flex items-center gap-1 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-2xl glass-panel text-xs font-bold text-amber-300 hover:scale-105 cursor-pointer transition-all border border-amber-400/30"
             title="Your Ice Pearls - Click to open Camp Shop"
           >
             <span>🦪</span>
             <span>{progress.pearls}</span>
           </div>
 
-          {/* Sky / Time Switcher */}
-          <div className="flex items-center glass-panel rounded-2xl p-0.5 sm:p-1 border border-sky-800/40">
+          {/* Sky / Time Switcher (Mobile: 1-click cycle button; Desktop: 3-button segmented pill) */}
+          <div className="flex items-center">
+            {/* Mobile: single cycle button */}
             <button
-              onClick={() => setTimeOfDay('aurora')}
-              className={`p-1 sm:p-1.5 rounded-xl text-xs transition-all border-none outline-none ${
-                timeOfDay === 'aurora' ? 'bg-sky-400 text-sky-950 shadow-sm' : 'bg-transparent text-sky-300 hover:text-white'
-              }`}
-              title="Northern Lights Aurora"
+              onClick={() => {
+                const next = timeOfDay === 'aurora' ? 'sunset' : timeOfDay === 'sunset' ? 'night' : 'aurora';
+                setTimeOfDay(next);
+              }}
+              className="sm:hidden p-1.5 rounded-2xl glass-panel text-xs flex items-center justify-center border border-sky-800/50 shadow-sm transition-transform active:scale-95"
+              title={`Theme: ${timeOfDay} - Tap to cycle sky`}
             >
-              <Sparkles className="w-3.5 h-3.5" />
+              {timeOfDay === 'aurora' && <Sparkles className="w-4 h-4 text-sky-400" />}
+              {timeOfDay === 'sunset' && <Sun className="w-4 h-4 text-amber-400" />}
+              {timeOfDay === 'night' && <Moon className="w-4 h-4 text-indigo-300" />}
             </button>
-            <button
-              onClick={() => setTimeOfDay('sunset')}
-              className={`p-1 sm:p-1.5 rounded-xl text-xs transition-all border-none outline-none ${
-                timeOfDay === 'sunset' ? 'bg-amber-400 text-amber-950 shadow-sm' : 'bg-transparent text-sky-300 hover:text-white'
-              }`}
-              title="Polar Sunset"
-            >
-              <Sun className="w-3.5 h-3.5" />
-            </button>
-            <button
-              onClick={() => setTimeOfDay('night')}
-              className={`p-1 sm:p-1.5 rounded-xl text-xs transition-all border-none outline-none ${
-                timeOfDay === 'night' ? 'bg-indigo-400 text-indigo-950 shadow-sm' : 'bg-transparent text-sky-300 hover:text-white'
-              }`}
-              title="Quiet Midnight"
-            >
-              <Moon className="w-3.5 h-3.5" />
-            </button>
+
+            {/* Desktop: 3-button segmented pill */}
+            <div className="hidden sm:flex items-center glass-panel rounded-2xl p-0.5 sm:p-1 border border-sky-800/40">
+              <button
+                onClick={() => setTimeOfDay('aurora')}
+                className={`p-1 sm:p-1.5 rounded-xl text-xs transition-all border-none outline-none ${
+                  timeOfDay === 'aurora' ? 'bg-sky-400 text-sky-950 shadow-sm' : 'bg-transparent text-sky-300 hover:text-white'
+                }`}
+                title="Northern Lights Aurora"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => setTimeOfDay('sunset')}
+                className={`p-1 sm:p-1.5 rounded-xl text-xs transition-all border-none outline-none ${
+                  timeOfDay === 'sunset' ? 'bg-amber-400 text-amber-950 shadow-sm' : 'bg-transparent text-sky-300 hover:text-white'
+                }`}
+                title="Polar Sunset"
+              >
+                <Sun className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => setTimeOfDay('night')}
+                className={`p-1 sm:p-1.5 rounded-xl text-xs transition-all border-none outline-none ${
+                  timeOfDay === 'night' ? 'bg-indigo-400 text-indigo-950 shadow-sm' : 'bg-transparent text-sky-300 hover:text-white'
+                }`}
+                title="Quiet Midnight"
+              >
+                <Moon className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
 
           {/* Sound Mixer Toggle */}
