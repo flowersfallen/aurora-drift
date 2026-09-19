@@ -111,29 +111,35 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
     ctx.beginPath(); ctx.moveTo(w - 28 - corner, h - 28); ctx.lineTo(w - 28, h - 28); ctx.lineTo(w - 28, h - 28 - corner); ctx.stroke();
 
     // 6. Header: Brand & Title
-    ctx.fillStyle = '#7dd3fc';
-    ctx.font = '600 16px "Quicksand", sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('A U R O R A   D R I F T', w / 2, 75);
+    ctx.fillStyle = '#7dd3fc';
+    ctx.font = '600 15px "Quicksand", sans-serif';
+    ctx.fillText('A U R O R A   D R I F T', w / 2, 70);
 
     ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 30px "Outfit", sans-serif';
-    ctx.fillText('ICE OTTER · POLAR COMPANION', w / 2, 115);
+    ctx.font = 'bold 28px "Outfit", sans-serif';
+    ctx.fillText('ICE OTTER · POLAR COMPANION', w / 2, 104);
 
     // 7. Center Card
-    const cardX = 50;
-    const cardY = 140;
-    const cardW = w - 100; // 700
-    const cardH = 710;
+    const cardX = 44;
+    const cardY = 126;
+    const cardW = w - 88; // 712
+    const cardH = 698;
 
     // Card background (translucent obsidian polar plate)
-    ctx.fillStyle = 'rgba(7, 21, 38, 0.92)';
+    ctx.fillStyle = 'rgba(7, 21, 38, 0.94)';
     ctx.beginPath();
-    ctx.roundRect(cardX, cardY, cardW, cardH, 24);
+    ctx.roundRect(cardX, cardY, cardW, cardH, 22);
     ctx.fill();
     ctx.strokeStyle = 'rgba(56, 189, 248, 0.35)';
     ctx.lineWidth = 1.5;
     ctx.stroke();
+
+    // Standardized Art Plate Dimensions (IDENTICAL for both Mode A & Mode B)
+    const plateX = cardX + 22;
+    const plateY = cardY + 22;
+    const plateW = cardW - 44; // 668
+    const plateH = 265; // EXACT same height for both Fox and Otter plates!
 
     if (activeType === 'treasure' && treasure) {
       // ==========================================
@@ -141,11 +147,6 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       // ==========================================
 
       // 1. Postcard Illustration Art Plate
-      const plateX = cardX + 22;
-      const plateY = cardY + 22;
-      const plateW = cardW - 44; // 656
-      const plateH = 260;
-
       ctx.save();
       ctx.beginPath();
       ctx.roundRect(plateX, plateY, plateW, plateH, 18);
@@ -205,7 +206,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
 
       // Hero Pedestal / Medallion (Bright Frost White for 100% Crisp Emoji Contrast)
       const discX = w / 2;
-      const discY = plateY + 115;
+      const discY = plateY + 118;
       const discR = 64;
 
       // Outer radiant glow
@@ -240,12 +241,12 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       ctx.arc(discX, discY, discR - 5, 0, Math.PI * 2);
       ctx.stroke();
 
-      // The Hero Animal / Relic Icon (Drawn crisp & large on clean white disc)
+      // The Hero Animal / Relic Icon
       ctx.font = '78px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(treasure.icon, discX, discY + 5);
-      ctx.textBaseline = 'alphabetic'; // reset
+      ctx.textBaseline = 'alphabetic';
 
       // Vintage Polar Postage Stamp (top right of Art Plate)
       const stampX = plateX + plateW - 105;
@@ -287,7 +288,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       ctx.stroke();
 
       // Bottom Location Label on Plate
-      ctx.fillStyle = 'rgba(2, 10, 22, 0.82)';
+      ctx.fillStyle = 'rgba(2, 10, 22, 0.85)';
       ctx.fillRect(plateX, plateY + plateH - 32, plateW, 32);
       ctx.fillStyle = '#bae6fd';
       ctx.font = 'bold 11px "Outfit", sans-serif';
@@ -304,7 +305,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       ctx.stroke();
 
       // 2. Rarity Stars Banner
-      const starY = plateY + plateH + 28;
+      const starY = plateY + plateH + 26; // 150 + 265 + 26 = 441
       const rarityStars =
         treasure.rarity === 'legendary'
           ? '★ ★ ★ ★ ★  LEGENDARY TREASURE  ★ ★ ★ ★ ★'
@@ -318,13 +319,13 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       ctx.fillText(rarityStars, w / 2, starY);
 
       // 3. Title (Prominent, High-Contrast White)
-      const titleY = starY + 40;
+      const titleY = starY + 38; // 479
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 32px "Outfit", sans-serif';
+      ctx.font = 'bold 31px "Outfit", sans-serif';
       ctx.fillText(treasure.title, w / 2, titleY);
 
       // 4. Author / Origin Subtitle
-      const authorY = titleY + 26;
+      const authorY = titleY + 26; // 505
       ctx.fillStyle = '#7dd3fc';
       ctx.font = '600 15px "Quicksand", sans-serif';
       ctx.fillText(
@@ -334,10 +335,10 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       );
 
       // 5. Field Notes & Journal Entry Parchment Box
-      const noteX = cardX + 24;
-      const noteY = authorY + 18;
-      const noteW = cardW - 48; // 652
-      const noteH = 188;
+      const noteX = cardX + 22;
+      const noteY = authorY + 18; // 523
+      const noteW = cardW - 44; // 668
+      const noteH = 202; // ends at 725
 
       ctx.fillStyle = 'rgba(2, 11, 23, 0.88)';
       ctx.beginPath();
@@ -351,27 +352,27 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       ctx.fillStyle = '#38bdf8';
       ctx.font = 'bold 11px "Outfit", sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('FIELD NOTES & RECOLLECTIONS', w / 2, noteY + 24);
+      ctx.fillText('📜 EXPEDITION FIELD NOTES & RECOLLECTIONS', w / 2, noteY + 26);
 
       // Description text
       ctx.fillStyle = '#e2e8f0';
       ctx.font = '400 16px "Quicksand", sans-serif';
-      wrapText(ctx, treasure.description, w / 2, noteY + 54, noteW - 60, 24);
+      wrapText(ctx, treasure.description, w / 2, noteY + 58, noteW - 60, 24);
 
       // Divider line
       ctx.strokeStyle = 'rgba(56, 189, 248, 0.2)';
       ctx.beginPath();
-      ctx.moveTo(w / 2 - 120, noteY + 102);
-      ctx.lineTo(w / 2 + 120, noteY + 102);
+      ctx.moveTo(w / 2 - 140, noteY + 112);
+      ctx.lineTo(w / 2 + 140, noteY + 112);
       ctx.stroke();
 
       // Flavor quote in warm glowing golden italic script
       ctx.fillStyle = '#fef08a';
       ctx.font = 'italic 16px "Quicksand", sans-serif';
-      wrapText(ctx, `${treasure.flavorText}`, w / 2, noteY + 132, noteW - 70, 24);
+      wrapText(ctx, `${treasure.flavorText}`, w / 2, noteY + 144, noteW - 70, 24);
 
       // 6. Bottom Metadata Badges Row
-      const badgeY = noteY + noteH + 20;
+      const badgeY = noteY + noteH + 16; // 741
       const bColW = (noteW - 16) / 3;
 
       const drawMiniBadge = (x: number, label: string, val: string) => {
@@ -402,12 +403,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       // --- MODE B: Focus Journey / Milestone Card ---
       // ==========================================
 
-      // 1. Hero Avatar Plate
-      const plateX = cardX + 22;
-      const plateY = cardY + 22;
-      const plateW = cardW - 44;
-      const plateH = 210;
-
+      // 1. Hero Avatar Plate (EXACTLY 265px height, matching Mode A!)
       ctx.save();
       ctx.beginPath();
       ctx.roundRect(plateX, plateY, plateW, plateH, 18);
@@ -415,41 +411,59 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
 
       const plateSky = ctx.createLinearGradient(plateX, plateY, plateX, plateY + plateH);
       plateSky.addColorStop(0, '#040d1c');
-      plateSky.addColorStop(0.5, '#0a233d');
-      plateSky.addColorStop(1, '#0e344d');
+      plateSky.addColorStop(0.45, '#0a233d');
+      plateSky.addColorStop(0.85, '#12415d');
+      plateSky.addColorStop(1, '#092539');
       ctx.fillStyle = plateSky;
       ctx.fillRect(plateX, plateY, plateW, plateH);
 
       // Aurora ribbon
       ctx.save();
       ctx.globalCompositeOperation = 'screen';
-      const plateAurora = ctx.createLinearGradient(plateX, plateY + 10, plateX, plateY + 120);
+      const plateAurora = ctx.createLinearGradient(plateX, plateY + 10, plateX, plateY + 140);
       plateAurora.addColorStop(0, 'rgba(52, 211, 153, 0)');
-      plateAurora.addColorStop(0.5, 'rgba(52, 211, 153, 0.35)');
+      plateAurora.addColorStop(0.5, 'rgba(52, 211, 153, 0.38)');
       plateAurora.addColorStop(1, 'rgba(56, 189, 248, 0)');
       ctx.fillStyle = plateAurora;
       ctx.beginPath();
-      ctx.moveTo(plateX, plateY + 25);
-      ctx.bezierCurveTo(plateX + 160, plateY + 5, plateX + 380, plateY + 75, plateX + plateW, plateY + 20);
-      ctx.lineTo(plateX + plateW, plateY + 140);
-      ctx.lineTo(plateX, plateY + 140);
+      ctx.moveTo(plateX, plateY + 30);
+      ctx.bezierCurveTo(plateX + 160, plateY + 5, plateX + 380, plateY + 85, plateX + plateW, plateY + 25);
+      ctx.lineTo(plateX + plateW, plateY + 160);
+      ctx.lineTo(plateX, plateY + 160);
       ctx.closePath();
       ctx.fill();
       ctx.restore();
 
-      // Floating Iceberg
-      ctx.fillStyle = '#104e7a';
+      // Distant icy mountains in plate
+      ctx.fillStyle = '#051627';
       ctx.beginPath();
-      ctx.moveTo(plateX + plateW * 0.1, plateY + plateH);
-      ctx.lineTo(plateX + plateW * 0.22, plateY + plateH - 55);
-      ctx.lineTo(plateX + plateW * 0.35, plateY + plateH);
+      ctx.moveTo(plateX, plateY + plateH);
+      ctx.lineTo(plateX + 100, plateY + plateH - 85);
+      ctx.lineTo(plateX + 220, plateY + plateH - 45);
+      ctx.lineTo(plateX + 360, plateY + plateH - 115);
+      ctx.lineTo(plateX + 500, plateY + plateH - 55);
+      ctx.lineTo(plateX + plateW, plateY + plateH - 95);
+      ctx.lineTo(plateX + plateW, plateY + plateH);
       ctx.closePath();
       ctx.fill();
 
-      // Center Otter Disc
+      // Mountain Snow Highlights
+      ctx.fillStyle = 'rgba(224, 242, 254, 0.45)';
+      ctx.beginPath();
+      ctx.moveTo(plateX + 360, plateY + plateH - 115);
+      ctx.lineTo(plateX + 335, plateY + plateH - 80);
+      ctx.lineTo(plateX + 385, plateY + plateH - 75);
+      ctx.closePath();
+      ctx.fill();
+
+      // Frosted ocean shelf at bottom
+      ctx.fillStyle = 'rgba(10, 32, 54, 0.88)';
+      ctx.fillRect(plateX, plateY + plateH - 44, plateW, 44);
+
+      // Center Otter Disc (Same size & glowing pedestal as Fox!)
       const discX = w / 2;
-      const discY = plateY + 88;
-      const discR = 56;
+      const discY = plateY + 118;
+      const discR = 64;
 
       const glowGrad = ctx.createRadialGradient(discX, discY, discR * 0.4, discX, discY, discR * 2.2);
       glowGrad.addColorStop(0, 'rgba(255, 255, 255, 0.45)');
@@ -469,19 +483,67 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       ctx.arc(discX, discY, discR, 0, Math.PI * 2);
       ctx.fill();
       ctx.strokeStyle = '#38bdf8';
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 3.5;
       ctx.stroke();
 
-      ctx.font = '68px sans-serif';
+      // Inner thin rim
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(discX, discY, discR - 5, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.font = '78px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('🦦', discX, discY + 4);
+      ctx.fillText('🦦', discX, discY + 5);
       ctx.textBaseline = 'alphabetic';
 
-      // Slogan inside plate
-      ctx.fillStyle = '#e0f2fe';
-      ctx.font = 'bold 14px "Outfit", sans-serif';
-      ctx.fillText('“Drifting calmly in glacial waters under northern lights”', w / 2, plateY + plateH - 18);
+      // Vintage Postage Stamp on Focus Card
+      const stampX = plateX + plateW - 105;
+      const stampY = plateY + 16;
+      const stampW = 86;
+      const stampH = 104;
+
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(stampX, stampY, stampW, stampH);
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(stampX, stampY, stampW, stampH);
+
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(stampX + 4, stampY + 4, stampW - 8, stampH - 8);
+
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 9px "Outfit", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('EXPEDITION', stampX + stampW / 2, stampY + 18);
+
+      ctx.font = '26px sans-serif';
+      ctx.fillText('🧭', stampX + stampW / 2, stampY + 53);
+
+      ctx.fillStyle = '#0369a1';
+      ctx.font = 'bold 10px "Outfit", sans-serif';
+      ctx.fillText('78°N · FOCUS', stampX + stampW / 2, stampY + 82);
+
+      // Cancellation mark
+      ctx.strokeStyle = 'rgba(100, 116, 139, 0.65)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(stampX + 10, stampY + stampH - 12, 30, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(stampX + 10, stampY + stampH - 12, 22, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Bottom Location Label on Plate
+      ctx.fillStyle = 'rgba(2, 10, 22, 0.85)';
+      ctx.fillRect(plateX, plateY + plateH - 32, plateW, 32);
+      ctx.fillStyle = '#bae6fd';
+      ctx.font = 'bold 11px "Outfit", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('📍 POLAR DRIFT · DEEP DIVE FOCUS SANCTUARY', w / 2, plateY + plateH - 12);
 
       ctx.restore();
 
@@ -491,25 +553,27 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       ctx.roundRect(plateX, plateY, plateW, plateH, 18);
       ctx.stroke();
 
-      // 2. Headline
-      const headY = plateY + plateH + 34;
+      // 2. Headline (Aligned with Mode A)
+      const headY = plateY + plateH + 28;
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 30px "Outfit", sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('POLAR FOCUS MILESTONE', w / 2, headY);
 
+      // Subtitle
+      const subY = headY + 26;
       ctx.fillStyle = '#7dd3fc';
       ctx.font = '600 15px "Quicksand", sans-serif';
-      ctx.fillText('— Deep Work & Ambient Ocean Journey —', w / 2, headY + 26);
+      ctx.fillText('— Deep Work & Ambient Ocean Journey —', w / 2, subY);
 
       // 3. Stats Triple Cards
-      const statsY = headY + 50;
-      const colWidth = (cardW - 60) / 3;
+      const statsY = subY + 18;
+      const colWidth = (plateW - 16) / 3;
 
       const drawStatBox = (x: number, title: string, value: string, icon: string) => {
         ctx.fillStyle = 'rgba(14, 165, 233, 0.12)';
         ctx.beginPath();
-        ctx.roundRect(x, statsY, colWidth - 8, 115, 16);
+        ctx.roundRect(x, statsY, colWidth, 106, 16);
         ctx.fill();
         ctx.strokeStyle = 'rgba(56, 189, 248, 0.3)';
         ctx.stroke();
@@ -517,33 +581,33 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
         ctx.fillStyle = '#bae6fd';
         ctx.font = '14px "Quicksand", sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(icon + ' ' + title, x + (colWidth - 8) / 2, statsY + 36);
+        ctx.fillText(icon + ' ' + title, x + colWidth / 2, statsY + 34);
 
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 28px "Outfit", sans-serif';
-        ctx.fillText(value, x + (colWidth - 8) / 2, statsY + 84);
+        ctx.font = 'bold 26px "Outfit", sans-serif';
+        ctx.fillText(value, x + colWidth / 2, statsY + 78);
       };
 
-      drawStatBox(cardX + 24, 'Focus Time', `${progress.totalFocusMinutes} mins`, '⏱️');
-      drawStatBox(cardX + 24 + colWidth, 'Shells Cracked', `${progress.totalShellsCracked}`, '🦪');
-      drawStatBox(cardX + 24 + colWidth * 2, 'Treasures', `${progress.unlockedTreasureIds.length} / 16`, '✨');
+      drawStatBox(plateX, 'Focus Time', `${progress.totalFocusMinutes} mins`, '⏱️');
+      drawStatBox(plateX + colWidth + 8, 'Shells Cracked', `${progress.totalShellsCracked}`, '🦪');
+      drawStatBox(plateX + (colWidth + 8) * 2, 'Treasures', `${progress.unlockedTreasureIds.length} / 16`, '✨');
 
-      // 4. Arctic Otter Wisdom Parchment
-      const quoteBoxY = statsY + 138;
-      const quoteW = cardW - 48;
-      const quoteH = 150;
+      // 4. Arctic Otter Wisdom Box
+      const quoteBoxY = statsY + 120;
+      const quoteW = plateW;
+      const quoteH = 92;
 
       ctx.fillStyle = 'rgba(2, 11, 23, 0.88)';
       ctx.beginPath();
-      ctx.roundRect(cardX + 24, quoteBoxY, quoteW, quoteH, 16);
+      ctx.roundRect(plateX, quoteBoxY, quoteW, quoteH, 16);
       ctx.fill();
       ctx.strokeStyle = 'rgba(56, 189, 248, 0.28)';
       ctx.stroke();
 
       ctx.fillStyle = '#38bdf8';
-      ctx.font = 'bold 12px "Outfit", sans-serif';
+      ctx.font = 'bold 11px "Outfit", sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('❄️ ARCTIC OTTER WISDOM ❄️', w / 2, quoteBoxY + 32);
+      ctx.fillText('❄️ ARCTIC OTTER WISDOM ❄️', w / 2, quoteBoxY + 26);
 
       ctx.fillStyle = '#fef08a';
       ctx.font = 'italic 16px "Quicksand", sans-serif';
@@ -553,26 +617,67 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
         '“Take a deep breath and listen to the waves. Calm waters run deep.”',
       ];
       const selectedQuote = quotes[progress.totalFocusMinutes % quotes.length];
-      wrapText(ctx, selectedQuote, w / 2, quoteBoxY + 74, quoteW - 60, 24);
+      wrapText(ctx, selectedQuote, w / 2, quoteBoxY + 58, quoteW - 50, 24);
+
+      // 5. Bottom Badges Row for Mode B
+      const badgeY = quoteBoxY + quoteH + 16;
+      const bColW = (plateW - 16) / 3;
+
+      const drawFocusBadge = (x: number, label: string, val: string) => {
+        ctx.fillStyle = 'rgba(14, 165, 233, 0.12)';
+        ctx.beginPath();
+        ctx.roundRect(x, badgeY, bColW, 36, 10);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.25)';
+        ctx.stroke();
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '500 11px "Outfit", sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText(label, x + 14, badgeY + 22);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 12px "Outfit", sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText(val, x + bColW - 14, badgeY + 22);
+      };
+
+      const decorCount = Object.values(progress.decorations).filter(Boolean).length;
+      drawFocusBadge(plateX, 'STREAK', `${progress.streakDays} DAYS`);
+      drawFocusBadge(plateX + bColW + 8, 'PEARLS', `${progress.pearls} 🦪`);
+      drawFocusBadge(plateX + (bColW + 8) * 2, 'DECOR', `${decorCount}/4 CAMP`);
     }
 
-    // 8. Footer: Brand & Link Mark
-    const footerY = h - 145;
+    // ==========================================
+    // 8. Footer: Brand & Centered Information
+    // ==========================================
+    const footerLineY = cardY + cardH + 28; // 126 + 698 + 28 = 852
 
     // Stylized Divider Line
-    ctx.strokeStyle = 'rgba(56, 189, 248, 0.2)';
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.25)';
+    ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(cardX + 50, footerY);
-    ctx.lineTo(w - cardX - 50, footerY);
+    ctx.moveTo(w / 2 - 160, footerLineY);
+    ctx.lineTo(w / 2 + 160, footerLineY);
     ctx.stroke();
 
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 22px "Outfit", sans-serif';
-    ctx.fillText('iceotter.com', w / 2, footerY + 38);
+    // Reset alignment to center for ALL footer elements!
+    ctx.textAlign = 'center';
 
+    // Domain name
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 24px "Outfit", sans-serif';
+    ctx.fillText('iceotter.com', w / 2, footerLineY + 38);
+
+    // Slogan / Website Description
     ctx.fillStyle = '#94a3b8';
-    ctx.font = '500 13px "Quicksand", sans-serif';
-    ctx.fillText('No Ads · Cozy Ambient Sound & Minimalist Focus Companion', w / 2, footerY + 62);
+    ctx.font = '500 13.5px "Quicksand", sans-serif';
+    ctx.fillText('No Ads · Cozy Ambient Sound & Minimalist Focus Companion', w / 2, footerLineY + 64);
+
+    // Call-to-action note
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = 'bold 11.5px "Outfit", sans-serif';
+    ctx.fillText('✨ Visit iceotter.com to drift with your Ice Otter under the stars ✨', w / 2, footerLineY + 86);
 
     // Generate exportable DataURL
     try {
