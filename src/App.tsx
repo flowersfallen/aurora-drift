@@ -164,17 +164,71 @@ export const App: React.FC = () => {
       <header className="relative z-30 px-4 py-3 flex items-center justify-between w-full max-w-6xl mx-auto">
         {/* Brand & Mascot */}
         <div className="flex items-center gap-2.5">
-          <div className="w-10 h-10 rounded-2xl bg-sky-950/80 border border-sky-400/40 flex items-center justify-center shadow-lg overflow-hidden p-1">
-            <svg viewBox="0 0 64 64" className="w-full h-full">
-              <circle cx="32" cy="32" r="30" fill="#082F49"/>
-              <path d="M 18 30 C 18 16 46 16 46 30 C 46 40 50 50 46 56 C 42 60 22 60 18 56 C 14 50 18 40 18 30 Z" fill="#FCFAF4" stroke="#2E384D" strokeWidth="2"/>
-              <ellipse cx="17" cy="26" rx="3" ry="4" fill="#3C4556" stroke="#2E384D" strokeWidth="1.5" transform="rotate(-15 17 26)"/>
-              <ellipse cx="47" cy="26" rx="3" ry="4" fill="#3C4556" stroke="#2E384D" strokeWidth="1.5" transform="rotate(15 47 26)"/>
-              <ellipse cx="26" cy="30" rx="1.6" ry="2.2" fill="#2E384D"/>
-              <ellipse cx="38" cy="30" rx="1.6" ry="2.2" fill="#2E384D"/>
-              <path d="M 31 31 Q 32 30 33 31 Q 32 33 31 31 Z" fill="#2E384D"/>
-              <ellipse cx="21" cy="33" rx="3" ry="2" fill="#FECDD3" opacity="0.9"/>
-              <ellipse cx="43" cy="33" rx="3" ry="2" fill="#FECDD3" opacity="0.9"/>
+          <div className="w-10 h-10 rounded-2xl bg-sky-950/80 border border-sky-400/40 flex items-center justify-center shadow-lg overflow-hidden p-0.5">
+            <svg viewBox="0 0 64 64" className="w-full h-full drop-shadow-sm">
+              <defs>
+                <radialGradient id="logoBgGlow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="#0c4a6e" />
+                  <stop offset="100%" stopColor="#082f49" />
+                </radialGradient>
+                <linearGradient id="logoIceTop" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#e0f2fe" />
+                  <stop offset="100%" stopColor="#bae6fd" />
+                </linearGradient>
+                <linearGradient id="logoIceFront" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#7dd3fc" />
+                  <stop offset="100%" stopColor="#38bdf8" />
+                </linearGradient>
+              </defs>
+
+              {/* Soft ambient circular backdrop */}
+              <circle cx="32" cy="32" r="30" fill="url(#logoBgGlow)" stroke="#38bdf8" strokeWidth="1.5" strokeOpacity="0.4" />
+
+              {/* Tiny Ears (Centered around Y=17) */}
+              <ellipse cx="20" cy="17" rx="4.5" ry="6" fill="#3c4556" stroke="#2e384d" strokeWidth="2" transform="rotate(-18 20 17)" />
+              <ellipse cx="44" cy="17" rx="4.5" ry="6" fill="#3c4556" stroke="#2e384d" strokeWidth="2" transform="rotate(18 44 17)" />
+
+              {/* Chubby Cream Body / Head (Centered Y=13 to 53) */}
+              <path
+                d="M 21 21
+                   C 21 13 43 13 43 21
+                   C 43 27 48 37 46 47
+                   C 44 53 20 53 18 47
+                   C 16 37 21 27 21 21 Z"
+                fill="#fdfbf7"
+                stroke="#2e384d"
+                strokeWidth="2.4"
+                strokeLinejoin="round"
+              />
+
+              {/* Whiskers */}
+              <path d="M 14 29 Q 18 30 22 30" stroke="#2e384d" strokeWidth="1.4" strokeLinecap="round" fill="none" />
+              <path d="M 14 34 Q 18 34 22 33" stroke="#2e384d" strokeWidth="1.4" strokeLinecap="round" fill="none" />
+              <path d="M 50 29 Q 46 30 42 30" stroke="#2e384d" strokeWidth="1.4" strokeLinecap="round" fill="none" />
+              <path d="M 50 34 Q 46 34 42 33" stroke="#2e384d" strokeWidth="1.4" strokeLinecap="round" fill="none" />
+
+              {/* Eyes with twinkle */}
+              <ellipse cx="27" cy="27" rx="2" ry="2.8" fill="#2e384d" />
+              <circle cx="26.3" cy="25.8" r="0.7" fill="#ffffff" />
+              <ellipse cx="37" cy="27" rx="2" ry="2.8" fill="#2e384d" />
+              <circle cx="36.3" cy="25.8" r="0.7" fill="#ffffff" />
+
+              {/* Soft Blush */}
+              <ellipse cx="22" cy="30" rx="3.5" ry="2" fill="#fecdd3" opacity="0.9" />
+              <ellipse cx="42" cy="30" rx="3.5" ry="2" fill="#fecdd3" opacity="0.9" />
+
+              {/* Cute Nose & Mouth */}
+              <path d="M 30.5 28.5 Q 32 27.5 33.5 28.5 Q 32 30.5 30.5 28.5 Z" fill="#2e384d" />
+
+              {/* Mini Isometric Glowing Ice Cube (Centered at X=32, Y=37 to 51) */}
+              <polygon points="32,37 39,41 32,45 25,41" fill="url(#logoIceTop)" stroke="#60a5fa" strokeWidth="1.2" strokeLinejoin="round" />
+              <polygon points="25,41 32,45 32,51 25,47" fill="url(#logoIceFront)" stroke="#60a5fa" strokeWidth="1.2" strokeLinejoin="round" />
+              <polygon points="32,45 39,41 39,47 32,51" fill="#60a5fa" stroke="#3b82f6" strokeWidth="1.2" strokeLinejoin="round" />
+              <polygon points="32,38.5 36,40.5 32,42.5 28,40.5" fill="#ffffff" opacity="0.75" />
+
+              {/* Paws hugging ice cube */}
+              <path d="M 23 42 C 26 42 28 45 25 49" stroke="#2e384d" strokeWidth="2" strokeLinecap="round" fill="none" />
+              <path d="M 41 42 C 38 42 36 45 39 49" stroke="#2e384d" strokeWidth="2" strokeLinecap="round" fill="none" />
             </svg>
           </div>
           <div>
