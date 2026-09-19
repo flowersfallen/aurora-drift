@@ -220,14 +220,14 @@ export const CampDecorModal: React.FC<CampDecorModalProps> = ({
                 key={item.key}
                 className="flex items-center justify-between p-3.5 rounded-2xl bg-sky-950/70 border border-sky-800/60 shadow-md gap-2.5 sm:gap-3"
               >
-                {/* Left: Thumbnail and Description with clean, guaranteed separation */}
-                <div className="flex items-start flex-1 min-w-0">
-                  {/* Dedicated, spacious thumbnail box */}
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-900/80 to-sky-950/90 border border-sky-400/35 flex items-center justify-center p-2 shadow-inner shrink-0 mr-3.5 sm:mr-4">
+                {/* Left: Thumbnail and Description vertically centered with clean separation */}
+                <div className="flex items-center flex-1 min-w-0">
+                  {/* Dedicated, spacious thumbnail box - perfectly centered */}
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-900/80 to-sky-950/90 border border-sky-400/35 flex items-center justify-center p-2 shadow-inner shrink-0 mr-3.5 sm:mr-4 self-center">
                     {renderDecorThumbnail(item.key)}
                   </div>
                   {/* Text Details */}
-                  <div className="flex-1 min-w-0 pr-1.5">
+                  <div className="flex-1 min-w-0 pr-1.5 flex flex-col justify-center">
                     <h4 className="text-sm font-bold text-white leading-snug">{item.title}</h4>
                     <p className="text-xs text-sky-200/80 leading-relaxed mt-1 break-words">
                       {item.desc}
