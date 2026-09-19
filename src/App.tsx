@@ -224,13 +224,13 @@ export const App: React.FC = () => {
             </svg>
           </div>
           <div>
-            <h1 className="text-sm sm:text-base font-bold text-white tracking-wide flex items-center gap-1.5 leading-tight whitespace-nowrap">
-              Aurora Drift
-              <span className="hidden sm:inline-block text-[10px] px-2 py-0.5 rounded-full bg-sky-400/20 text-sky-300 font-semibold border border-sky-400/30">
+            <h1 className="text-sm sm:text-base font-bold text-white tracking-wide flex items-center gap-2 leading-none whitespace-nowrap">
+              <span>Aurora Drift</span>
+              <span className="hidden sm:inline-flex items-center justify-center h-[18px] px-2 text-[10px] font-semibold leading-none rounded-full bg-sky-400/20 text-sky-300 border border-sky-400/30 self-center">
                 Cozy Web
               </span>
             </h1>
-            <p className="text-[10px] sm:text-[11px] text-sky-300/80 font-medium leading-none mt-0.5">iceotter.com</p>
+            <p className="text-[10px] sm:text-[11px] text-sky-300/80 font-medium leading-none mt-1">iceotter.com</p>
           </div>
         </div>
 
