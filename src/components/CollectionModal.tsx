@@ -140,15 +140,18 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
 
         {/* Detail Inspection Modal */}
         {selectedTreasure && (
-          <div className="absolute inset-0 z-20 bg-[#0a1b2e]/98 rounded-3xl p-6 flex flex-col items-center justify-center text-center animate-scaleUp border border-sky-400/40">
+          <div
+            style={{ backgroundColor: '#07172b' }}
+            className="absolute inset-0 z-30 bg-[#07172b] rounded-3xl p-4 sm:p-6 flex flex-col items-center justify-center text-center animate-scaleUp border-2 border-sky-400/50 shadow-2xl overflow-y-auto"
+          >
             <button
               onClick={() => setSelectedTreasure(null)}
-              className="absolute top-4 right-4 p-2 rounded-xl text-sky-300 hover:text-white hover:bg-sky-900/50"
+              className="absolute top-3 right-3 sm:top-4 sm:right-4 p-2 rounded-xl text-sky-300 hover:text-white bg-sky-900/70 hover:bg-sky-800/80 border border-sky-700/50 shadow-md transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <div className="w-24 h-24 rounded-3xl bg-sky-400/20 border border-sky-300/40 flex items-center justify-center text-5xl mb-3 shadow-xl">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-sky-400/20 border border-sky-300/40 flex items-center justify-center text-4xl sm:text-5xl mb-2 sm:mb-3 shadow-xl shrink-0 mt-auto">
               {selectedTreasure.icon}
             </div>
 
@@ -156,23 +159,23 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
               {selectedTreasure.rarity} {selectedTreasure.type}
             </span>
 
-            <h4 className="text-2xl font-bold text-white mb-2">{selectedTreasure.title}</h4>
+            <h4 className="text-xl sm:text-2xl font-bold text-white mb-1">{selectedTreasure.title}</h4>
             {selectedTreasure.author && (
-              <p className="text-xs text-sky-300 mb-3 font-semibold">From {selectedTreasure.author}</p>
+              <p className="text-xs text-sky-300 mb-2 sm:mb-3 font-semibold">From {selectedTreasure.author}</p>
             )}
 
-            <p className="text-sm text-sky-100/90 max-w-md mb-4 leading-relaxed">
+            <p className="text-xs sm:text-sm text-sky-100/90 max-w-md mb-3 sm:mb-4 leading-relaxed px-2">
               {selectedTreasure.description}
             </p>
 
-            <div className="bg-sky-900/40 p-4 rounded-2xl border border-sky-700/40 italic text-sm text-amber-200/95 max-w-md mb-6 shadow-inner">
+            <div className="bg-sky-950/80 p-3 sm:p-4 rounded-2xl border border-sky-700/50 italic text-xs sm:text-sm text-amber-200/95 max-w-md mb-4 sm:mb-6 shadow-inner mx-2">
               {selectedTreasure.flavorText}
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex items-center gap-3 mb-auto">
               <button
                 onClick={() => handleShareQuote(selectedTreasure)}
-                className="px-5 py-2.5 rounded-xl bg-sky-400 hover:bg-sky-300 text-sky-950 font-bold text-xs flex items-center gap-2 shadow-lg transition-all"
+                className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-sky-400 hover:bg-sky-300 text-sky-950 font-bold text-xs flex items-center gap-2 shadow-lg transition-all active:scale-95"
               >
                 {copied ? (
                   <>
@@ -186,7 +189,7 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
               </button>
               <button
                 onClick={() => setSelectedTreasure(null)}
-                className="px-5 py-2.5 rounded-xl glass-panel text-sky-200 hover:text-white text-xs font-semibold"
+                className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-sky-900/60 hover:bg-sky-800/80 border border-sky-700/50 text-sky-200 hover:text-white text-xs font-semibold transition-all active:scale-95"
               >
                 Close
               </button>
