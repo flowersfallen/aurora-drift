@@ -470,14 +470,14 @@ export const App: React.FC = () => {
               }}
               className="w-full py-2.5 rounded-xl bg-gradient-to-r from-sky-400 to-teal-300 hover:from-sky-300 hover:to-teal-200 text-sky-950 font-bold text-xs shadow-lg transition-all mb-2 flex items-center justify-center gap-1.5 active:scale-95"
             >
-              <Sparkles className="w-4 h-4" /> 生成自习打卡海报 / 分享给好友
+              <Sparkles className="w-4 h-4" /> Generate Share Poster
             </button>
 
             <button
               onClick={() => setActiveModal(null)}
               className="w-full py-2 rounded-xl bg-sky-900/60 hover:bg-sky-800 text-sky-200 font-semibold text-xs border border-sky-700/50 transition-all"
             >
-              返回极地营地
+              Back to Campsite
             </button>
           </div>
         </div>

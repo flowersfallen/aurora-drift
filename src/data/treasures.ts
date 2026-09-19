@@ -1,7 +1,7 @@
 import { Treasure } from '../types';
 
 export const ALL_TREASURES: Treasure[] = [
-  // --- 极地明信片 (Postcards) ---
+  // --- Postcards ---
   {
     id: 'postcard-aurora-fox',
     title: 'Dancing with Aurora',
@@ -63,7 +63,7 @@ export const ALL_TREASURES: Treasure[] = [
     author: 'Barnaby the Bear',
   },
 
-  // --- 失落古物 (Ancient Relics) ---
+  // --- Ancient Relics ---
   {
     id: 'relic-brass-compass',
     title: 'Starseeker Brass Compass',
@@ -124,7 +124,7 @@ export const ALL_TREASURES: Treasure[] = [
     icon: '⏱️',
   },
 
-  // --- 漂流瓶寄语 (Bottle Letters) ---
+  // --- Bottle Letters ---
   {
     id: 'letter-wanderer-hope',
     title: 'Letter from a Quiet Harbor',

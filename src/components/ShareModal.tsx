@@ -118,7 +118,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
 
     ctx.fillStyle = '#ffffff';
     ctx.font = 'bold 30px "Outfit", sans-serif';
-    ctx.fillText('ICE OTTER · 极地伴读', w / 2, 115);
+    ctx.fillText('ICE OTTER · POLAR COMPANION', w / 2, 115);
 
     // 7. Center Card
     const cardX = 65;
@@ -189,10 +189,10 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
 
       ctx.fillStyle = '#fef08a';
       ctx.font = 'italic 16px "Quicksand", sans-serif';
-      wrapText(ctx, `“${treasure.flavorText}”`, w / 2, quoteY + 45, cardW - 120, 26);
+      wrapText(ctx, `${treasure.flavorText}`, w / 2, quoteY + 45, cardW - 120, 26);
 
     } else {
-      // --- MODE B: Focus Journey / 自习成就打卡 ---
+      // --- MODE B: Focus Journey / Milestone Card ---
       // Mascot Avatar
       const avatarY = cardY + 50;
       ctx.font = '72px sans-serif';
@@ -202,11 +202,11 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       // Headline
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 28px "Outfit", sans-serif';
-      ctx.fillText('极地静谧伴读打卡', w / 2, avatarY + 130);
+      ctx.fillText('POLAR FOCUS MILESTONE', w / 2, avatarY + 130);
 
       ctx.fillStyle = '#7dd3fc';
       ctx.font = '500 16px "Quicksand", sans-serif';
-      ctx.fillText('「听风、观极光，与小海獭共同专注同行」', w / 2, avatarY + 165);
+      ctx.fillText('“Drifting calmly in glacial waters under northern lights”', w / 2, avatarY + 165);
 
       // Stats Triple Columns
       const statsY = avatarY + 215;
@@ -225,13 +225,13 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
         ctx.fillText(icon + ' ' + title, x + (colWidth - 10) / 2, statsY + 35);
 
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 26px "Outfit", sans-serif';
+        ctx.font = 'bold 24px "Outfit", sans-serif';
         ctx.fillText(value, x + (colWidth - 10) / 2, statsY + 80);
       };
 
-      drawStatBox(cardX + 25, '专注时长', `${progress.totalFocusMinutes} min`, '⏱️');
-      drawStatBox(cardX + 25 + colWidth, '敲碎贝壳', `${progress.totalShellsCracked} 个`, '🦪');
-      drawStatBox(cardX + 25 + colWidth * 2, '解锁宝藏', `${progress.unlockedTreasureIds.length} 件`, '✨');
+      drawStatBox(cardX + 25, 'Focus Time', `${progress.totalFocusMinutes} mins`, '⏱️');
+      drawStatBox(cardX + 25 + colWidth, 'Shells Cracked', `${progress.totalShellsCracked}`, '🦪');
+      drawStatBox(cardX + 25 + colWidth * 2, 'Treasures', `${progress.unlockedTreasureIds.length}`, '✨');
 
       // Warm Inspiring Quote
       const quoteBoxY = statsY + 150;
@@ -244,14 +244,14 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
 
       ctx.fillStyle = '#38bdf8';
       ctx.font = 'bold 15px "Outfit", sans-serif';
-      ctx.fillText('❄️ 极地寄语 ❄️', w / 2, quoteBoxY + 40);
+      ctx.fillText('❄️ Arctic Otter Wisdom ❄️', w / 2, quoteBoxY + 40);
 
       ctx.fillStyle = '#f1f5f9';
       ctx.font = 'italic 16px "Quicksand", sans-serif';
       const quotes = [
-        '“只要找到雪，就用肚皮滑行；无论走到哪里，身边都有珍爱的幸运石头。”',
-        '“在这个喧嚣的世界里，给自己留一片深邃清凉的极光海洋。”',
-        '“静下心来，倾听海浪与柴火，所有美好正在极光深处缓缓靠近。”',
+        '“Slide on your belly whenever you find snow. Keep your favourite stone close.”',
+        '“In this bustling world, give yourself a quiet ocean of peaceful stars.”',
+        '“Take a deep breath and listen to the waves. Calm waters run deep.”',
       ];
       const selectedQuote = quotes[progress.totalFocusMinutes % quotes.length];
       wrapText(ctx, selectedQuote, w / 2, quoteBoxY + 80, cardW - 120, 26);
@@ -273,7 +273,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
 
     ctx.fillStyle = '#94a3b8';
     ctx.font = '500 13px "Quicksand", sans-serif';
-    ctx.fillText('无广免下载 · 沉浸式极地白噪音与极简番茄钟伴读', w / 2, footerY + 62);
+    ctx.fillText('No Ads · Cozy Ambient Sound & Minimalist Focus Companion', w / 2, footerY + 62);
 
     // Generate exportable DataURL
     try {
@@ -293,12 +293,12 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
     maxWidth: number,
     lineHeight: number
   ) {
-    const words = text.split('');
+    const words = text.split(' ');
     let line = '';
     let currentY = y;
 
     for (let n = 0; n < words.length; n++) {
-      const testLine = line + words[n];
+      const testLine = line + (line ? ' ' : '') + words[n];
       const metrics = ctx.measureText(testLine);
       const testWidth = metrics.width;
       if (testWidth > maxWidth && n > 0) {
@@ -321,13 +321,13 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
     link.click();
   };
 
-  // Handle Copy Social Caption (for Xiaohongshu / Moments)
+  // Handle Copy Social Caption
   const handleCopyCaption = () => {
     let caption = '';
     if (activeType === 'treasure' && treasure) {
-      caption = `❄️ 在极地自习网页【iceotter.com】敲贝壳捕获了一张超治愈的明信片——《${treasure.title}》！\n“${treasure.flavorText}”\n✨ 无广免下载，有小海獭陪自习还有极地白噪音和极光，太治愈了 🦦 #自习搭子 #极简番茄钟 #白噪音 #小海獭 #宝藏网站`;
+      caption = `❄️ Discovered a polar treasure in Aurora Drift at iceotter.com: "${treasure.title}"!\n${treasure.flavorText}\n✨ Peaceful focus companion with an Arctic Ice Otter under the northern lights 🦦 #studywithme #cozyweb #focus #lofi #ambient #iceotter`;
     } else {
-      caption = `⏱️ 今日在极地自习网页【iceotter.com】专注同行 ${progress.totalFocusMinutes} 分钟，敲碎了 ${progress.totalShellsCracked} 个贝壳！\n🎧 听着极地海风和柴火白噪音，看着北极光流转，这可能是全网最舒服的自习室了 🦦✨ #沉浸式自习 #自习打卡 #番茄钟 #白噪音 #打工人治愈`;
+      caption = `⏱️ Focused for ${progress.totalFocusMinutes} minutes and cracked ${progress.totalShellsCracked} shells at iceotter.com today!\n🎧 Procedural polar wind, crackling fire, and ocean waves with my Ice Otter 🦦✨ #studywithme #pomodoro #deepwork #lofi #cozyweb`;
     }
     navigator.clipboard.writeText(caption);
     setCopied(true);
@@ -354,10 +354,10 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
             </div>
             <div>
               <h3 className="text-base sm:text-lg font-bold text-white tracking-wide">
-                生成精美分享海报
+                Share Poster Generator
               </h3>
               <p className="text-[11px] text-sky-300">
-                可保存为图片发小红书/朋友圈，或长按直接发送
+                Save as a high-resolution poster or copy social caption
               </p>
             </div>
           </div>
@@ -380,7 +380,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
                   : 'bg-sky-950/60 text-sky-300 hover:text-white border border-sky-800/50'
               }`}
             >
-              💌 明信片打卡
+              💌 Treasure Postcard
             </button>
             <button
               onClick={() => setActiveType('focus')}
@@ -390,7 +390,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
                   : 'bg-sky-950/60 text-sky-300 hover:text-white border border-sky-800/50'
               }`}
             >
-              ⏱️ 专注成就打卡
+              ⏱️ Focus Milestone
             </button>
           </div>
         )}
@@ -409,7 +409,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
             </div>
           )}
           <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-[10px] text-sky-200/90 bg-sky-950/80 px-2.5 py-1 rounded-full border border-sky-400/30 sm:hidden">
-            📱 手机端可长按上方图片保存
+            📱 Long-press image to save on mobile
           </span>
         </div>
 
@@ -420,7 +420,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
             className="flex-1 py-2.5 px-4 rounded-xl bg-sky-400 hover:bg-sky-300 text-sky-950 font-bold text-xs flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95"
           >
             <Download className="w-4 h-4" />
-            保存海报图片
+            Save Poster Image
           </button>
 
           <button
@@ -430,12 +430,12 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
             {copied ? (
               <>
                 <Check className="w-4 h-4 text-emerald-400" />
-                已复制小红书/朋友圈配文！
+                Caption Copied to Clipboard!
               </>
             ) : (
               <>
                 <Copy className="w-4 h-4" />
-                一键复制文案
+                Copy Caption
               </>
             )}
           </button>

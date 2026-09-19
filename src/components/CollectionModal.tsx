@@ -180,7 +180,7 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
                   className="px-4 py-2 sm:py-2.5 rounded-xl bg-sky-400 hover:bg-sky-300 text-sky-950 font-bold text-xs flex items-center gap-1.5 shadow-lg transition-all active:scale-95"
                 >
                   <Sparkles className="w-4 h-4" />
-                  生成精美打卡海报
+                  Generate Poster
                 </button>
               )}
               <button
@@ -189,11 +189,11 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
               >
                 {copied ? (
                   <>
-                    <Check className="w-4 h-4 text-emerald-400" /> 已复制文案
+                    <Check className="w-4 h-4 text-emerald-400" /> Copied!
                   </>
                 ) : (
                   <>
-                    <Heart className="w-4 h-4 text-sky-300" /> 复制配文
+                    <Heart className="w-4 h-4 text-sky-300" /> Copy Quote
                   </>
                 )}
               </button>
@@ -201,7 +201,7 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
                 onClick={() => setSelectedTreasure(null)}
                 className="px-3.5 py-2 sm:py-2.5 rounded-xl bg-sky-950/80 hover:bg-sky-900 border border-sky-800/60 text-sky-300 hover:text-white text-xs font-semibold transition-all active:scale-95"
               >
-                关闭
+                Close
               </button>
             </div>
           </div>
