@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Round soft background -->
+  <circle cx="32" cy="32" r="30" fill="#082F49" stroke="#7DD3FC" stroke-width="2"/>
+  
+  <!-- Otter Body -->
+  <path d="M 18 30 C 18 16 46 16 46 30 C 46 40 50 50 46 56 C 42 60 22 60 18 56 C 14 50 18 40 18 30 Z" fill="#FCFAF4" stroke="#2E384D" stroke-width="2"/>
+  
+  <!-- Ears -->
+  <ellipse cx="17" cy="26" rx="3" ry="4" fill="#3C4556" stroke="#2E384D" stroke-width="1.5" transform="rotate(-15 17 26)"/>
+  <ellipse cx="47" cy="26" rx="3" ry="4" fill="#3C4556" stroke="#2E384D" stroke-width="1.5" transform="rotate(15 47 26)"/>
+  
+  <!-- Eyes -->
+  <ellipse cx="26" cy="30" rx="1.6" ry="2.2" fill="#2E384D"/>
+  <ellipse cx="38" cy="30" rx="1.6" ry="2.2" fill="#2E384D"/>
+  
+  <!-- Nose -->
+  <path d="M 31 31 Q 32 30 33 31 Q 32 33 31 31 Z" fill="#2E384D"/>
+  
+  <!-- Blush -->
+  <ellipse cx="21" cy="33" rx="3" ry="2" fill="#FECDD3" opacity="0.9"/>
+  <ellipse cx="43" cy="33" rx="3" ry="2" fill="#FECDD3" opacity="0.9"/>
+  
+  <!-- Whiskers -->
+  <line x1="14" y1="33" x2="19" y2="34" stroke="#2E384D" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="14" y1="37" x2="19" y2="37" stroke="#2E384D" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="50" y1="33" x2="45" y2="34" stroke="#2E384D" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="50" y1="37" x2="45" y2="37" stroke="#2E384D" stroke-width="1.2" stroke-linecap="round"/>
+  
+  <!-- Mini Glowing Ice Cube -->
+  <polygon points="32,40 40,44 32,48 24,44" fill="#E0F2FE" stroke="#38BDF8" stroke-width="1"/>
+  <polygon points="24,44 32,48 32,56 24,52" fill="#93C5FD" stroke="#38BDF8" stroke-width="1"/>
+  <polygon points="32,48 40,44 40,52 32,56" fill="#60A5FA" stroke="#38BDF8" stroke-width="1"/>
+  
+  <!-- Paws hugging ice cube -->
+  <path d="M 21 46 C 24 46 28 49 25 54" stroke="#2E384D" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <path d="M 43 46 C 40 46 36 49 39 54" stroke="#2E384D" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+</svg>

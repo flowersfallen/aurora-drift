@@ -1,0 +1,393 @@
+import React, { useState, useEffect } from 'react';
+import {
+  Volume2,
+  VolumeX,
+  BookOpen,
+  Sparkles,
+  Maximize2,
+  Sun,
+  Moon,
+  Flame,
+  HelpCircle,
+} from 'lucide-react';
+import { ArcticCanvas } from './components/ArcticCanvas';
+import { IceOtter } from './components/IceOtter';
+import { FocusTimer } from './components/FocusTimer';
+import { ClamCrackingModal } from './components/ClamCrackingModal';
+import { CollectionModal } from './components/CollectionModal';
+import { AudioMixerModal } from './components/AudioMixerModal';
+import { CampDecorModal } from './components/CampDecorModal';
+import { OtterState, TimeOfDay, PlayerProgress, AudioSettings, Treasure } from './types';
+import { ALL_TREASURES } from './data/treasures';
+import { audioEngine } from './services/audioEngine';
+
+const STORAGE_KEY_PROGRESS = 'aurora_drift_progress_v1';
+const STORAGE_KEY_AUDIO = 'aurora_drift_audio_v1';
+
+const DEFAULT_PROGRESS: PlayerProgress = {
+  pearls: 20,
+  totalFocusMinutes: 0,
+  totalShellsCracked: 1,
+  unlockedTreasureIds: ['postcard-aurora-fox'],
+  decorations: {
+    hasHotCocoa: true,
+    hasFairyLights: false,
+    hasCozyQuilt: false,
+    hasGramophone: false,
+  },
+  streakDays: 1,
+  lastPlayedDate: new Date().toISOString(),
+};
+
+const DEFAULT_AUDIO: AudioSettings = {
+  masterVolume: 0.7,
+  windVolume: 0.35,
+  fireVolume: 0.45,
+  wavesVolume: 0.4,
+  musicVolume: 0.45,
+  isMuted: false,
+};
+
+export const App: React.FC = () => {
+  // State
+  const [otterState, setOtterState] = useState<OtterState>('idle');
+  const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('aurora');
+
+  // Persistence: Player Progress
+  const [progress, setProgress] = useState<PlayerProgress>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY_PROGRESS);
+      return saved ? { ...DEFAULT_PROGRESS, ...JSON.parse(saved) } : DEFAULT_PROGRESS;
+    } catch {
+      return DEFAULT_PROGRESS;
+    }
+  });
+
+  // Persistence: Audio Settings
+  const [audioSettings, setAudioSettings] = useState<AudioSettings>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY_AUDIO);
+      return saved ? { ...DEFAULT_AUDIO, ...JSON.parse(saved) } : DEFAULT_AUDIO;
+    } catch {
+      return DEFAULT_AUDIO;
+    }
+  });
+
+  // Modals
+  const [activeModal, setActiveModal] = useState<'collection' | 'audio' | 'decor' | 'info' | null>(null);
+  const [currentTreasure, setCurrentTreasure] = useState<Treasure | null>(null);
+
+  // Save Progress
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY_PROGRESS, JSON.stringify(progress));
+  }, [progress]);
+
+  // Save Audio
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY_AUDIO, JSON.stringify(audioSettings));
+  }, [audioSettings]);
+
+  // Start Dive Handler
+  const handleStartDive = (durationMinutes: number) => {
+    audioEngine.init();
+    audioEngine.playBubbleSplash();
+    setOtterState('diving');
+    setProgress((prev) => ({
+      ...prev,
+      totalFocusMinutes: prev.totalFocusMinutes + durationMinutes,
+    }));
+  };
+
+  // Cancel Dive Handler
+  const handleCancelDive = () => {
+    setOtterState('idle');
+  };
+
+  // Complete Dive Handler (Surfaced with Clam!)
+  const handleCompleteDive = () => {
+    // Pick next treasure (prefer undiscovered items)
+    const undiscovered = ALL_TREASURES.filter((t) => !progress.unlockedTreasureIds.includes(t.id));
+    const pool = undiscovered.length > 0 ? undiscovered : ALL_TREASURES;
+    const selected = pool[Math.floor(Math.random() * pool.length)];
+
+    setCurrentTreasure(selected);
+    setOtterState('surfaced');
+  };
+
+  // Clam Cracking modal closed
+  const handleCrackingClosed = (unlockedTreasure: Treasure, earnedPearls: number) => {
+    setCurrentTreasure(null);
+    setOtterState('idle');
+
+    setProgress((prev) => {
+      const ids = prev.unlockedTreasureIds.includes(unlockedTreasure.id)
+        ? prev.unlockedTreasureIds
+        : [...prev.unlockedTreasureIds, unlockedTreasure.id];
+      return {
+        ...prev,
+        pearls: prev.pearls + earnedPearls,
+        totalShellsCracked: prev.totalShellsCracked + 1,
+        unlockedTreasureIds: ids,
+      };
+    });
+  };
+
+  // Unlock Camp Decor
+  const handleUnlockDecor = (itemKey: keyof PlayerProgress['decorations'], cost: number) => {
+    if (progress.pearls < cost) return;
+    setProgress((prev) => ({
+      ...prev,
+      pearls: prev.pearls - cost,
+      decorations: {
+        ...prev.decorations,
+        [itemKey]: true,
+      },
+    }));
+    audioEngine.playGentleChime(784, 1.8);
+  };
+
+  // Toggle Fullscreen
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  };
+
+  return (
+    <div className="relative w-screen h-screen overflow-hidden flex flex-col justify-between select-none">
+      {/* 1. Dynamic Canvas Layer (Aurora, Stars, Snow, Waves) */}
+      <ArcticCanvas timeOfDay={timeOfDay} isDiving={otterState === 'diving'} />
+
+      {/* 2. Top Header Navigation Bar */}
+      <header className="relative z-30 px-4 py-3 flex items-center justify-between w-full max-w-6xl mx-auto">
+        {/* Brand & Mascot */}
+        <div className="flex items-center gap-2.5">
+          <div className="w-10 h-10 rounded-2xl bg-sky-950/80 border border-sky-400/40 flex items-center justify-center shadow-lg overflow-hidden p-1">
+            <svg viewBox="0 0 64 64" className="w-full h-full">
+              <circle cx="32" cy="32" r="30" fill="#082F49"/>
+              <path d="M 18 30 C 18 16 46 16 46 30 C 46 40 50 50 46 56 C 42 60 22 60 18 56 C 14 50 18 40 18 30 Z" fill="#FCFAF4" stroke="#2E384D" strokeWidth="2"/>
+              <ellipse cx="17" cy="26" rx="3" ry="4" fill="#3C4556" stroke="#2E384D" strokeWidth="1.5" transform="rotate(-15 17 26)"/>
+              <ellipse cx="47" cy="26" rx="3" ry="4" fill="#3C4556" stroke="#2E384D" strokeWidth="1.5" transform="rotate(15 47 26)"/>
+              <ellipse cx="26" cy="30" rx="1.6" ry="2.2" fill="#2E384D"/>
+              <ellipse cx="38" cy="30" rx="1.6" ry="2.2" fill="#2E384D"/>
+              <path d="M 31 31 Q 32 30 33 31 Q 32 33 31 31 Z" fill="#2E384D"/>
+              <ellipse cx="21" cy="33" rx="3" ry="2" fill="#FECDD3" opacity="0.9"/>
+              <ellipse cx="43" cy="33" rx="3" ry="2" fill="#FECDD3" opacity="0.9"/>
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-base font-bold text-white tracking-wide flex items-center gap-1.5 leading-tight">
+              Aurora Drift
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-sky-400/20 text-sky-300 font-semibold border border-sky-400/30">
+                Cozy Web
+              </span>
+            </h1>
+            <p className="text-[11px] text-sky-300/80 font-medium">iceotter.com</p>
+          </div>
+        </div>
+
+        {/* Currency & Quick Toggles */}
+        <div className="flex items-center gap-2">
+          {/* Pearls Currency Badge */}
+          <div
+            onClick={() => setActiveModal('decor')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl glass-panel text-xs font-bold text-amber-300 hover:scale-105 cursor-pointer transition-all border border-amber-400/30"
+            title="Your Ice Pearls - Click to open Camp Shop"
+          >
+            <span>🦪</span>
+            <span>{progress.pearls}</span>
+          </div>
+
+          {/* Sky / Time Switcher */}
+          <div className="flex items-center glass-panel rounded-2xl p-1 border border-sky-800/40">
+            <button
+              onClick={() => setTimeOfDay('aurora')}
+              className={`p-1.5 rounded-xl text-xs transition-all ${
+                timeOfDay === 'aurora' ? 'bg-sky-400 text-sky-950 shadow-sm' : 'text-sky-300 hover:text-white'
+              }`}
+              title="Northern Lights Aurora"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={() => setTimeOfDay('sunset')}
+              className={`p-1.5 rounded-xl text-xs transition-all ${
+                timeOfDay === 'sunset' ? 'bg-amber-400 text-amber-950 shadow-sm' : 'text-sky-300 hover:text-white'
+              }`}
+              title="Polar Sunset"
+            >
+              <Sun className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={() => setTimeOfDay('night')}
+              className={`p-1.5 rounded-xl text-xs transition-all ${
+                timeOfDay === 'night' ? 'bg-indigo-400 text-indigo-950 shadow-sm' : 'text-sky-300 hover:text-white'
+              }`}
+              title="Quiet Midnight"
+            >
+              <Moon className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          {/* Sound Mixer Toggle */}
+          <button
+            onClick={() => {
+              audioEngine.init();
+              setActiveModal('audio');
+            }}
+            className="p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all hover:scale-105"
+            title="Ambient Sound Mixer"
+          >
+            {audioSettings.isMuted ? <VolumeX className="w-4 h-4 text-rose-400" /> : <Volume2 className="w-4 h-4" />}
+          </button>
+
+          {/* Camp Decor Shop */}
+          <button
+            onClick={() => setActiveModal('decor')}
+            className="p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all hover:scale-105"
+            title="Camp Decorations"
+          >
+            <Flame className="w-4 h-4 text-amber-400" />
+          </button>
+
+          {/* Collection Album Button */}
+          <button
+            onClick={() => setActiveModal('collection')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl glass-panel text-xs font-semibold text-sky-200 hover:text-white hover:scale-105 transition-all border border-sky-400/30"
+            title="Open Polar Memory Album"
+          >
+            <BookOpen className="w-4 h-4 text-sky-400" />
+            <span className="hidden sm:inline">Album</span>
+            <span className="bg-sky-400 text-sky-950 text-[10px] font-bold px-1.5 py-0.2 rounded-full">
+              {progress.unlockedTreasureIds.length}
+            </span>
+          </button>
+
+          {/* Info Modal */}
+          <button
+            onClick={() => setActiveModal('info')}
+            className="p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all"
+            title="About Ice Otter"
+          >
+            <HelpCircle className="w-4 h-4" />
+          </button>
+
+          {/* Fullscreen Toggle */}
+          <button
+            onClick={toggleFullscreen}
+            className="hidden md:block p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all"
+            title="Toggle Fullscreen"
+          >
+            <Maximize2 className="w-4 h-4" />
+          </button>
+        </div>
+      </header>
+
+      {/* 3. Center Interactive World (Ice Otter & Floating Campsite) */}
+      <main className="relative z-10 flex-1 flex items-center justify-center mt-6 md:mt-10 pb-4">
+        <IceOtter
+          state={otterState}
+          decorations={progress.decorations}
+          onOtterClick={() => {
+            audioEngine.init();
+            if (otterState === 'surfaced') {
+              // Directly open the cracking ritual modal
+              setActiveModal(null);
+            }
+          }}
+        />
+      </main>
+
+      {/* 4. Bottom Focus & Dive Control Dock */}
+      <footer className="relative z-30 pb-6 px-4 w-full">
+        <FocusTimer
+          otterState={otterState}
+          onStartDive={handleStartDive}
+          onCancelDive={handleCancelDive}
+          onCompleteDive={handleCompleteDive}
+        />
+      </footer>
+
+      {/* --- MODALS & DIALOGS --- */}
+
+      {/* Clam Cracking Climax Ritual Modal */}
+      {otterState === 'surfaced' && currentTreasure && (
+        <ClamCrackingModal
+          treasure={currentTreasure}
+          onClose={handleCrackingClosed}
+        />
+      )}
+
+      {/* Collection Album Modal */}
+      {activeModal === 'collection' && (
+        <CollectionModal
+          unlockedIds={progress.unlockedTreasureIds}
+          onClose={() => setActiveModal(null)}
+        />
+      )}
+
+      {/* Audio Mixer Modal */}
+      {activeModal === 'audio' && (
+        <AudioMixerModal
+          settings={audioSettings}
+          onUpdateSettings={(newSettings) => setAudioSettings(newSettings)}
+          onClose={() => setActiveModal(null)}
+        />
+      )}
+
+      {/* Camp Decor Modal */}
+      {activeModal === 'decor' && (
+        <CampDecorModal
+          pearls={progress.pearls}
+          decorations={progress.decorations}
+          onUnlockItem={handleUnlockDecor}
+          onClose={() => setActiveModal(null)}
+        />
+      )}
+
+      {/* About / Vision Modal */}
+      {activeModal === 'info' && (
+        <div
+          onClick={() => setActiveModal(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-md glass-panel-glow rounded-3xl p-6 text-center flex flex-col items-center border border-sky-400/30 shadow-2xl"
+          >
+            <div className="w-16 h-16 rounded-2xl bg-sky-400/20 border border-sky-300/30 flex items-center justify-center text-3xl mb-3 shadow-inner">
+              🦦
+            </div>
+            <h3 className="text-xl font-bold text-white mb-1">About Aurora Drift</h3>
+            <p className="text-xs text-sky-300 font-semibold mb-3">Crafted for iceotter.com</p>
+
+            <div className="text-xs text-sky-100/90 space-y-2.5 text-left bg-sky-950/60 p-4 rounded-2xl border border-sky-800/40 mb-5 leading-relaxed">
+              <p>
+                ❄️ <strong>Cozy Ambient Focus:</strong> A peaceful haven designed for deep work, study, or simple relaxation.
+              </p>
+              <p>
+                🤿 <strong>The Arctic Dive:</strong> While you focus, your little Ice Otter explores the deep glacial waters and returns with mysterious shells.
+              </p>
+              <p>
+                ✨ <strong>Tactile ASMR:</strong> Tap with your lucky pebble to crack shells and uncover 16 collectible polar postcards, ancient relics, and heartwarming bottle letters.
+              </p>
+              <p className="text-amber-200/90 italic">
+                “Slide on your belly whenever you find snow. Keep your favourite stone close.”
+              </p>
+            </div>
+
+            <button
+              onClick={() => setActiveModal(null)}
+              className="w-full py-2.5 rounded-xl bg-sky-400 hover:bg-sky-300 text-sky-950 font-bold text-xs shadow-lg transition-all"
+            >
+              Back to Campsite
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+export default App;

@@ -1,0 +1,147 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  background-color: #060c18;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(12, 74, 110, 0.2);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.4);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.7);
+}
+
+/* Cozy Glassmorphism */
+.glass-panel {
+  background: rgba(12, 34, 60, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(125, 211, 252, 0.18);
+  box-shadow: 0 12px 36px 0 rgba(3, 15, 30, 0.5);
+}
+
+.glass-panel-glow {
+  background: rgba(12, 34, 60, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  box-shadow: 0 0 25px rgba(56, 189, 248, 0.2), 0 16px 40px rgba(0, 0, 0, 0.6);
+}
+
+/* Aurora background subtle glow */
+@keyframes auroraBreath {
+  0%, 100% { opacity: 0.6; transform: scale(1) translateY(0); }
+  50% { opacity: 0.85; transform: scale(1.04) translateY(-10px); }
+}
+
+.animate-aurora-breath {
+  animation: auroraBreath 12s ease-in-out infinite;
+}
+
+/* --- Cozy Hot Cocoa Rising Steam --- */
+@keyframes steamDrift1 {
+  0% { transform: translateY(0) scaleX(0.8); opacity: 0; }
+  20% { opacity: 0.8; }
+  60% { opacity: 0.5; }
+  100% { transform: translateY(-24px) scaleX(1.3) translateX(-3px); opacity: 0; }
+}
+
+@keyframes steamDrift2 {
+  0% { transform: translateY(0) scaleX(0.7); opacity: 0; }
+  25% { opacity: 0.85; }
+  65% { opacity: 0.45; }
+  100% { transform: translateY(-28px) scaleX(1.4) translateX(4px); opacity: 0; }
+}
+
+@keyframes steamDrift3 {
+  0% { transform: translateY(0) scaleX(0.9); opacity: 0; }
+  30% { opacity: 0.75; }
+  70% { opacity: 0.4; }
+  100% { transform: translateY(-22px) scaleX(1.2) translateX(-2px); opacity: 0; }
+}
+
+.animate-steam-1 {
+  animation: steamDrift1 2.8s ease-out infinite;
+}
+
+.animate-steam-2 {
+  animation: steamDrift2 3.4s ease-out infinite 0.9s;
+}
+
+.animate-steam-3 {
+  animation: steamDrift3 3.1s ease-out infinite 1.7s;
+}
+
+/* --- Cozy Living Campfire Flames --- */
+@keyframes flameFlickerMain {
+  0%, 100% { transform: scaleY(1) scaleX(1) skewX(0deg); }
+  20% { transform: scaleY(1.08) scaleX(0.96) skewX(-1.5deg); }
+  45% { transform: scaleY(0.95) scaleX(1.04) skewX(1.8deg); }
+  70% { transform: scaleY(1.1) scaleX(0.94) skewX(-1deg); }
+  85% { transform: scaleY(0.97) scaleX(1.02) skewX(0.8deg); }
+}
+
+@keyframes flameFlickerSub {
+  0%, 100% { transform: scaleY(1) scaleX(1) skewX(0deg); }
+  30% { transform: scaleY(1.15) scaleX(0.9) skewX(2.5deg); }
+  65% { transform: scaleY(0.9) scaleX(1.08) skewX(-2deg); }
+}
+
+.animate-flame-main {
+  animation: flameFlickerMain 1.8s ease-in-out infinite;
+  transform-origin: 0px 4px;
+}
+
+.animate-flame-sub {
+  animation: flameFlickerSub 1.3s ease-in-out infinite;
+  transform-origin: 0px 4px;
+}
+
+/* --- Glowing Campfire Embers Floating Up --- */
+@keyframes emberRise1 {
+  0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.9; }
+  40% { transform: translateY(-16px) translateX(3px) scale(0.85); opacity: 0.8; }
+  80% { transform: translateY(-32px) translateX(-4px) scale(0.6); opacity: 0.4; }
+  100% { transform: translateY(-44px) translateX(2px) scale(0.2); opacity: 0; }
+}
+
+@keyframes emberRise2 {
+  0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.85; }
+  50% { transform: translateY(-20px) translateX(-5px) scale(0.8); opacity: 0.7; }
+  85% { transform: translateY(-38px) translateX(3px) scale(0.5); opacity: 0.3; }
+  100% { transform: translateY(-50px) translateX(-2px) scale(0.2); opacity: 0; }
+}
+
+.animate-ember-1 {
+  animation: emberRise1 2.5s ease-out infinite;
+}
+
+.animate-ember-2 {
+  animation: emberRise2 3.1s ease-out infinite 0.8s;
+}
+
+.animate-ember-3 {
+  animation: emberRise1 2.8s ease-out infinite 1.5s;
+}
+
