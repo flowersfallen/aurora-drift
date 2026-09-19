@@ -70,7 +70,7 @@ export const AudioMixerModal: React.FC<AudioMixerModalProps> = ({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-md glass-panel-glow rounded-3xl p-6 flex flex-col overflow-hidden border border-sky-400/30 shadow-2xl"
+        className="relative w-full max-w-md glass-panel-glow rounded-3xl p-4 sm:p-6 flex flex-col overflow-hidden border border-sky-400/30 shadow-2xl"
       >
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-sky-800/40">
@@ -92,21 +92,29 @@ export const AudioMixerModal: React.FC<AudioMixerModalProps> = ({
         </div>
 
         {/* Master Mute & Volume */}
-        <div className="flex items-center justify-between py-4 border-b border-sky-900/40">
-          <button
-            onClick={toggleMute}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-              settings.isMuted
-                ? 'bg-rose-500/30 text-rose-300 border border-rose-500/40'
-                : 'bg-sky-500/20 text-sky-200 border border-sky-400/30'
-            }`}
-          >
-            {settings.isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-            {settings.isMuted ? 'Muted' : 'Sound Active'}
-          </button>
+        <div className="py-3.5 border-b border-sky-900/40 flex flex-col gap-2.5">
+          <div className="flex items-center justify-between">
+            <button
+              onClick={toggleMute}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                settings.isMuted
+                  ? 'bg-rose-500/30 text-rose-300 border border-rose-500/40'
+                  : 'bg-sky-500/20 text-sky-200 border border-sky-400/30'
+              }`}
+            >
+              {settings.isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+              {settings.isMuted ? 'Muted' : 'Sound Active'}
+            </button>
 
-          <div className="flex items-center gap-2 flex-1 max-w-[200px] ml-4">
-            <span className="text-[11px] text-sky-300/70 font-semibold">Master</span>
+            <div className="flex items-center gap-1.5 text-xs text-sky-300/80 font-semibold">
+              <span>Master Volume:</span>
+              <span className="font-mono text-white text-xs w-9 text-right font-bold">
+                {settings.isMuted ? '0%' : `${Math.round(settings.masterVolume * 100)}%`}
+              </span>
+            </div>
+          </div>
+
+          <div className="w-full px-1">
             <input
               type="range"
               min="0"
@@ -114,13 +122,13 @@ export const AudioMixerModal: React.FC<AudioMixerModalProps> = ({
               step="0.05"
               value={settings.isMuted ? 0 : settings.masterVolume}
               onChange={(e) => handleVolumeChange('masterVolume', parseFloat(e.target.value))}
-              className="w-full accent-sky-400 cursor-pointer h-1.5 bg-sky-950 rounded-lg"
+              className="w-full accent-sky-400 cursor-pointer"
             />
           </div>
         </div>
 
         {/* Individual Sound Sliders */}
-        <div className="flex flex-col gap-4 py-4">
+        <div className="flex flex-col gap-4 py-3.5">
           {soundChannels.map((ch) => {
             const IconComp = ch.icon;
             return (
@@ -130,19 +138,21 @@ export const AudioMixerModal: React.FC<AudioMixerModalProps> = ({
                     <IconComp className={`w-4 h-4 ${ch.color}`} />
                     <span>{ch.label}</span>
                   </div>
-                  <span className="text-[11px] text-sky-300/80 font-mono">
+                  <span className="text-[11px] text-sky-300/90 font-mono font-bold">
                     {Math.round(ch.val * 100)}%
                   </span>
                 </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.05"
-                  value={ch.val}
-                  onChange={(e) => handleVolumeChange(ch.key, parseFloat(e.target.value))}
-                  className="w-full accent-sky-400 cursor-pointer h-2 bg-sky-950/80 rounded-lg"
-                />
+                <div className="w-full px-1">
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.05"
+                    value={ch.val}
+                    onChange={(e) => handleVolumeChange(ch.key, parseFloat(e.target.value))}
+                    className="w-full accent-sky-400 cursor-pointer"
+                  />
+                </div>
               </div>
             );
           })}

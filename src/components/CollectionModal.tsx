@@ -35,7 +35,7 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-2xl max-h-[88vh] glass-panel-glow rounded-3xl p-6 flex flex-col overflow-hidden border border-sky-400/30 shadow-2xl"
+        className="relative w-full max-w-2xl max-h-[88vh] glass-panel-glow rounded-3xl p-4 sm:p-6 flex flex-col overflow-hidden border border-sky-400/30 shadow-2xl"
       >
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-sky-800/40">
@@ -61,12 +61,12 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
         </div>
 
         {/* Category Tabs */}
-        <div className="flex items-center gap-2 py-3 overflow-x-auto">
+        <div className="flex items-center gap-1.5 sm:gap-2 py-2.5 overflow-x-auto no-scrollbar scrollbar-none">
           {[
-            { id: 'all', label: 'All Items', icon: Sparkles },
-            { id: 'postcard', label: 'Postcards', icon: BookOpen },
-            { id: 'relic', label: 'Ancient Relics', icon: Compass },
-            { id: 'letter', label: 'Bottle Letters', icon: Mail },
+            { id: 'all', label: 'All Items', shortLabel: 'All', icon: Sparkles },
+            { id: 'postcard', label: 'Postcards', shortLabel: 'Postcards', icon: BookOpen },
+            { id: 'relic', label: 'Ancient Relics', shortLabel: 'Relics', icon: Compass },
+            { id: 'letter', label: 'Bottle Letters', shortLabel: 'Letters', icon: Mail },
           ].map((tab) => {
             const IconComp = tab.icon;
             const isActive = activeTab === tab.id;
@@ -74,14 +74,15 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as TreasureType | 'all')}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                className={`shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all border-none outline-none ${
                   isActive
-                    ? 'bg-sky-400 text-sky-950 shadow-md scale-105'
-                    : 'glass-panel text-sky-300 hover:text-white hover:bg-sky-900/40'
+                    ? 'bg-sky-400 text-sky-950 shadow-md font-bold scale-105'
+                    : 'glass-panel text-sky-300/80 hover:text-white hover:bg-sky-900/40'
                 }`}
               >
-                <IconComp className="w-3.5 h-3.5" />
-                {tab.label}
+                <IconComp className="w-3.5 h-3.5 shrink-0" />
+                <span className="sm:hidden">{tab.shortLabel}</span>
+                <span className="hidden sm:inline">{tab.label}</span>
               </button>
             );
           })}

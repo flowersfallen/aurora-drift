@@ -183,7 +183,7 @@ export const CampDecorModal: React.FC<CampDecorModalProps> = ({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-md glass-panel-glow rounded-3xl p-6 flex flex-col overflow-hidden border border-sky-400/30 shadow-2xl"
+        className="relative w-full max-w-md glass-panel-glow rounded-3xl p-4 sm:p-6 flex flex-col overflow-hidden border border-sky-400/30 shadow-2xl"
       >
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-sky-800/40">
@@ -218,29 +218,29 @@ export const CampDecorModal: React.FC<CampDecorModalProps> = ({
             return (
               <div
                 key={item.key}
-                className="flex items-center justify-between p-3.5 rounded-2xl bg-sky-950/40 border border-sky-800/40 gap-3"
+                className="flex items-center justify-between p-3 sm:p-3.5 rounded-2xl bg-sky-950/40 border border-sky-800/40 gap-3 sm:gap-4"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-sky-900/60 border border-sky-700/40 flex items-center justify-center p-1 shadow-inner">
+                <div className="flex items-center gap-3.5 sm:gap-4 flex-1 min-w-0 mr-1.5">
+                  <div className="w-12 h-12 rounded-2xl bg-sky-900/60 border border-sky-700/40 flex items-center justify-center p-1.5 shadow-inner shrink-0">
                     {renderDecorThumbnail(item.key)}
                   </div>
-                  <div>
+                  <div className="flex-1 min-w-0 pr-1">
                     <h4 className="text-sm font-bold text-white">{item.title}</h4>
-                    <p className="text-[11px] text-sky-300/70 max-w-[200px] leading-tight mt-0.5">
+                    <p className="text-[11px] text-sky-200/75 leading-relaxed mt-1 break-words">
                       {item.desc}
                     </p>
                   </div>
                 </div>
 
                 {isOwned ? (
-                  <span className="px-3 py-1.5 rounded-xl bg-teal-500/20 text-teal-300 text-xs font-bold border border-teal-400/30 flex items-center gap-1">
+                  <span className="px-3 py-1.5 rounded-xl bg-teal-500/20 text-teal-300 text-xs font-bold border border-teal-400/30 flex items-center gap-1 shrink-0">
                     <Check className="w-3.5 h-3.5" /> Placed
                   </span>
                 ) : (
                   <button
                     onClick={() => canAfford && onUnlockItem(item.key, item.cost)}
                     disabled={!canAfford}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-1 ${
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-1 shrink-0 ${
                       canAfford
                         ? 'bg-amber-400 hover:bg-amber-300 text-sky-950 shadow-amber-500/20 active:scale-95'
                         : 'bg-sky-900/40 text-sky-600 border border-sky-800/30 cursor-not-allowed'
