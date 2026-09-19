@@ -38,7 +38,25 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
   const [activeType, setActiveType] = useState<'treasure' | 'focus'>(treasure ? 'treasure' : 'focus');
   const [posterUrl, setPosterUrl] = useState<string>('');
   const [copied, setCopied] = useState(false);
+  const [isMobile, setIsMobile] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const isSmall = window.innerWidth < 768;
+    const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|MicroMessenger/i.test(navigator.userAgent);
+    return hasTouch || isSmall || isMobileUA;
+  });
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      const isSmall = window.innerWidth < 768;
+      const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|MicroMessenger/i.test(navigator.userAgent);
+      setIsMobile(hasTouch || isSmall || isMobileUA);
+    };
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Generate the poster on canvas
   useEffect(() => {
@@ -886,24 +904,30 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
               Generating poster...
             </div>
           )}
-          <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-[10px] text-sky-200/90 bg-sky-950/80 px-2.5 py-1 rounded-full border border-sky-400/30 sm:hidden">
-            📱 Long-press image to save on mobile
-          </span>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-1">
-          <button
-            onClick={handleDownload}
-            className="flex-1 py-2.5 px-4 rounded-xl bg-sky-400 hover:bg-sky-300 text-sky-950 font-bold text-xs flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95"
-          >
-            <Download className="w-4 h-4" />
-            Save Poster Image
-          </button>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-4 pt-2 mt-1">
+          {isMobile ? (
+            <div
+              onClick={handleDownload}
+              className="flex-1 py-3 px-4 rounded-xl bg-sky-950/80 border border-sky-400/40 text-sky-200 font-semibold text-xs flex items-center justify-center gap-2 shadow-inner text-center cursor-pointer select-none active:bg-sky-900/70 transition-colors"
+            >
+              <span>📱 Long-press poster above to save</span>
+            </div>
+          ) : (
+            <button
+              onClick={handleDownload}
+              className="flex-1 py-3 px-4 rounded-xl bg-sky-400 hover:bg-sky-300 text-sky-950 font-bold text-xs flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95"
+            >
+              <Download className="w-4 h-4" />
+              Save Poster Image
+            </button>
+          )}
 
           <button
             onClick={handleCopyCaption}
-            className="flex-1 py-2.5 px-4 rounded-xl bg-sky-900/80 hover:bg-sky-800 text-sky-100 font-bold text-xs flex items-center justify-center gap-2 border border-sky-600/50 transition-all active:scale-95"
+            className="flex-1 py-3 px-4 rounded-xl bg-sky-900/80 hover:bg-sky-800 text-sky-100 font-bold text-xs flex items-center justify-center gap-2 border border-sky-600/50 shadow-md transition-all active:scale-95"
           >
             {copied ? (
               <>
