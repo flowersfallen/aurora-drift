@@ -2,6 +2,32 @@ import React, { useState, useEffect, useRef } from 'react';
 import { X, Download, Copy, Check, Sparkles } from 'lucide-react';
 import { Treasure, PlayerProgress } from '../types';
 
+// Rock-solid rounded rectangle drawer compatible with all mobile browsers (WeChat XWeb, older WebViews)
+function drawRoundRect(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: number
+) {
+  if (typeof ctx.roundRect === 'function') {
+    try {
+      ctx.roundRect(x, y, w, h, r);
+      return;
+    } catch {
+      // Fall through to manual arcTo
+    }
+  }
+  const radius = Math.max(0, Math.min(r, Math.abs(w) / 2, Math.abs(h) / 2));
+  ctx.moveTo(x + radius, y);
+  ctx.arcTo(x + w, y, x + w, y + h, radius);
+  ctx.arcTo(x + w, y + h, x, y + h, radius);
+  ctx.arcTo(x, y + h, x, y, radius);
+  ctx.arcTo(x, y, x + w, y, radius);
+  ctx.closePath();
+}
+
 interface ShareModalProps {
   onClose: () => void;
   treasure?: Treasure | null;
@@ -16,10 +42,12 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
 
   // Generate the poster on canvas
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    try {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
 
     // High-resolution canvas (800 x 1060, 4:5.3 portrait ratio)
     const w = 800;
@@ -129,7 +157,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
     // Card background (translucent obsidian polar plate)
     ctx.fillStyle = 'rgba(7, 21, 38, 0.94)';
     ctx.beginPath();
-    ctx.roundRect(cardX, cardY, cardW, cardH, 22);
+    drawRoundRect(ctx, cardX, cardY, cardW, cardH, 22);
     ctx.fill();
     ctx.strokeStyle = 'rgba(56, 189, 248, 0.35)';
     ctx.lineWidth = 1.5;
@@ -149,7 +177,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       // 1. Postcard Illustration Art Plate
       ctx.save();
       ctx.beginPath();
-      ctx.roundRect(plateX, plateY, plateW, plateH, 18);
+      drawRoundRect(ctx, plateX, plateY, plateW, plateH, 18);
       ctx.clip();
 
       // Atmospheric Polar Sky in Art Plate
@@ -301,7 +329,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       ctx.strokeStyle = 'rgba(56, 189, 248, 0.45)';
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.roundRect(plateX, plateY, plateW, plateH, 18);
+      drawRoundRect(ctx, plateX, plateY, plateW, plateH, 18);
       ctx.stroke();
 
       // 2. Rarity Stars Banner
@@ -342,7 +370,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
 
       ctx.fillStyle = 'rgba(2, 11, 23, 0.88)';
       ctx.beginPath();
-      ctx.roundRect(noteX, noteY, noteW, noteH, 16);
+      drawRoundRect(ctx, noteX, noteY, noteW, noteH, 16);
       ctx.fill();
       ctx.strokeStyle = 'rgba(56, 189, 248, 0.28)';
       ctx.lineWidth = 1.5;
@@ -378,7 +406,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       const drawMiniBadge = (x: number, label: string, val: string) => {
         ctx.fillStyle = 'rgba(14, 165, 233, 0.12)';
         ctx.beginPath();
-        ctx.roundRect(x, badgeY, bColW, 36, 10);
+        drawRoundRect(ctx, x, badgeY, bColW, 36, 10);
         ctx.fill();
         ctx.strokeStyle = 'rgba(56, 189, 248, 0.25)';
         ctx.stroke();
@@ -406,7 +434,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       // 1. Hero Avatar Plate (EXACTLY 265px height, matching Mode A!)
       ctx.save();
       ctx.beginPath();
-      ctx.roundRect(plateX, plateY, plateW, plateH, 18);
+      drawRoundRect(ctx, plateX, plateY, plateW, plateH, 18);
       ctx.clip();
 
       const plateSky = ctx.createLinearGradient(plateX, plateY, plateX, plateY + plateH);
@@ -550,7 +578,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       ctx.strokeStyle = 'rgba(56, 189, 248, 0.45)';
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.roundRect(plateX, plateY, plateW, plateH, 18);
+      drawRoundRect(ctx, plateX, plateY, plateW, plateH, 18);
       ctx.stroke();
 
       // 2. Starry Milestone Banner (Matching Mode A's Star Banner)
@@ -580,7 +608,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       const drawStatBox = (x: number, title: string, value: string, icon: string) => {
         ctx.fillStyle = 'rgba(14, 165, 233, 0.12)';
         ctx.beginPath();
-        ctx.roundRect(x, statsY, colWidth, statH, 14);
+        drawRoundRect(ctx, x, statsY, colWidth, statH, 14);
         ctx.fill();
         ctx.strokeStyle = 'rgba(56, 189, 248, 0.3)';
         ctx.stroke();
@@ -595,9 +623,18 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
         ctx.fillText(value, x + colWidth / 2, statsY + 62);
       };
 
-      drawStatBox(plateX, 'Focus Time', `${progress.totalFocusMinutes} mins`, '⏱️');
-      drawStatBox(plateX + colWidth + 8, 'Shells Cracked', `${progress.totalShellsCracked}`, '🦪');
-      drawStatBox(plateX + (colWidth + 8) * 2, 'Treasures', `${progress.unlockedTreasureIds.length} / 16`, '✨');
+      const focusMins = progress?.totalFocusMinutes ?? 0;
+      const shellsCracked = progress?.totalShellsCracked ?? 0;
+      const treasureCount = progress?.unlockedTreasureIds?.length ?? 0;
+      const streakDays = progress?.streakDays ?? 1;
+      const pearlsFound = progress?.pearls ?? 0;
+      const decorCount = progress?.decorations
+        ? Object.values(progress.decorations).filter(Boolean).length
+        : 0;
+
+      drawStatBox(plateX, 'Focus Time', `${focusMins} mins`, '⏱️');
+      drawStatBox(plateX + colWidth + 8, 'Shells Cracked', `${shellsCracked}`, '🦪');
+      drawStatBox(plateX + (colWidth + 8) * 2, 'Treasures', `${treasureCount} / 16`, '✨');
 
       // 6. Arctic Otter Wisdom & Journal Box (Starting at y = 617, ending at 725, matching Mode A!)
       const quoteBoxY = statsY + statH + 14; // 617
@@ -606,7 +643,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
 
       ctx.fillStyle = 'rgba(2, 11, 23, 0.88)';
       ctx.beginPath();
-      ctx.roundRect(plateX, quoteBoxY, quoteW, quoteH, 16);
+      drawRoundRect(ctx, plateX, quoteBoxY, quoteW, quoteH, 16);
       ctx.fill();
       ctx.strokeStyle = 'rgba(56, 189, 248, 0.28)';
       ctx.lineWidth = 1.5;
@@ -631,7 +668,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
         '“In this bustling world, give yourself a quiet ocean of peaceful stars.”',
         '“Take a deep breath and listen to the waves. Calm waters run deep.”',
       ];
-      const selectedQuote = quotes[progress.totalFocusMinutes % quotes.length];
+      const selectedQuote = quotes[focusMins % quotes.length];
       wrapText(ctx, selectedQuote, w / 2, quoteBoxY + 64, quoteW - 50, 22);
 
       ctx.fillStyle = '#7dd3fc';
@@ -645,7 +682,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       const drawFocusBadge = (x: number, label: string, val: string) => {
         ctx.fillStyle = 'rgba(14, 165, 233, 0.12)';
         ctx.beginPath();
-        ctx.roundRect(x, badgeY, bColW, 36, 10);
+        drawRoundRect(ctx, x, badgeY, bColW, 36, 10);
         ctx.fill();
         ctx.strokeStyle = 'rgba(56, 189, 248, 0.25)';
         ctx.stroke();
@@ -661,9 +698,8 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
         ctx.fillText(val, x + bColW - 14, badgeY + 22);
       };
 
-      const decorCount = Object.values(progress.decorations).filter(Boolean).length;
-      drawFocusBadge(plateX, 'STREAK', `${progress.streakDays} ${progress.streakDays === 1 ? 'DAY' : 'DAYS'}`);
-      drawFocusBadge(plateX + bColW + 8, 'PEARLS', `${progress.pearls} FOUND`);
+      drawFocusBadge(plateX, 'STREAK', `${streakDays} ${streakDays === 1 ? 'DAY' : 'DAYS'}`);
+      drawFocusBadge(plateX + bColW + 8, 'PEARLS', `${pearlsFound} FOUND`);
       drawFocusBadge(plateX + (bColW + 8) * 2, 'CAMP DECOR', `${decorCount} / 4 UNLOCKED`);
     }
 
@@ -705,17 +741,21 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
     } catch {
       // Fallback
     }
+  } catch (err) {
+    console.error('Failed to generate share poster:', err);
+  }
   }, [activeType, treasure, progress]);
 
   // Helper function to wrap text neatly on canvas
   function wrapText(
     ctx: CanvasRenderingContext2D,
-    text: string,
+    text: string | undefined | null,
     x: number,
     y: number,
     maxWidth: number,
     lineHeight: number
   ) {
+    if (!text) return;
     const words = text.split(' ');
     let line = '';
     let currentY = y;
@@ -750,9 +790,24 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
     if (activeType === 'treasure' && treasure) {
       caption = `❄️ Discovered a polar treasure in Aurora Drift at iceotter.com: "${treasure.title}"!\n${treasure.flavorText}\n✨ Peaceful focus companion with an Arctic Ice Otter under the northern lights 🦦 #studywithme #cozyweb #focus #lofi #ambient #iceotter`;
     } else {
-      caption = `⏱️ Focused for ${progress.totalFocusMinutes} minutes and cracked ${progress.totalShellsCracked} shells at iceotter.com today!\n🎧 Procedural polar wind, crackling fire, and ocean waves with my Ice Otter 🦦✨ #studywithme #pomodoro #deepwork #lofi #cozyweb`;
+      const mins = progress?.totalFocusMinutes ?? 0;
+      const shells = progress?.totalShellsCracked ?? 0;
+      caption = `⏱️ Focused for ${mins} minutes and cracked ${shells} shells at iceotter.com today!\n🎧 Procedural polar wind, crackling fire, and ocean waves with my Ice Otter 🦦✨ #studywithme #pomodoro #deepwork #lofi #cozyweb`;
     }
-    navigator.clipboard.writeText(caption);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(caption).catch(() => {});
+    } else {
+      const textarea = document.createElement('textarea');
+      textarea.value = caption;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+      } catch {}
+      document.body.removeChild(textarea);
+    }
     setCopied(true);
     setTimeout(() => setCopied(false), 2200);
   };
