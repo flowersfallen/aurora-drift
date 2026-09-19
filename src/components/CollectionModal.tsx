@@ -24,7 +24,20 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
 
   const handleShareQuote = (treasure: Treasure) => {
     const text = `❄️ Ice Otter found: "${treasure.title}"\n${treasure.flavorText}\n— Discovered in Aurora Drift at iceotter.com 🦦✨`;
-    navigator.clipboard.writeText(text);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).catch(() => {});
+    } else {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+      } catch {}
+      document.body.removeChild(textarea);
+    }
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
