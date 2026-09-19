@@ -160,10 +160,10 @@ export const App: React.FC = () => {
       <ArcticCanvas timeOfDay={timeOfDay} isDiving={otterState === 'diving'} />
 
       {/* 2. Top Header Navigation Bar */}
-      <header className="relative z-30 px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between w-full max-w-6xl mx-auto">
+      <header className="relative z-30 px-4 sm:px-6 py-2 sm:py-3 flex items-center justify-between w-full max-w-6xl mx-auto">
         {/* Brand & Mascot */}
-        <div className="flex items-center gap-3 sm:gap-3.5">
-          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-2xl bg-sky-950/80 border border-sky-400/40 flex items-center justify-center shadow-lg overflow-hidden p-0.5 shrink-0 mr-0.5">
+        <div className="flex items-center gap-2 sm:gap-3.5 shrink-0">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-2xl bg-sky-950/80 border border-sky-400/40 flex items-center justify-center shadow-lg overflow-hidden p-0.5 shrink-0">
             <svg viewBox="0 0 64 64" className="w-full h-full drop-shadow-sm">
               <defs>
                 <linearGradient id="logoIceTop" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -224,7 +224,7 @@ export const App: React.FC = () => {
             </svg>
           </div>
           <div>
-            <h1 className="text-sm sm:text-base font-bold text-white tracking-wide flex items-center gap-2 leading-none whitespace-nowrap">
+            <h1 className="text-xs sm:text-base font-bold text-white tracking-wide flex items-center gap-1.5 sm:gap-2 leading-none whitespace-nowrap">
               <span>Aurora Drift</span>
               <span className="hidden sm:inline-flex items-center justify-center h-[18px] px-2 text-[10px] font-semibold leading-none rounded-full bg-sky-400/20 text-sky-300 border border-sky-400/30 self-center">
                 Cozy Web
@@ -235,11 +235,11 @@ export const App: React.FC = () => {
         </div>
 
         {/* Currency & Quick Toggles */}
-        <div className="flex items-center gap-2 sm:gap-2.5">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           {/* Pearls Currency Badge */}
           <div
             onClick={() => setActiveModal('decor')}
-            className="flex items-center gap-1 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-2xl glass-panel text-xs font-bold text-amber-300 hover:scale-105 cursor-pointer transition-all border border-amber-400/30"
+            className="flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 rounded-2xl glass-panel text-[11px] sm:text-xs font-bold text-amber-300 hover:scale-105 cursor-pointer transition-all border border-amber-400/30 shrink-0"
             title="Your Ice Pearls - Click to open Camp Shop"
           >
             <span>🦪</span>
@@ -247,19 +247,19 @@ export const App: React.FC = () => {
           </div>
 
           {/* Sky / Time Switcher (Mobile: 1-click cycle button; Desktop: 3-button segmented pill) */}
-          <div className="flex items-center">
+          <div className="flex items-center shrink-0">
             {/* Mobile: single cycle button */}
             <button
               onClick={() => {
                 const next = timeOfDay === 'aurora' ? 'sunset' : timeOfDay === 'sunset' ? 'night' : 'aurora';
                 setTimeOfDay(next);
               }}
-              className="sm:hidden p-1.5 rounded-2xl glass-panel text-xs flex items-center justify-center border border-sky-800/50 shadow-sm transition-transform active:scale-95"
+              className="sm:hidden p-1.5 rounded-2xl glass-panel text-xs flex items-center justify-center border border-sky-800/50 shadow-sm transition-transform active:scale-95 shrink-0"
               title={`Theme: ${timeOfDay} - Tap to cycle sky`}
             >
-              {timeOfDay === 'aurora' && <Sparkles className="w-4 h-4 text-sky-400" />}
-              {timeOfDay === 'sunset' && <Sun className="w-4 h-4 text-amber-400" />}
-              {timeOfDay === 'night' && <Moon className="w-4 h-4 text-indigo-300" />}
+              {timeOfDay === 'aurora' && <Sparkles className="w-3.5 h-3.5 text-sky-400" />}
+              {timeOfDay === 'sunset' && <Sun className="w-3.5 h-3.5 text-amber-400" />}
+              {timeOfDay === 'night' && <Moon className="w-3.5 h-3.5 text-indigo-300" />}
             </button>
 
             {/* Desktop: 3-button segmented pill */}
@@ -300,21 +300,21 @@ export const App: React.FC = () => {
               audioEngine.init();
               setActiveModal('audio');
             }}
-            className="p-1.5 sm:p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all hover:scale-105"
+            className="p-1.5 sm:p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all hover:scale-105 shrink-0"
             title="Ambient Sound Mixer"
           >
-            {audioSettings.isMuted ? <VolumeX className="w-4 h-4 text-rose-400" /> : <Volume2 className="w-4 h-4" />}
+            {audioSettings.isMuted ? <VolumeX className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-400" /> : <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
           </button>
 
-          {/* Collection Album Button */}
+          {/* Collection Album Button (Mobile: icon with corner badge; Desktop: text pill) */}
           <button
             onClick={() => setActiveModal('collection')}
-            className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-2xl glass-panel text-xs font-semibold text-sky-200 hover:text-white hover:scale-105 transition-all border border-sky-400/30"
+            className="relative p-1.5 sm:px-3 sm:py-1.5 rounded-2xl glass-panel text-xs font-semibold text-sky-200 hover:text-white hover:scale-105 transition-all border border-sky-400/30 flex items-center sm:gap-1.5 shrink-0"
             title="Open Polar Memory Album"
           >
-            <BookOpen className="w-4 h-4 text-sky-400" />
+            <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sky-400" />
             <span className="hidden sm:inline">Album</span>
-            <span className="bg-sky-400 text-sky-950 text-[10px] font-bold px-1.5 py-0.2 rounded-full">
+            <span className="absolute -top-1 -right-1 sm:static sm:top-auto sm:right-auto bg-sky-400 text-sky-950 text-[9px] sm:text-[10px] font-black w-3.5 h-3.5 sm:w-auto sm:h-auto sm:px-1.5 sm:py-0.2 rounded-full flex items-center justify-center shadow-sm">
               {progress.unlockedTreasureIds.length}
             </span>
           </button>
@@ -322,16 +322,16 @@ export const App: React.FC = () => {
           {/* Info Modal */}
           <button
             onClick={() => setActiveModal('info')}
-            className="p-1.5 sm:p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all"
+            className="p-1.5 sm:p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all shrink-0"
             title="About Ice Otter"
           >
-            <HelpCircle className="w-4 h-4" />
+            <HelpCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
 
           {/* Fullscreen Toggle */}
           <button
             onClick={toggleFullscreen}
-            className="hidden md:block p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all"
+            className="hidden md:block p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all shrink-0"
             title="Toggle Fullscreen"
           >
             <Maximize2 className="w-4 h-4" />
