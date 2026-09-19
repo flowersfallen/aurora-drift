@@ -1,6 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import { OtterState, CampDecorations } from '../types';
 
+// Feature detection for Unicode 14 bubble emoji 🫧
+function checkBubbleEmojiSupport(): boolean {
+  if (typeof document === 'undefined') return false;
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width = 24;
+    canvas.height = 24;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return false;
+
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center';
+    ctx.font = '18px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif';
+    ctx.fillText('🫧', 12, 12);
+
+    const imgData = ctx.getImageData(0, 0, 24, 24).data;
+    let hasPixels = false;
+    let hasColor = false;
+
+    for (let i = 0; i < imgData.length; i += 4) {
+      const r = imgData[i];
+      const g = imgData[i + 1];
+      const b = imgData[i + 2];
+      const a = imgData[i + 3];
+
+      if (a > 30) {
+        hasPixels = true;
+        // Real color emoji has distinct chromatic channels; missing tofu is monochrome
+        if (Math.abs(r - g) > 25 || Math.abs(g - b) > 25 || Math.abs(r - b) > 25) {
+          hasColor = true;
+          break;
+        }
+      }
+    }
+
+    return hasPixels && hasColor;
+  } catch {
+    return false;
+  }
+}
+
 interface IceOtterProps {
   state: OtterState;
   decorations: CampDecorations;
@@ -10,6 +51,11 @@ interface IceOtterProps {
 export const IceOtter: React.FC<IceOtterProps> = ({ state, decorations, onOtterClick }) => {
   const [blink, setBlink] = useState(false);
   const [dialogue, setDialogue] = useState<string | null>(null);
+  const [supportsBubbleEmoji, setSupportsBubbleEmoji] = useState(false);
+
+  useEffect(() => {
+    setSupportsBubbleEmoji(checkBubbleEmojiSupport());
+  }, []);
 
   // Natural cute blinking
   useEffect(() => {
@@ -588,16 +634,27 @@ export const IceOtter: React.FC<IceOtterProps> = ({ state, decorations, onOtterC
 
           {isDiving && (
             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-40 bg-sky-950/90 text-sky-200 font-bold px-4 py-1.5 rounded-full text-xs shadow-xl border border-sky-400/40 animate-pulse flex items-center gap-2 whitespace-nowrap backdrop-blur-sm">
-              <span className="flex items-center justify-center shrink-0">
-                <svg viewBox="0 0 20 20" className="w-4 h-4 drop-shadow-sm" fill="none">
-                  {/* Big Translucent Bubble */}
-                  <circle cx="8" cy="12" r="6" stroke="#38bdf8" strokeWidth="1.8" fill="#38bdf8" fillOpacity="0.25" />
-                  <ellipse cx="5.5" cy="9.5" rx="1.5" ry="0.8" fill="#ffffff" opacity="0.9" transform="rotate(-30 5.5 9.5)" />
-                  {/* Small Rising Bubble */}
-                  <circle cx="15" cy="6" r="3.5" stroke="#7dd3fc" strokeWidth="1.5" fill="#7dd3fc" fillOpacity="0.3" />
-                  <ellipse cx="13.8" cy="4.8" rx="0.9" ry="0.5" fill="#ffffff" opacity="0.9" transform="rotate(-30 13.8 4.8)" />
-                </svg>
-              </span>
+              {supportsBubbleEmoji ? (
+                /* Native Unicode 14 🫧 emoji with smooth spinning */
+                <span
+                  className="animate-spin inline-block text-sm select-none leading-none shrink-0"
+                  style={{ transformOrigin: 'center' }}
+                >
+                  🫧
+                </span>
+              ) : (
+                /* Graceful fallback: Shiny vector SVG bubbles also with smooth spinning */
+                <span className="animate-spin inline-flex items-center justify-center shrink-0">
+                  <svg viewBox="0 0 20 20" className="w-4 h-4 drop-shadow-sm" fill="none">
+                    {/* Primary Centered Bubble */}
+                    <circle cx="10" cy="10" r="6.5" stroke="#38bdf8" strokeWidth="1.8" fill="#38bdf8" fillOpacity="0.25" />
+                    <ellipse cx="7.8" cy="7.8" rx="1.6" ry="0.9" fill="#ffffff" opacity="0.9" transform="rotate(-35 7.8 7.8)" />
+                    {/* Orbiting Secondary Bubble */}
+                    <circle cx="15.5" cy="5.5" r="3" stroke="#7dd3fc" strokeWidth="1.4" fill="#7dd3fc" fillOpacity="0.35" />
+                    <circle cx="14.8" cy="4.8" r="0.7" fill="#ffffff" opacity="0.9" />
+                  </svg>
+                </span>
+              )}
               <span>Diving in polar waters...</span>
             </div>
           )}
