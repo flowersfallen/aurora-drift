@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Download, Copy, Check, Sparkles } from 'lucide-react';
+import QRCode from 'qrcode';
 import { Treasure, PlayerProgress } from '../types';
 
 // Rock-solid rounded rectangle drawer compatible with all mobile browsers (WeChat XWeb, older WebViews)
@@ -722,35 +723,86 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
     }
 
     // ==========================================
-    // 8. Footer: Brand & Centered Information
+    // 8. Footer: Brand Info & High-Contrast QR Code
     // ==========================================
-    const footerLineY = cardY + cardH + 28; // 126 + 698 + 28 = 852
+    const footerLineY = cardY + cardH + 24; // 126 + 698 + 24 = 848
 
-    // Stylized Divider Line
+    // Stylized Divider Line spanning across card width
     ctx.strokeStyle = 'rgba(56, 189, 248, 0.25)';
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(w / 2 - 160, footerLineY);
-    ctx.lineTo(w / 2 + 160, footerLineY);
+    ctx.moveTo(cardX, footerLineY);
+    ctx.lineTo(cardX + cardW, footerLineY);
     ctx.stroke();
 
-    // Reset alignment to center for ALL footer elements!
-    ctx.textAlign = 'center';
+    // --- Right Column: Scannable QR Code ---
+    const qrBoxW = 120;
+    const qrBoxH = 120;
+    const qrBoxX = cardX + cardW - qrBoxW; // 44 + 712 - 120 = 636
+    const qrBoxY = footerLineY + 16; // 848 + 16 = 864
 
-    // Domain name
+    // High-contrast pure white rounded plate for 100% instant camera/WeChat scanning
     ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 24px "Outfit", sans-serif';
-    ctx.fillText('iceotter.com', w / 2, footerLineY + 38);
+    ctx.beginPath();
+    drawRoundRect(ctx, qrBoxX, qrBoxY, qrBoxW, qrBoxH, 14);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
 
-    // Slogan / Website Description
+    // Draw QR Code Modules
+    try {
+      const qr = QRCode.create('https://iceotter.com', { errorCorrectionLevel: 'M' });
+      const qrSize = qr.modules.size; // 25
+      const modSize = 4.16; // 25 * 4.16 = 104px
+      const qrOffsetX = qrBoxX + (qrBoxW - qrSize * modSize) / 2;
+      const qrOffsetY = qrBoxY + (qrBoxH - qrSize * modSize) / 2;
+      ctx.fillStyle = '#061628'; // deep polar navy
+      for (let r = 0; r < qrSize; r++) {
+        for (let c = 0; c < qrSize; c++) {
+          if (qr.modules.get(r, c)) {
+            ctx.fillRect(qrOffsetX + c * modSize, qrOffsetY + r * modSize, modSize + 0.3, modSize + 0.3);
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('QR code drawing failed:', e);
+    }
+
+    // Mini scan prompt under QR card
+    ctx.fillStyle = '#7dd3fc';
+    ctx.font = 'bold 10px "Outfit", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('SCAN TO VISIT', qrBoxX + qrBoxW / 2, qrBoxY + qrBoxH + 16);
+
+    // --- Left Column: Brand & Value Proposition ---
+    const infoX = cardX + 2;
+    ctx.textAlign = 'left';
+
+    // 1. Polar sanctuary badge
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = 'bold 12px "Outfit", sans-serif';
+    ctx.fillText('🦦  AURORA DRIFT · ICE OTTER SANCTUARY', infoX, qrBoxY + 16);
+
+    // 2. Domain Name
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 30px "Outfit", sans-serif';
+    ctx.fillText('iceotter.com', infoX, qrBoxY + 48);
+
+    // 3. Slogan
     ctx.fillStyle = '#94a3b8';
     ctx.font = '500 13.5px "Quicksand", sans-serif';
-    ctx.fillText('No Ads · Cozy Ambient Sound & Minimalist Focus Companion', w / 2, footerLineY + 64);
+    ctx.fillText('No Ads · Cozy Ambient Sound & Minimalist Focus Companion', infoX, qrBoxY + 74);
 
-    // Call-to-action note
-    ctx.fillStyle = '#38bdf8';
-    ctx.font = 'bold 11.5px "Outfit", sans-serif';
-    ctx.fillText('✨ Visit iceotter.com to drift with your Ice Otter under the stars ✨', w / 2, footerLineY + 86);
+    // 4. Call-to-action note
+    ctx.fillStyle = '#7dd3fc';
+    ctx.font = '600 12.5px "Quicksand", sans-serif';
+    ctx.fillText('✨ Scan the QR code to drift with your Ice Otter under the stars', infoX, qrBoxY + 98);
+
+    // 5. Features metadata line
+    ctx.fillStyle = '#64748b';
+    ctx.font = '500 11.5px "Outfit", sans-serif';
+    ctx.fillText('100% FREE  ·  NO ADS  ·  DEEP FOCUS  ·  LOFI AMBIENT', infoX, qrBoxY + 122);
 
     // Generate exportable DataURL
     try {
