@@ -6,9 +6,10 @@ import { ALL_TREASURES } from '../data/treasures';
 interface CollectionModalProps {
   unlockedIds: string[];
   onClose: () => void;
+  onShareTreasure?: (treasure: Treasure) => void;
 }
 
-export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, onClose }) => {
+export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, onClose, onShareTreasure }) => {
   const [activeTab, setActiveTab] = useState<TreasureType | 'all'>('all');
   const [selectedTreasure, setSelectedTreasure] = useState<Treasure | null>(null);
   const [copied, setCopied] = useState(false);
@@ -172,26 +173,35 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
               {selectedTreasure.flavorText}
             </div>
 
-            <div className="flex items-center gap-3 mb-auto">
+            <div className="flex flex-wrap items-center justify-center gap-2.5 mb-auto">
+              {onShareTreasure && (
+                <button
+                  onClick={() => onShareTreasure(selectedTreasure)}
+                  className="px-4 py-2 sm:py-2.5 rounded-xl bg-sky-400 hover:bg-sky-300 text-sky-950 font-bold text-xs flex items-center gap-1.5 shadow-lg transition-all active:scale-95"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  生成精美打卡海报
+                </button>
+              )}
               <button
                 onClick={() => handleShareQuote(selectedTreasure)}
-                className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-sky-400 hover:bg-sky-300 text-sky-950 font-bold text-xs flex items-center gap-2 shadow-lg transition-all active:scale-95"
+                className="px-3.5 py-2 sm:py-2.5 rounded-xl bg-sky-900/70 hover:bg-sky-800 text-sky-200 border border-sky-600/40 font-semibold text-xs flex items-center gap-1.5 shadow-md transition-all active:scale-95"
               >
                 {copied ? (
                   <>
-                    <Check className="w-4 h-4" /> Copied to Clipboard!
+                    <Check className="w-4 h-4 text-emerald-400" /> 已复制文案
                   </>
                 ) : (
                   <>
-                    <Heart className="w-4 h-4 fill-sky-950" /> Copy & Share Card
+                    <Heart className="w-4 h-4 text-sky-300" /> 复制配文
                   </>
                 )}
               </button>
               <button
                 onClick={() => setSelectedTreasure(null)}
-                className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-sky-900/60 hover:bg-sky-800/80 border border-sky-700/50 text-sky-200 hover:text-white text-xs font-semibold transition-all active:scale-95"
+                className="px-3.5 py-2 sm:py-2.5 rounded-xl bg-sky-950/80 hover:bg-sky-900 border border-sky-800/60 text-sky-300 hover:text-white text-xs font-semibold transition-all active:scale-95"
               >
-                Close
+                关闭
               </button>
             </div>
           </div>
