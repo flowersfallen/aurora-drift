@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Download, Copy, Check, Sparkles } from 'lucide-react';
+import { X, Download, Copy, Check, Sparkles, Maximize2 } from 'lucide-react';
 import QRCode from 'qrcode';
 import { Treasure, PlayerProgress } from '../types';
 
@@ -39,6 +39,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
   const [activeType, setActiveType] = useState<'treasure' | 'focus'>(treasure ? 'treasure' : 'focus');
   const [posterUrl, setPosterUrl] = useState<string>('');
   const [copied, setCopied] = useState(false);
+  const [isZoomed, setIsZoomed] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
+  const touchStartX = useRef<number | null>(null);
   const [isMobile, setIsMobile] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false;
     const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
@@ -850,9 +853,63 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
     ctx.fillText(line, x, currentY);
   }
 
-  // Handle Image Download
-  const handleDownload = () => {
+  // Handle touch swiping left/right between cards
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null || !treasure) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const diffX = touchStartX.current - touchEndX;
+    if (Math.abs(diffX) > 40) {
+      if (diffX > 0) {
+        // Swiped left -> switch to focus
+        setActiveType('focus');
+      } else {
+        // Swiped right -> switch to treasure
+        setActiveType('treasure');
+      }
+    }
+    touchStartX.current = null;
+  };
+
+  // Handle Image Download / Native Share Sheet
+  const handleDownload = async () => {
     if (!posterUrl) return;
+
+    // Check if Web Share API can share the image file directly (iOS Safari 15+)
+    if (canvasRef.current && navigator.share && navigator.canShare) {
+      try {
+        setIsSharing(true);
+        const canvas = canvasRef.current;
+        const blob = await new Promise<Blob | null>((resolve) =>
+          canvas.toBlob(resolve, 'image/png')
+        );
+        if (blob) {
+          const fileName = `ice-otter-${activeType === 'treasure' && treasure ? treasure.id : 'focus'}.png`;
+          const file = new File([blob], fileName, { type: 'image/png' });
+          if (navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              files: [file],
+              title: 'Ice Otter Sanctuary Postcard',
+              text: 'Relaxing polar focus companion under the aurora lights 🦦✨ Visit iceotter.com',
+            });
+            setIsSharing(false);
+            return;
+          }
+        }
+      } catch (err: any) {
+        setIsSharing(false);
+        if (err.name === 'AbortError') {
+          return;
+        }
+        console.warn('Share API failed, falling back to download:', err);
+      }
+      setIsSharing(false);
+    }
+
+    // Fallback: standard anchor download
     const link = document.createElement('a');
     link.download = `ice-otter-${activeType === 'treasure' && treasure ? treasure.id : 'focus'}.png`;
     link.href = posterUrl;
@@ -894,13 +951,14 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-lg bg-[#07172b] rounded-3xl p-4 sm:p-6 flex flex-col border border-sky-400/50 shadow-2xl modal-crisp max-h-[85dvh] sm:max-h-[92vh] overflow-y-auto"
+        className="relative w-full max-w-lg bg-[#07172b] rounded-3xl p-4 sm:p-6 flex flex-col border border-sky-400/50 shadow-2xl modal-crisp max-h-[90dvh] overflow-y-auto modal-scrollbar overscroll-contain"
+        style={{ WebkitOverflowScrolling: 'touch' }}
       >
         {/* Hidden rendering canvas */}
         <canvas ref={canvasRef} className="hidden" />
 
         {/* Modal Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-sky-800/60">
+        <div className="flex items-center justify-between pb-3 border-b border-sky-800/60 shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-xl bg-sky-900/80 text-sky-400 border border-sky-500/40 shadow-sm">
               <Sparkles className="w-4 h-4" />
@@ -924,7 +982,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
 
         {/* Tab Switcher (if treasure exists) */}
         {treasure && (
-          <div className="flex items-center gap-2 pt-3 pb-1">
+          <div className="flex items-center gap-2 pt-3 pb-1 shrink-0">
             <button
               onClick={() => setActiveType('treasure')}
               className={`flex-1 py-1.5 px-3 rounded-xl text-xs font-bold transition-all ${
@@ -949,57 +1007,128 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
         )}
 
         {/* Poster Image Preview Container */}
-        <div className="my-3 rounded-2xl overflow-hidden border border-sky-700/50 bg-[#030a14] shadow-2xl flex items-center justify-center p-1.5 relative group">
+        <div
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          className="my-2.5 rounded-2xl border border-sky-700/50 bg-[#030a14] shadow-2xl flex flex-col items-center justify-center p-2 sm:p-2.5 relative group shrink-0"
+        >
           {posterUrl ? (
-            <img
-              src={posterUrl}
-              alt="Polar Share Poster"
-              className="w-full max-h-[50vh] sm:max-h-[54vh] object-contain rounded-xl shadow-md"
-            />
+            <div className="relative w-full flex items-center justify-center">
+              <img
+                src={posterUrl}
+                alt="Polar Share Poster"
+                onClick={() => setIsZoomed(true)}
+                className="max-h-[42dvh] sm:max-h-[50dvh] w-auto max-w-full object-contain rounded-xl shadow-md block cursor-zoom-in active:scale-[0.99] transition-transform"
+              />
+              <button
+                onClick={() => setIsZoomed(true)}
+                className="absolute bottom-2 right-2 p-1.5 rounded-lg bg-sky-950/80 hover:bg-sky-900 text-sky-300 hover:text-white border border-sky-500/40 backdrop-blur-sm shadow-md transition-all text-[11px] flex items-center gap-1 opacity-80 hover:opacity-100"
+                title="Tap to view full resolution"
+              >
+                <Maximize2 className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Enlarge</span>
+              </button>
+            </div>
           ) : (
-            <div className="h-64 flex items-center justify-center text-xs text-sky-400">
+            <div className="h-56 flex items-center justify-center text-xs text-sky-400">
               Generating poster...
+            </div>
+          )}
+
+          {/* Swipe / Slider dots if treasure exists */}
+          {treasure && (
+            <div className="flex items-center justify-center gap-2 pt-2">
+              <button
+                onClick={() => setActiveType('treasure')}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  activeType === 'treasure' ? 'w-6 bg-sky-400 shadow-sm' : 'w-2 bg-sky-800/80 hover:bg-sky-700'
+                }`}
+                aria-label="Treasure Postcard"
+                title="Treasure Postcard"
+              />
+              <button
+                onClick={() => setActiveType('focus')}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  activeType === 'focus' ? 'w-6 bg-sky-400 shadow-sm' : 'w-2 bg-sky-800/80 hover:bg-sky-700'
+                }`}
+                aria-label="Focus Milestone"
+                title="Focus Milestone"
+              />
             </div>
           )}
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-4 pt-2 mt-1">
-          {isMobile ? (
-            <div
-              onClick={handleDownload}
-              className="flex-1 py-3 px-4 rounded-xl bg-sky-950/80 border border-sky-400/40 text-sky-200 font-semibold text-xs flex items-center justify-center gap-2 shadow-inner text-center cursor-pointer select-none active:bg-sky-900/70 transition-colors"
-            >
-              <span>📱 Long-press poster above to save</span>
-            </div>
-          ) : (
-            <button
-              onClick={handleDownload}
-              className="flex-1 py-3 px-4 rounded-xl bg-sky-400 hover:bg-sky-300 text-sky-950 font-bold text-xs flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95"
-            >
-              <Download className="w-4 h-4" />
-              Save Poster Image
-            </button>
-          )}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-4 pt-1 shrink-0">
+          <button
+            onClick={handleDownload}
+            disabled={!posterUrl || isSharing}
+            className="flex-1 py-3 px-4 rounded-xl bg-sky-400 hover:bg-sky-300 disabled:opacity-50 text-sky-950 font-bold text-xs flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95 cursor-pointer"
+          >
+            {isSharing ? (
+              <span>Preparing poster...</span>
+            ) : (
+              <>
+                <Download className="w-4 h-4" />
+                <span>Save Poster Image</span>
+              </>
+            )}
+          </button>
 
           <button
             onClick={handleCopyCaption}
-            className="flex-1 py-3 px-4 rounded-xl bg-sky-900/80 hover:bg-sky-800 text-sky-100 font-bold text-xs flex items-center justify-center gap-2 border border-sky-600/50 shadow-md transition-all active:scale-95"
+            className="flex-1 py-3 px-4 rounded-xl bg-sky-900/80 hover:bg-sky-800 text-sky-100 font-bold text-xs flex items-center justify-center gap-2 border border-sky-600/50 shadow-md transition-all active:scale-95 cursor-pointer"
           >
             {copied ? (
               <>
                 <Check className="w-4 h-4 text-emerald-400" />
-                Caption Copied to Clipboard!
+                <span>Caption Copied!</span>
               </>
             ) : (
               <>
                 <Copy className="w-4 h-4" />
-                Copy Caption
+                <span>Copy Caption</span>
               </>
             )}
           </button>
         </div>
+
+        {/* Mobile quick tips */}
+        {isMobile && (
+          <p className="text-[11px] text-sky-400/80 text-center pt-2 select-none shrink-0">
+            Tip: Tap poster to enlarge or long-press to save directly to Photos
+          </p>
+        )}
       </div>
+
+      {/* Lightbox / Fullscreen Modal */}
+      {isZoomed && (
+        <div
+          onClick={() => setIsZoomed(false)}
+          className="fixed inset-0 z-60 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-3 animate-fadeIn cursor-zoom-out"
+        >
+          <button
+            onClick={() => setIsZoomed(false)}
+            className="absolute top-4 right-4 p-2 rounded-full bg-sky-950/85 text-sky-200 hover:text-white border border-sky-400/40 z-10"
+            aria-label="Close enlarged view"
+          >
+            <X className="w-5 h-5" />
+          </button>
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="max-w-full max-h-[85vh] flex items-center justify-center p-2"
+          >
+            <img
+              src={posterUrl}
+              alt="Polar Share Poster Full Resolution"
+              className="max-h-[82dvh] w-auto max-w-full object-contain rounded-2xl shadow-2xl border border-sky-500/40"
+            />
+          </div>
+          <p className="text-xs text-sky-300/90 mt-2 select-none">
+            Tap anywhere outside or press close to return
+          </p>
+        </div>
+      )}
     </div>
   );
 };
