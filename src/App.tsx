@@ -158,12 +158,12 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="relative w-screen h-screen h-[100dvh] overflow-hidden flex flex-col justify-between select-none">
+    <div className="relative w-full app-viewport overflow-hidden flex flex-col justify-between select-none">
       {/* 1. Dynamic Canvas Layer (Aurora, Stars, Snow, Waves) */}
       <ArcticCanvas timeOfDay={timeOfDay} isDiving={otterState === 'diving'} />
 
       {/* 2. Top Header Navigation Bar */}
-      <header className="relative z-30 px-4 sm:px-6 py-2 sm:py-3 flex items-center justify-between w-full max-w-6xl mx-auto">
+      <header className="relative z-30 px-4 sm:px-6 pt-[max(0.5rem,env(safe-area-inset-top))] pb-1 sm:py-3 flex items-center justify-between w-full max-w-6xl mx-auto">
         {/* Brand & Mascot */}
         <div className="flex items-center gap-2 sm:gap-3.5 shrink-0">
           <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-2xl bg-sky-950/80 border border-sky-400/40 flex items-center justify-center shadow-lg overflow-hidden p-0.5 shrink-0">
@@ -355,7 +355,7 @@ export const App: React.FC = () => {
       </header>
 
       {/* 3. Center Interactive World (Ice Otter & Floating Campsite) */}
-      <main className="relative z-10 flex-1 flex items-center justify-center mt-1 sm:mt-4 md:mt-8 pb-1 sm:pb-4">
+      <main className="relative z-10 flex-1 min-h-0 flex items-center justify-center my-auto py-1 sm:py-4">
         <IceOtter
           state={otterState}
           decorations={progress.decorations}
@@ -370,7 +370,7 @@ export const App: React.FC = () => {
       </main>
 
       {/* 4. Bottom Focus & Dive Control Dock */}
-      <footer className="relative z-30 pb-5 sm:pb-6 pb-[max(1.25rem,env(safe-area-inset-bottom))] px-3 sm:px-4 w-full">
+      <footer className="relative z-30 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:pb-6 px-3 sm:px-4 w-full">
         <FocusTimer
           otterState={otterState}
           onStartDive={handleStartDive}

@@ -49,7 +49,7 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-2xl max-h-[88vh] bg-[#0a1b2e] rounded-3xl p-4 sm:p-6 flex flex-col overflow-hidden border border-sky-400/40 shadow-2xl modal-crisp"
+        className="relative w-full max-w-2xl max-h-[85dvh] sm:max-h-[88vh] bg-[#0a1b2e] rounded-3xl p-4 sm:p-6 flex flex-col overflow-hidden border border-sky-400/40 shadow-2xl modal-crisp"
       >
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-sky-800/50">
