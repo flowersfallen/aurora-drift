@@ -29,6 +29,593 @@ function drawRoundRect(
   ctx.closePath();
 }
 
+// --- Vector Animal & Artifact Avatars (100% Cross-Browser Canvas Compatible) ---
+
+function drawFoxAvatar(ctx: CanvasRenderingContext2D, cx: number, cy: number) {
+  ctx.save();
+  ctx.translate(cx, cy);
+
+  // Fox Ears (Outer orange, inner cream)
+  ctx.fillStyle = '#ea580c';
+  ctx.beginPath();
+  ctx.moveTo(-12, -22);
+  ctx.lineTo(-38, -50);
+  ctx.lineTo(-36, -14);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = '#ffedd5';
+  ctx.beginPath();
+  ctx.moveTo(-15, -23);
+  ctx.lineTo(-34, -45);
+  ctx.lineTo(-32, -18);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = '#ea580c';
+  ctx.beginPath();
+  ctx.moveTo(12, -22);
+  ctx.lineTo(38, -50);
+  ctx.lineTo(36, -14);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = '#ffedd5';
+  ctx.beginPath();
+  ctx.moveTo(15, -23);
+  ctx.lineTo(34, -45);
+  ctx.lineTo(32, -18);
+  ctx.closePath();
+  ctx.fill();
+
+  // Fox Face Base (Warm golden orange)
+  ctx.fillStyle = '#f97316';
+  ctx.beginPath();
+  ctx.ellipse(0, -4, 40, 34, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // White Cheeks & Muzzle
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.ellipse(-18, 5, 20, 18, -Math.PI / 10, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(18, 5, 20, 18, Math.PI / 10, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(0, 10, 16, 14, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Forehead Blaze
+  ctx.beginPath();
+  ctx.moveTo(0, -32);
+  ctx.lineTo(6, -14);
+  ctx.lineTo(0, -6);
+  ctx.lineTo(-6, -14);
+  ctx.closePath();
+  ctx.fill();
+
+  // Sparkly Fox Eyes
+  ctx.fillStyle = '#1e293b';
+  ctx.beginPath();
+  ctx.ellipse(-15, -6, 5, 6.5, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.arc(-16.5, -8.5, 2, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#1e293b';
+  ctx.beginPath();
+  ctx.ellipse(15, -6, 5, 6.5, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.arc(13.5, -8.5, 2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Rosy Fox Cheeks
+  ctx.fillStyle = 'rgba(251, 113, 133, 0.65)';
+  ctx.beginPath();
+  ctx.ellipse(-24, 6, 7, 4.5, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(24, 6, 7, 4.5, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Cute Button Nose
+  ctx.fillStyle = '#0f172a';
+  ctx.beginPath();
+  ctx.moveTo(-4.5, 3);
+  ctx.lineTo(4.5, 3);
+  ctx.lineTo(0, 7.5);
+  ctx.closePath();
+  ctx.fill();
+
+  // Fox Smile
+  ctx.strokeStyle = '#0f172a';
+  ctx.lineWidth = 1.8;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.arc(-3.5, 8, 3.5, 0.1 * Math.PI, 0.9 * Math.PI);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(3.5, 8, 3.5, 0.1 * Math.PI, 0.9 * Math.PI);
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+function drawOtterAvatar(ctx: CanvasRenderingContext2D, cx: number, cy: number) {
+  ctx.save();
+  ctx.translate(cx, cy);
+
+  // Tiny Ears
+  ctx.fillStyle = '#3c4556';
+  ctx.strokeStyle = '#2e384d';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.ellipse(-26, -24, 7, 9, -0.3, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.ellipse(26, -24, 7, 9, 0.3, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  // Chubby Cream Head
+  ctx.fillStyle = '#fdfbf7';
+  ctx.beginPath();
+  ctx.ellipse(0, -2, 36, 38, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  // Whiskers
+  ctx.strokeStyle = '#2e384d';
+  ctx.lineWidth = 1.6;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(-22, 0);
+  ctx.lineTo(-40, -3);
+  ctx.moveTo(-22, 6);
+  ctx.lineTo(-38, 7);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(22, 0);
+  ctx.lineTo(40, -3);
+  ctx.moveTo(22, 6);
+  ctx.lineTo(38, 7);
+  ctx.stroke();
+
+  // Sparkly Otter Eyes
+  ctx.fillStyle = '#2e384d';
+  ctx.beginPath();
+  ctx.ellipse(-12, -6, 4.5, 6, 0, 0, Math.PI * 2);
+  ctx.ellipse(12, -6, 4.5, 6, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Eye Shines
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.arc(-13.5, -8, 2, 0, Math.PI * 2);
+  ctx.arc(10.5, -8, 2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Blush
+  ctx.fillStyle = 'rgba(254, 205, 211, 0.9)';
+  ctx.beginPath();
+  ctx.ellipse(-20, 2, 7, 4.5, 0, 0, Math.PI * 2);
+  ctx.ellipse(20, 2, 7, 4.5, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Nose & Mouth
+  ctx.fillStyle = '#2e384d';
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 4.5, 3.5, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.strokeStyle = '#2e384d';
+  ctx.lineWidth = 1.8;
+  ctx.beginPath();
+  ctx.arc(-3, 4.5, 3, 0.1 * Math.PI, 0.9 * Math.PI);
+  ctx.arc(3, 4.5, 3, 0.1 * Math.PI, 0.9 * Math.PI);
+  ctx.stroke();
+
+  // Mini Glowing Ice Cube
+  const cubeY = 22;
+  ctx.fillStyle = '#bae6fd';
+  ctx.beginPath();
+  ctx.moveTo(0, cubeY - 10);
+  ctx.lineTo(12, cubeY - 4);
+  ctx.lineTo(0, cubeY + 2);
+  ctx.lineTo(-12, cubeY - 4);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = '#60a5fa';
+  ctx.lineWidth = 1.2;
+  ctx.stroke();
+
+  ctx.fillStyle = '#7dd3fc';
+  ctx.beginPath();
+  ctx.moveTo(-12, cubeY - 4);
+  ctx.lineTo(0, cubeY + 2);
+  ctx.lineTo(0, cubeY + 12);
+  ctx.lineTo(-12, cubeY + 6);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = '#38bdf8';
+  ctx.beginPath();
+  ctx.moveTo(0, cubeY + 2);
+  ctx.lineTo(12, cubeY - 4);
+  ctx.lineTo(12, cubeY + 6);
+  ctx.lineTo(0, cubeY + 12);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  // Little Paws Holding Cube
+  ctx.fillStyle = '#fdfbf7';
+  ctx.strokeStyle = '#2e384d';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.ellipse(-14, cubeY + 2, 5, 7, 0.4, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.ellipse(14, cubeY + 2, 5, 7, -0.4, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+function drawPenguinAvatar(ctx: CanvasRenderingContext2D, cx: number, cy: number) {
+  ctx.save();
+  ctx.translate(cx, cy);
+
+  ctx.fillStyle = '#0f172a';
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 38, 42, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.ellipse(-14, -6, 17, 20, 0, 0, Math.PI * 2);
+  ctx.ellipse(14, -6, 17, 20, 0, 0, Math.PI * 2);
+  ctx.ellipse(0, 8, 24, 22, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#0f172a';
+  ctx.beginPath();
+  ctx.ellipse(-12, -7, 4.5, 6, 0, 0, Math.PI * 2);
+  ctx.ellipse(12, -7, 4.5, 6, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.arc(-13.5, -9, 1.8, 0, Math.PI * 2);
+  ctx.arc(10.5, -9, 1.8, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = 'rgba(251, 113, 133, 0.55)';
+  ctx.beginPath();
+  ctx.ellipse(-18, 3, 6, 4, 0, 0, Math.PI * 2);
+  ctx.ellipse(18, 3, 6, 4, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#f97316';
+  ctx.beginPath();
+  ctx.moveTo(0, -3);
+  ctx.lineTo(8, 4);
+  ctx.lineTo(0, 10);
+  ctx.lineTo(-8, 4);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = '#94a3b8';
+  ctx.strokeStyle = '#475569';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.ellipse(0, 18, 10, 7, 0.1, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+function drawBelugaAvatar(ctx: CanvasRenderingContext2D, cx: number, cy: number) {
+  ctx.save();
+  ctx.translate(cx, cy);
+
+  ctx.strokeStyle = 'rgba(56, 189, 248, 0.35)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(0, 0, 48, 0, Math.PI * 2);
+  ctx.stroke();
+
+  ctx.fillStyle = '#f8fafc';
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 38, 34, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.ellipse(-4, -14, 22, 12, -0.2, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#f1f5f9';
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.beginPath();
+  ctx.ellipse(-32, 10, 8, 14, 0.5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.ellipse(32, 10, 8, 14, -0.5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.strokeStyle = '#0f172a';
+  ctx.lineWidth = 2.4;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.arc(-14, -2, 6, 1.1 * Math.PI, 1.9 * Math.PI);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(14, -2, 6, 1.1 * Math.PI, 1.9 * Math.PI);
+  ctx.stroke();
+
+  ctx.fillStyle = 'rgba(254, 205, 211, 0.8)';
+  ctx.beginPath();
+  ctx.ellipse(-20, 6, 6, 4, 0, 0, Math.PI * 2);
+  ctx.ellipse(20, 6, 6, 4, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.arc(0, 6, 8, 0.1 * Math.PI, 0.9 * Math.PI);
+  ctx.stroke();
+
+  ctx.fillStyle = '#38bdf8';
+  ctx.font = 'bold 18px sans-serif';
+  ctx.fillText('♪', 24, -22);
+  ctx.font = 'bold 14px sans-serif';
+  ctx.fillText('♫', -26, -20);
+
+  ctx.restore();
+}
+
+function drawPuffinAvatar(ctx: CanvasRenderingContext2D, cx: number, cy: number) {
+  ctx.save();
+  ctx.translate(cx, cy);
+
+  ctx.fillStyle = '#0f172a';
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 36, 40, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.ellipse(-6, -4, 26, 28, 0.1, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.strokeStyle = '#ef4444';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(-10, -8, 6, 0, Math.PI * 2);
+  ctx.stroke();
+
+  ctx.fillStyle = '#0f172a';
+  ctx.beginPath();
+  ctx.arc(-10, -8, 4, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.arc(-11.5, -9.5, 1.5, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#0284c7';
+  ctx.beginPath();
+  ctx.moveTo(8, -14);
+  ctx.lineTo(16, -12);
+  ctx.lineTo(16, 12);
+  ctx.lineTo(8, 14);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = '#facc15';
+  ctx.beginPath();
+  ctx.moveTo(16, -12);
+  ctx.lineTo(24, -8);
+  ctx.lineTo(24, 8);
+  ctx.lineTo(16, 12);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = '#f97316';
+  ctx.beginPath();
+  ctx.moveTo(24, -8);
+  ctx.lineTo(38, 0);
+  ctx.lineTo(24, 8);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.restore();
+}
+
+function drawOwlAvatar(ctx: CanvasRenderingContext2D, cx: number, cy: number) {
+  ctx.save();
+  ctx.translate(cx, cy);
+
+  ctx.fillStyle = '#f8fafc';
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 38, 38, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = '#f8fafc';
+  ctx.beginPath();
+  ctx.moveTo(-22, -26);
+  ctx.lineTo(-34, -46);
+  ctx.lineTo(-12, -32);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.moveTo(22, -26);
+  ctx.lineTo(34, -46);
+  ctx.lineTo(12, -32);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = '#facc15';
+  ctx.beginPath();
+  ctx.arc(-14, -6, 13, 0, Math.PI * 2);
+  ctx.arc(14, -6, 13, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#0f172a';
+  ctx.beginPath();
+  ctx.arc(-14, -6, 7.5, 0, Math.PI * 2);
+  ctx.arc(14, -6, 7.5, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.arc(-16.5, -8.5, 2.5, 0, Math.PI * 2);
+  ctx.arc(11.5, -8.5, 2.5, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#334155';
+  ctx.beginPath();
+  ctx.moveTo(0, -3);
+  ctx.lineTo(4.5, 8);
+  ctx.lineTo(0, 12);
+  ctx.lineTo(-4.5, 8);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = 'rgba(100, 116, 139, 0.4)';
+  ctx.beginPath();
+  ctx.arc(-18, 16, 2, 0, Math.PI * 2);
+  ctx.arc(-8, 22, 2.5, 0, Math.PI * 2);
+  ctx.arc(8, 22, 2.5, 0, Math.PI * 2);
+  ctx.arc(18, 16, 2, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.restore();
+}
+
+function drawPolarBearAvatar(ctx: CanvasRenderingContext2D, cx: number, cy: number) {
+  ctx.save();
+  ctx.translate(cx, cy);
+
+  ctx.fillStyle = '#f8fafc';
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(-26, -26, 11, 0, Math.PI * 2);
+  ctx.arc(26, -26, 11, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = '#ffedd5';
+  ctx.beginPath();
+  ctx.arc(-26, -26, 6, 0, Math.PI * 2);
+  ctx.arc(26, -26, 6, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#f8fafc';
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 39, 36, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.strokeStyle = '#0f172a';
+  ctx.lineWidth = 2.4;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.arc(-14, -4, 6, 0.1 * Math.PI, 0.9 * Math.PI);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(14, -4, 6, 0.1 * Math.PI, 0.9 * Math.PI);
+  ctx.stroke();
+
+  ctx.fillStyle = 'rgba(254, 205, 211, 0.85)';
+  ctx.beginPath();
+  ctx.ellipse(-20, 6, 7, 4.5, 0, 0, Math.PI * 2);
+  ctx.ellipse(20, 6, 7, 4.5, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#0f172a';
+  ctx.beginPath();
+  ctx.ellipse(0, 4, 7, 5, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.moveTo(0, 9);
+  ctx.lineTo(0, 13);
+  ctx.stroke();
+
+  ctx.fillStyle = '#7dd3fc';
+  ctx.font = 'bold 13px sans-serif';
+  ctx.fillText('z', 26, -16);
+  ctx.font = 'bold 10px sans-serif';
+  ctx.fillText('z', 32, -26);
+
+  ctx.restore();
+}
+
+function drawTreasureArtwork(
+  ctx: CanvasRenderingContext2D,
+  treasure: Treasure,
+  cx: number,
+  cy: number
+) {
+  if (treasure.id === 'postcard-aurora-fox') {
+    drawFoxAvatar(ctx, cx, cy);
+    return;
+  }
+  if (treasure.id === 'postcard-baby-penguin') {
+    drawPenguinAvatar(ctx, cx, cy);
+    return;
+  }
+  if (treasure.id === 'postcard-beluga-melody') {
+    drawBelugaAvatar(ctx, cx, cy);
+    return;
+  }
+  if (treasure.id === 'postcard-puffin-cliff') {
+    drawPuffinAvatar(ctx, cx, cy);
+    return;
+  }
+  if (treasure.id === 'postcard-snowy-owl') {
+    drawOwlAvatar(ctx, cx, cy);
+    return;
+  }
+  if (treasure.id === 'postcard-polar-bear-nap') {
+    drawPolarBearAvatar(ctx, cx, cy);
+    return;
+  }
+  if (treasure.id === 'letter-otter-creed' || treasure.icon === '🦦') {
+    drawOtterAvatar(ctx, cx, cy);
+    return;
+  }
+
+  // Fallback for relics & letters with explicit Apple Color Emoji / system emoji font stack
+  ctx.save();
+  ctx.font = '72px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", -apple-system, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#0f172a';
+  ctx.fillText(treasure.icon, cx, cy + 4);
+  ctx.restore();
+}
+
 interface ShareModalProps {
   onClose: () => void;
   treasure?: Treasure | null;
@@ -288,12 +875,8 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       ctx.arc(discX, discY, discR - 5, 0, Math.PI * 2);
       ctx.stroke();
 
-      // The Hero Animal / Relic Icon
-      ctx.font = '78px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(treasure.icon, discX, discY + 5);
-      ctx.textBaseline = 'alphabetic';
+      // The Hero Animal / Relic Artwork (100% Cross-Browser Canvas Vector/Text)
+      drawTreasureArtwork(ctx, treasure, discX, discY);
 
       // Vintage Polar Postage Stamp (top right of Art Plate)
       const stampX = plateX + plateW - 105;
@@ -540,11 +1123,8 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       ctx.arc(discX, discY, discR - 5, 0, Math.PI * 2);
       ctx.stroke();
 
-      ctx.font = '78px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🦦', discX, discY + 5);
-      ctx.textBaseline = 'alphabetic';
+      // The Hero Ice Otter Mascot (100% Cross-Browser Canvas Vector)
+      drawOtterAvatar(ctx, discX, discY);
 
       // Vintage Postage Stamp on Focus Card
       const stampX = plateX + plateW - 105;
