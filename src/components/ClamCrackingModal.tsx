@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import confetti from 'canvas-confetti';
 import { Heart } from 'lucide-react';
-import { Treasure } from '../types';
+import { Treasure, Language } from '../types';
 import { audioEngine } from '../services/audioEngine';
+import { TRANSLATIONS } from '../i18n/translations';
 
 interface ClamCrackingModalProps {
   treasure: Treasure;
   onClose: (unlockedTreasure: Treasure, earnedPearls: number) => void;
+  lang?: Language;
 }
 
-export const ClamCrackingModal: React.FC<ClamCrackingModalProps> = ({ treasure, onClose }) => {
+export const ClamCrackingModal: React.FC<ClamCrackingModalProps> = ({ treasure, onClose, lang = 'en' }) => {
   const [tapStage, setTapStage] = useState<0 | 1 | 2 | 3>(0);
   const [isCracked, setIsCracked] = useState(false);
   const [isStriking, setIsStriking] = useState(false);
@@ -72,6 +74,9 @@ export const ClamCrackingModal: React.FC<ClamCrackingModalProps> = ({ treasure, 
     }
   };
 
+  const t = TRANSLATIONS[lang].cracking;
+  const albumT = TRANSLATIONS[lang].album;
+
   const earnedPearls = treasure.rarity === 'legendary' ? 50 : treasure.rarity === 'rare' ? 25 : 15;
 
   return (
@@ -87,10 +92,10 @@ export const ClamCrackingModal: React.FC<ClamCrackingModalProps> = ({ treasure, 
           /* --- PHASE 1: ASMR CLAM CRACKING RITUAL --- */
           <div className="flex flex-col items-center py-3 w-full select-none">
             <h3 className="text-xl font-bold text-white mb-1 flex items-center gap-2">
-              <span>✨</span> Deep Sea Arctic Clam
+              <span>✨</span> {t.title}
             </h3>
             <p className="text-xs text-sky-200/80 mb-5">
-              The Ice Otter surfaced with a mysterious shell! Strike with pebble to crack it open.
+              {t.subtitle}
             </p>
 
             {/* Interactive Arena: Clam Shell & Lucky Pebble */}
@@ -103,7 +108,7 @@ export const ClamCrackingModal: React.FC<ClamCrackingModalProps> = ({ treasure, 
                 className={`absolute top-2 right-4 z-20 select-none ${
                   isStriking ? 'animate-pebble-strike pointer-events-none' : 'animate-pebble-idle'
                 }`}
-                title="Otter's Lucky Pebble"
+                title={lang === 'zh' ? '小水獭的幸运石' : "Otter's Lucky Pebble"}
               >
                 {/* Pebble Body */}
                 <div className="relative w-14 h-11 bg-gradient-to-br from-stone-200 via-stone-400 to-stone-600 rounded-[50%_50%_45%_45%] shadow-[0_8px_20px_rgba(0,0,0,0.6)] border-2 border-stone-100 flex items-center justify-center">
@@ -116,7 +121,7 @@ export const ClamCrackingModal: React.FC<ClamCrackingModalProps> = ({ treasure, 
                 </div>
                 {/* Otter tool tag */}
                 <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap text-[9px] font-bold text-amber-300 bg-sky-950/90 px-1.5 py-0.5 rounded-full border border-amber-400/40 shadow-sm pointer-events-none">
-                  Lucky Pebble
+                  {lang === 'zh' ? '幸运石' : 'Lucky Pebble'}
                 </div>
               </div>
 
@@ -209,9 +214,9 @@ export const ClamCrackingModal: React.FC<ClamCrackingModalProps> = ({ treasure, 
                 ))}
               </div>
               <p className="text-xs sm:text-sm font-bold text-amber-300 animate-pulse flex items-center gap-1.5">
-                {tapStage === 0 && '👉 Tap shell or pebble to smash it open! (1/3)'}
-                {tapStage === 1 && '💥 CLACK! First crack opened! Strike again! (2/3)'}
-                {tapStage === 2 && '⚡ CRACK! One final heavy smash to open! (3/3)'}
+                {tapStage === 0 && t.stage0}
+                {tapStage === 1 && t.stage1}
+                {tapStage === 2 && t.stage2}
               </p>
             </div>
           </div>
@@ -221,10 +226,14 @@ export const ClamCrackingModal: React.FC<ClamCrackingModalProps> = ({ treasure, 
             {/* Top Badge */}
             <div className="flex items-center gap-2 mb-3">
               <span className={`px-3 py-1 rounded-full text-xs uppercase tracking-wider border ${getRarityBadge(treasure.rarity)}`}>
-                {treasure.rarity}
+                {albumT.rarity[treasure.rarity as 'common' | 'rare' | 'legendary'] || treasure.rarity}
               </span>
               <span className="px-3 py-1 rounded-full text-xs font-semibold bg-sky-900/60 text-sky-200 border border-sky-700/40">
-                {treasure.type === 'postcard' ? '📬 Polar Postcard' : treasure.type === 'relic' ? '🧭 Ancient Relic' : '📜 Bottle Letter'}
+                {treasure.type === 'postcard'
+                  ? (lang === 'zh' ? '📬 极地明信片' : '📬 Polar Postcard')
+                  : treasure.type === 'relic'
+                  ? (lang === 'zh' ? '🧭 古老遗物' : '🧭 Ancient Relic')
+                  : (lang === 'zh' ? '📜 漂流信瓶' : '📜 Bottle Letter')}
               </span>
             </div>
 
@@ -237,33 +246,40 @@ export const ClamCrackingModal: React.FC<ClamCrackingModalProps> = ({ treasure, 
 
               {/* Title & Author */}
               <div>
-                <h4 className="text-xl font-bold text-white tracking-wide">{treasure.title}</h4>
+                <h4 className="text-xl font-bold text-white tracking-wide">
+                  {lang === 'zh' && treasure.title_zh ? treasure.title_zh : treasure.title}
+                </h4>
                 {treasure.author && (
-                  <p className="text-xs text-sky-300 font-medium">By {treasure.author}</p>
+                  <p className="text-xs text-sky-300 font-medium">
+                    {albumT.fromAuthor.replace(
+                      '{author}',
+                      lang === 'zh' && treasure.author_zh ? treasure.author_zh : treasure.author
+                    )}
+                  </p>
                 )}
               </div>
 
               {/* Description & Flavor Text */}
               <p className="text-xs text-sky-100/90 leading-relaxed max-w-sm">
-                {treasure.description}
+                {lang === 'zh' && treasure.description_zh ? treasure.description_zh : treasure.description}
               </p>
 
               <div className="w-full bg-sky-950/60 p-3 rounded-xl border border-sky-800/40 italic text-xs text-amber-200/90 leading-normal">
-                {treasure.flavorText}
+                {lang === 'zh' && treasure.flavorText_zh ? treasure.flavorText_zh : treasure.flavorText}
               </div>
 
               {/* Pearls Reward */}
               <div className="flex items-center gap-2 text-sm font-bold text-amber-300 bg-amber-400/10 px-4 py-1.5 rounded-full border border-amber-400/30">
-                <span>🦪</span> +{earnedPearls} Ice Pearls Collected!
+                <span>🦪</span> {lang === 'zh' ? `+${earnedPearls} 颗冰晶珍珠！` : `+${earnedPearls} Ice Pearls Collected!`}
               </div>
             </div>
 
             {/* Collect & Close Button */}
             <button
               onClick={() => onClose(treasure, earnedPearls)}
-              className="mt-5 w-full py-3 rounded-2xl bg-gradient-to-r from-sky-400 to-teal-400 hover:from-sky-300 hover:to-teal-300 text-sky-950 font-bold text-sm shadow-lg shadow-sky-400/25 transition-all transform active:scale-95 flex items-center justify-center gap-2"
+              className="mt-5 w-full py-3 rounded-2xl bg-gradient-to-r from-sky-400 to-teal-400 hover:from-sky-300 hover:to-teal-300 text-sky-950 font-bold text-sm shadow-lg shadow-sky-400/25 transition-all transform active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
             >
-              <Heart className="w-4 h-4 fill-sky-950" /> Place in Collection Album
+              <Heart className="w-4 h-4 fill-sky-950" /> {t.claim.replace('{pearls}', earnedPearls.toString())}
             </button>
           </div>
         )}

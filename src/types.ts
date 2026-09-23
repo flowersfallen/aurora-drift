@@ -6,16 +6,22 @@ export type TreasureType = 'postcard' | 'relic' | 'letter';
 
 export type Rarity = 'common' | 'rare' | 'legendary';
 
+export type Language = 'en' | 'zh';
+
 export interface Treasure {
   id: string;
   title: string;
+  title_zh?: string;
   type: TreasureType;
   rarity: Rarity;
   description: string;
+  description_zh?: string;
   flavorText: string;
+  flavorText_zh?: string;
   icon: string;
   imageUrl?: string;
   author?: string; // for postcards or letters
+  author_zh?: string;
   unlockedAt?: number;
   effectType?: 'music' | 'light' | 'gem';
 }

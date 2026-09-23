@@ -1,29 +1,38 @@
 import React, { useState } from 'react';
 import { X, Sparkles, BookOpen, Compass, Mail, Lock, Heart, Check } from 'lucide-react';
-import { Treasure, TreasureType } from '../types';
+import { Treasure, TreasureType, Language } from '../types';
 import { ALL_TREASURES } from '../data/treasures';
+import { TRANSLATIONS } from '../i18n/translations';
 
 interface CollectionModalProps {
   unlockedIds: string[];
   onClose: () => void;
   onShareTreasure?: (treasure: Treasure) => void;
+  lang?: Language;
 }
 
-export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, onClose, onShareTreasure }) => {
+export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, onClose, onShareTreasure, lang = 'en' }) => {
   const [activeTab, setActiveTab] = useState<TreasureType | 'all'>('all');
   const [selectedTreasure, setSelectedTreasure] = useState<Treasure | null>(null);
   const [copied, setCopied] = useState(false);
 
-  const filteredTreasures = ALL_TREASURES.filter((t) => {
+  const t = TRANSLATIONS[lang].album;
+
+  const filteredTreasures = ALL_TREASURES.filter((tr) => {
     if (activeTab === 'all') return true;
-    return t.type === activeTab;
+    return tr.type === activeTab;
   });
 
   const unlockedCount = unlockedIds.length;
   const totalCount = ALL_TREASURES.length;
 
   const handleShareQuote = (treasure: Treasure) => {
-    const text = `❄️ Ice Otter found: "${treasure.title}"\n${treasure.flavorText}\n— Discovered in Aurora Drift at iceotter.com 🦦✨`;
+    const title = lang === 'zh' && treasure.title_zh ? treasure.title_zh : treasure.title;
+    const flavor = lang === 'zh' && treasure.flavorText_zh ? treasure.flavorText_zh : treasure.flavorText;
+    const text =
+      lang === 'zh'
+        ? `❄️ 极光水獭找到了珍宝：【${title}】\n${flavor}\n—— 发现于 Aurora Drift 极光漂流 (iceotter.com) 🦦✨`
+        : `❄️ Ice Otter found: "${title}"\n${flavor}\n— Discovered in Aurora Drift at iceotter.com 🦦✨`;
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).catch(() => {});
     } else {
@@ -59,10 +68,13 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
             </div>
             <div>
               <h3 className="text-base sm:text-xl font-bold text-white tracking-wide flex items-center gap-2">
-                Polar Memory Album
+                {t.title}
               </h3>
               <p className="text-[11px] sm:text-xs text-sky-300 font-medium mt-0.5">
-                Unlocked {unlockedCount} of {totalCount} polar treasures ({Math.round((unlockedCount / totalCount) * 100)}%)
+                {t.unlockedCount
+                  .replace('{count}', unlockedCount.toString())
+                  .replace('{total}', totalCount.toString())
+                  .replace('{percent}', Math.round((unlockedCount / totalCount) * 100).toString())}
               </p>
             </div>
           </div>
@@ -77,10 +89,10 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
         {/* Category Tabs */}
         <div className="flex items-center gap-2 sm:gap-3.5 py-2.5 sm:py-3.5 px-0.5 overflow-x-auto no-scrollbar scrollbar-none shrink-0">
           {[
-            { id: 'all', label: 'All Items', shortLabel: 'All', icon: Sparkles },
-            { id: 'postcard', label: 'Postcards', shortLabel: 'Postcards', icon: BookOpen },
-            { id: 'relic', label: 'Ancient Relics', shortLabel: 'Relics', icon: Compass },
-            { id: 'letter', label: 'Bottle Letters', shortLabel: 'Letters', icon: Mail },
+            { id: 'all', label: t.tabs.all.label, shortLabel: t.tabs.all.shortLabel, icon: Sparkles },
+            { id: 'postcard', label: t.tabs.postcard.label, shortLabel: t.tabs.postcard.shortLabel, icon: BookOpen },
+            { id: 'relic', label: t.tabs.relic.label, shortLabel: t.tabs.relic.shortLabel, icon: Compass },
+            { id: 'letter', label: t.tabs.letter.label, shortLabel: t.tabs.letter.shortLabel, icon: Mail },
           ].map((tab) => {
             const IconComp = tab.icon;
             const isActive = activeTab === tab.id;
@@ -109,6 +121,14 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
         >
           {filteredTreasures.map((treasure) => {
             const isUnlocked = unlockedIds.includes(treasure.id);
+            const treasureTitle = isUnlocked
+              ? (lang === 'zh' && treasure.title_zh ? treasure.title_zh : treasure.title)
+              : '???';
+            const rarityLabel = isUnlocked
+              ? t.rarity[treasure.rarity as 'common' | 'rare' | 'legendary'] || treasure.rarity
+              : lang === 'zh'
+              ? '未探索'
+              : 'Undiscovered';
 
             return (
               <div
@@ -133,7 +153,7 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
 
                 {/* Title */}
                 <span className="text-xs font-bold text-white truncate w-full">
-                  {isUnlocked ? treasure.title : '???'}
+                  {treasureTitle}
                 </span>
 
                 {/* Rarity tag */}
@@ -148,7 +168,7 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
                       : 'bg-sky-400/20 text-sky-300'
                   }`}
                 >
-                  {isUnlocked ? treasure.rarity : 'Undiscovered'}
+                  {rarityLabel}
                 </span>
               </div>
             );
@@ -173,20 +193,32 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
             </div>
 
             <span className="text-xs px-3 py-1 rounded-full uppercase tracking-wider font-bold bg-sky-400/20 text-sky-300 mb-1">
-              {selectedTreasure.rarity} {selectedTreasure.type}
+              {t.rarity[selectedTreasure.rarity as 'common' | 'rare' | 'legendary'] || selectedTreasure.rarity}{' '}
+              {t.tabs[selectedTreasure.type as 'postcard' | 'relic' | 'letter']?.shortLabel || selectedTreasure.type}
             </span>
 
-            <h4 className="text-xl sm:text-2xl font-bold text-white mb-1">{selectedTreasure.title}</h4>
+            <h4 className="text-xl sm:text-2xl font-bold text-white mb-1">
+              {lang === 'zh' && selectedTreasure.title_zh ? selectedTreasure.title_zh : selectedTreasure.title}
+            </h4>
             {selectedTreasure.author && (
-              <p className="text-xs text-sky-300 mb-2 sm:mb-3 font-semibold">From {selectedTreasure.author}</p>
+              <p className="text-xs text-sky-300 mb-2 sm:mb-3 font-semibold">
+                {t.fromAuthor.replace(
+                  '{author}',
+                  lang === 'zh' && selectedTreasure.author_zh ? selectedTreasure.author_zh : selectedTreasure.author
+                )}
+              </p>
             )}
 
             <p className="text-xs sm:text-sm text-sky-100/90 max-w-md mb-3 sm:mb-4 leading-relaxed px-2">
-              {selectedTreasure.description}
+              {lang === 'zh' && selectedTreasure.description_zh
+                ? selectedTreasure.description_zh
+                : selectedTreasure.description}
             </p>
 
             <div className="bg-sky-950/80 p-3 sm:p-4 rounded-2xl border border-sky-700/50 italic text-xs sm:text-sm text-amber-200/95 max-w-md mb-4 sm:mb-6 shadow-inner mx-2">
-              {selectedTreasure.flavorText}
+              {lang === 'zh' && selectedTreasure.flavorText_zh
+                ? selectedTreasure.flavorText_zh
+                : selectedTreasure.flavorText}
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-2.5 mb-auto">
@@ -196,7 +228,7 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
                   className="px-4 py-2 sm:py-2.5 rounded-xl bg-sky-400 hover:bg-sky-300 text-sky-950 font-bold text-xs flex items-center gap-1.5 shadow-lg transition-all active:scale-95"
                 >
                   <Sparkles className="w-4 h-4" />
-                  Generate Poster
+                  {t.generatePoster}
                 </button>
               )}
               <button
@@ -205,11 +237,11 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
               >
                 {copied ? (
                   <>
-                    <Check className="w-4 h-4 text-emerald-400" /> Copied!
+                    <Check className="w-4 h-4 text-emerald-400" /> {t.copied}
                   </>
                 ) : (
                   <>
-                    <Heart className="w-4 h-4 text-sky-300" /> Copy Quote
+                    <Heart className="w-4 h-4 text-sky-300" /> {t.copyQuote}
                   </>
                 )}
               </button>
@@ -217,7 +249,7 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
                 onClick={() => setSelectedTreasure(null)}
                 className="px-3.5 py-2 sm:py-2.5 rounded-xl bg-sky-950/80 hover:bg-sky-900 border border-sky-800/60 text-sky-300 hover:text-white text-xs font-semibold transition-all active:scale-95"
               >
-                Close
+                {t.close}
               </button>
             </div>
           </div>

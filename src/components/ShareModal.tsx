@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Download, Copy, Check, Sparkles, Maximize2 } from 'lucide-react';
 import QRCode from 'qrcode';
-import { Treasure, PlayerProgress } from '../types';
+import { Treasure, PlayerProgress, Language } from '../types';
+import { TRANSLATIONS } from '../i18n/translations';
 
 // Rock-solid rounded rectangle drawer compatible with all mobile browsers (WeChat XWeb, older WebViews)
 function drawRoundRect(
@@ -33,9 +34,13 @@ interface ShareModalProps {
   onClose: () => void;
   treasure?: Treasure | null;
   progress: PlayerProgress;
+  lang?: Language;
 }
 
-export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progress }) => {
+export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progress, lang = 'en' }) => {
+  const t = TRANSLATIONS[lang].share;
+  const albumT = TRANSLATIONS[lang].album;
+
   const [activeType, setActiveType] = useState<'treasure' | 'focus'>(treasure ? 'treasure' : 'focus');
   const [posterUrl, setPosterUrl] = useState<string>('');
   const [copied, setCopied] = useState(false);
@@ -318,9 +323,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       ctx.strokeRect(stampX + 4, stampY + 4, stampW - 8, stampH - 8);
 
       ctx.fillStyle = '#0f172a';
-      ctx.font = 'bold 9px "Outfit", sans-serif';
+      ctx.font = 'bold 9px "Outfit", "PingFang SC", sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('ARCTIC POST', stampX + stampW / 2, stampY + 18);
+      ctx.fillText(lang === 'zh' ? '极地邮政' : 'ARCTIC POST', stampX + stampW / 2, stampY + 18);
 
       ctx.font = '26px sans-serif';
       ctx.fillText('❄️', stampX + stampW / 2, stampY + 53);
@@ -343,9 +348,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       ctx.fillStyle = 'rgba(2, 10, 22, 0.85)';
       ctx.fillRect(plateX, plateY + plateH - 32, plateW, 32);
       ctx.fillStyle = '#bae6fd';
-      ctx.font = 'bold 11px "Outfit", sans-serif';
+      ctx.font = 'bold 11px "Outfit", "PingFang SC", sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('📍 ARCTIC CIRCLE ARCHIPELAGO · EXPEDITION ARCHIVE', w / 2, plateY + plateH - 12);
+      ctx.fillText(lang === 'zh' ? '📍 北极圈群岛 · 极地探险档案' : '📍 ARCTIC CIRCLE ARCHIPELAGO · EXPEDITION ARCHIVE', w / 2, plateY + plateH - 12);
 
       ctx.restore(); // end plate clipping
 
@@ -359,29 +364,39 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       // 2. Rarity Stars Banner
       const starY = plateY + plateH + 26; // 150 + 265 + 26 = 441
       const rarityStars =
-        treasure.rarity === 'legendary'
+        lang === 'zh'
+          ? treasure.rarity === 'legendary'
+            ? '★ ★ ★ ★ ★  传 说 极 地 珍 宝  ★ ★ ★ ★ ★'
+            : treasure.rarity === 'rare'
+            ? '★ ★ ★  稀 有 极 地 发 现  ★ ★ ★'
+            : '★ ★ ☆  极 地 珍 藏 明 信 片  ☆ ★ ★'
+          : treasure.rarity === 'legendary'
           ? '★ ★ ★ ★ ★  LEGENDARY TREASURE  ★ ★ ★ ★ ★'
           : treasure.rarity === 'rare'
           ? '★ ★ ★  RARE POLAR DISCOVERY  ★ ★ ★'
           : '★ ★ ☆  POLAR POSTCARD  ☆ ★ ★';
 
       ctx.fillStyle = treasure.rarity === 'legendary' ? '#f59e0b' : '#38bdf8';
-      ctx.font = 'bold 13px "Outfit", sans-serif';
+      ctx.font = 'bold 13px "Outfit", "PingFang SC", "Microsoft YaHei", sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(rarityStars, w / 2, starY);
 
       // 3. Title (Prominent, High-Contrast White)
       const titleY = starY + 38; // 479
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 31px "Outfit", sans-serif';
-      ctx.fillText(treasure.title, w / 2, titleY);
+      ctx.font = 'bold 31px "Outfit", "PingFang SC", "Microsoft YaHei", sans-serif';
+      const treasureTitle = lang === 'zh' && treasure.title_zh ? treasure.title_zh : treasure.title;
+      ctx.fillText(treasureTitle, w / 2, titleY);
 
       // 4. Author / Origin Subtitle
       const authorY = titleY + 26; // 505
       ctx.fillStyle = '#7dd3fc';
-      ctx.font = '600 15px "Quicksand", sans-serif';
+      ctx.font = '600 15px "Quicksand", "PingFang SC", "Microsoft YaHei", sans-serif';
+      const authorName = lang === 'zh' && treasure.author_zh ? treasure.author_zh : treasure.author;
       ctx.fillText(
-        treasure.author ? `— By ${treasure.author} —` : '— Polar Expedition Field Discovery —',
+        treasure.author
+          ? (lang === 'zh' ? `— 来自 ${authorName} —` : `— By ${treasure.author} —`)
+          : (lang === 'zh' ? '— 极地探险野外发现 —' : '— Polar Expedition Field Discovery —'),
         w / 2,
         authorY
       );
@@ -402,14 +417,15 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
 
       // Journal entry header
       ctx.fillStyle = '#38bdf8';
-      ctx.font = 'bold 11px "Outfit", sans-serif';
+      ctx.font = 'bold 11px "Outfit", "PingFang SC", "Microsoft YaHei", sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('📜 EXPEDITION FIELD NOTES & RECOLLECTIONS', w / 2, noteY + 26);
+      ctx.fillText(lang === 'zh' ? '📜 极地考察日志与远征回忆' : '📜 EXPEDITION FIELD NOTES & RECOLLECTIONS', w / 2, noteY + 26);
 
       // Description text
       ctx.fillStyle = '#e2e8f0';
-      ctx.font = '400 16px "Quicksand", sans-serif';
-      wrapText(ctx, treasure.description, w / 2, noteY + 58, noteW - 60, 24);
+      ctx.font = '400 16px "Quicksand", "PingFang SC", "Microsoft YaHei", sans-serif';
+      const treasureDesc = lang === 'zh' && treasure.description_zh ? treasure.description_zh : treasure.description;
+      wrapText(ctx, treasureDesc, w / 2, noteY + 58, noteW - 60, 24);
 
       // Divider line
       ctx.strokeStyle = 'rgba(56, 189, 248, 0.2)';
@@ -420,8 +436,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
 
       // Flavor quote in warm glowing golden italic script
       ctx.fillStyle = '#fef08a';
-      ctx.font = 'italic 16px "Quicksand", sans-serif';
-      wrapText(ctx, `${treasure.flavorText}`, w / 2, noteY + 144, noteW - 70, 24);
+      ctx.font = 'italic 16px "Quicksand", "PingFang SC", "Microsoft YaHei", sans-serif';
+      const treasureFlavor = lang === 'zh' && treasure.flavorText_zh ? treasure.flavorText_zh : treasure.flavorText;
+      wrapText(ctx, `${treasureFlavor}`, w / 2, noteY + 144, noteW - 70, 24);
 
       // 6. Bottom Metadata Badges Row
       const badgeY = noteY + noteH + 16; // 741
@@ -436,19 +453,33 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
         ctx.stroke();
 
         ctx.fillStyle = '#94a3b8';
-        ctx.font = '500 11px "Outfit", sans-serif';
+        ctx.font = '500 11px "Outfit", "PingFang SC", "Microsoft YaHei", sans-serif';
         ctx.textAlign = 'left';
         ctx.fillText(label, x + 14, badgeY + 22);
 
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 12px "Outfit", sans-serif';
+        ctx.font = 'bold 12px "Outfit", "PingFang SC", "Microsoft YaHei", sans-serif';
         ctx.textAlign = 'right';
         ctx.fillText(val, x + bColW - 14, badgeY + 22);
       };
 
-      drawMiniBadge(noteX, 'TYPE', treasure.type.toUpperCase());
-      drawMiniBadge(noteX + bColW + 8, 'RARITY', treasure.rarity.toUpperCase());
-      drawMiniBadge(noteX + (bColW + 8) * 2, 'STATUS', 'UNLOCKED');
+      const typeLabel =
+        lang === 'zh'
+          ? treasure.type === 'postcard'
+            ? '明信片'
+            : treasure.type === 'relic'
+            ? '古老遗物'
+            : '漂流信瓶'
+          : treasure.type.toUpperCase();
+      const rarityLabel =
+        lang === 'zh'
+          ? albumT.rarity[treasure.rarity as 'common' | 'rare' | 'legendary'] || treasure.rarity
+          : treasure.rarity.toUpperCase();
+      const statusLabel = lang === 'zh' ? '已收录' : 'UNLOCKED';
+
+      drawMiniBadge(noteX, lang === 'zh' ? '类型' : 'TYPE', typeLabel);
+      drawMiniBadge(noteX + bColW + 8, lang === 'zh' ? '品质' : 'RARITY', rarityLabel);
+      drawMiniBadge(noteX + (bColW + 8) * 2, lang === 'zh' ? '状态' : 'STATUS', statusLabel);
 
     } else {
       // ==========================================
@@ -571,9 +602,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       ctx.strokeRect(stampX + 4, stampY + 4, stampW - 8, stampH - 8);
 
       ctx.fillStyle = '#0f172a';
-      ctx.font = 'bold 9px "Outfit", sans-serif';
+      ctx.font = 'bold 9px "Outfit", "PingFang SC", sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('EXPEDITION', stampX + stampW / 2, stampY + 18);
+      ctx.fillText(lang === 'zh' ? '极地专注' : 'EXPEDITION', stampX + stampW / 2, stampY + 18);
 
       ctx.font = '26px sans-serif';
       ctx.fillText('🧭', stampX + stampW / 2, stampY + 53);
@@ -596,9 +627,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       ctx.fillStyle = 'rgba(2, 10, 22, 0.85)';
       ctx.fillRect(plateX, plateY + plateH - 32, plateW, 32);
       ctx.fillStyle = '#bae6fd';
-      ctx.font = 'bold 11px "Outfit", sans-serif';
+      ctx.font = 'bold 11px "Outfit", "PingFang SC", sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('📍 POLAR DRIFT · DEEP DIVE FOCUS SANCTUARY', w / 2, plateY + plateH - 12);
+      ctx.fillText(t.bottomLocation, w / 2, plateY + plateH - 12);
 
       ctx.restore();
 
@@ -611,21 +642,21 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       // 2. Starry Milestone Banner (Matching Mode A's Star Banner)
       const starY = plateY + plateH + 26; // 441
       ctx.fillStyle = '#38bdf8';
-      ctx.font = 'bold 13px "Outfit", sans-serif';
+      ctx.font = 'bold 13px "Outfit", "PingFang SC", sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('★ ★ ★  DAILY FOCUS MILESTONE  ★ ★ ★', w / 2, starY);
+      ctx.fillText(t.starBanner, w / 2, starY);
 
       // 3. Title (Matching Mode A's Title Position & Font)
       const titleY = starY + 38; // 479
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 31px "Outfit", sans-serif';
-      ctx.fillText('Polar Focus Milestone', w / 2, titleY);
+      ctx.font = 'bold 31px "Outfit", "PingFang SC", "Microsoft YaHei", sans-serif';
+      ctx.fillText(t.posterTitle, w / 2, titleY);
 
       // 4. Subtitle (Matching Mode A's Subtitle Position)
       const subY = titleY + 26; // 505
       ctx.fillStyle = '#7dd3fc';
-      ctx.font = '600 15px "Quicksand", sans-serif';
-      ctx.fillText('— Deep Work & Ambient Ocean Journey —', w / 2, subY);
+      ctx.font = '600 15px "Quicksand", "PingFang SC", "Microsoft YaHei", sans-serif';
+      ctx.fillText(t.posterSubtitle, w / 2, subY);
 
       // 5. Stats Triple Cards (Sleek, Proportional, Starting at y = 523)
       const statsY = subY + 18; // 523
@@ -641,12 +672,12 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
         ctx.stroke();
 
         ctx.fillStyle = '#bae6fd';
-        ctx.font = '13.5px "Quicksand", sans-serif';
+        ctx.font = '13.5px "Quicksand", "PingFang SC", "Microsoft YaHei", sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText(icon + ' ' + title, x + colWidth / 2, statsY + 28);
 
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 24px "Outfit", sans-serif';
+        ctx.font = 'bold 24px "Outfit", "PingFang SC", "Microsoft YaHei", sans-serif';
         ctx.fillText(value, x + colWidth / 2, statsY + 62);
       };
 
@@ -659,9 +690,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
         ? Object.values(progress.decorations).filter(Boolean).length
         : 0;
 
-      drawStatBox(plateX, 'Focus Time', `${focusMins} mins`, '⏱️');
-      drawStatBox(plateX + colWidth + 8, 'Shells Cracked', `${shellsCracked}`, '🦪');
-      drawStatBox(plateX + (colWidth + 8) * 2, 'Treasures', `${treasureCount} / 16`, '✨');
+      drawStatBox(plateX, t.statFocusTime, `${focusMins} ${t.minsUnit}`, '⏱️');
+      drawStatBox(plateX + colWidth + 8, t.statShells, `${shellsCracked}`, '🦪');
+      drawStatBox(plateX + (colWidth + 8) * 2, t.statTreasures, `${treasureCount} / 16`, '✨');
 
       // 6. Arctic Otter Wisdom & Journal Box (Starting at y = 617, ending at 725, matching Mode A!)
       const quoteBoxY = statsY + statH + 14; // 617
@@ -677,9 +708,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       ctx.stroke();
 
       ctx.fillStyle = '#38bdf8';
-      ctx.font = 'bold 11px "Outfit", sans-serif';
+      ctx.font = 'bold 11px "Outfit", "PingFang SC", "Microsoft YaHei", sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('📜 ARCTIC OTTER JOURNAL & WISDOM', w / 2, quoteBoxY + 24);
+      ctx.fillText(t.journalTitle, w / 2, quoteBoxY + 24);
 
       // Divider line
       ctx.strokeStyle = 'rgba(56, 189, 248, 0.2)';
@@ -689,18 +720,14 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
       ctx.stroke();
 
       ctx.fillStyle = '#fef08a';
-      ctx.font = 'italic 15.5px "Quicksand", sans-serif';
-      const quotes = [
-        '“Slide on your belly whenever you find snow. Keep your favourite stone close.”',
-        '“In this bustling world, give yourself a quiet ocean of peaceful stars.”',
-        '“Take a deep breath and listen to the waves. Calm waters run deep.”',
-      ];
+      ctx.font = 'italic 15.5px "Quicksand", "PingFang SC", "Microsoft YaHei", sans-serif';
+      const quotes = t.journalQuotes;
       const selectedQuote = quotes[focusMins % quotes.length];
       wrapText(ctx, selectedQuote, w / 2, quoteBoxY + 64, quoteW - 50, 22);
 
       ctx.fillStyle = '#7dd3fc';
-      ctx.font = '600 12px "Quicksand", sans-serif';
-      ctx.fillText('— The Arctic Otter Creed —', w / 2, quoteBoxY + 94);
+      ctx.font = '600 12px "Quicksand", "PingFang SC", "Microsoft YaHei", sans-serif';
+      ctx.fillText(t.quoteCreed, w / 2, quoteBoxY + 94);
 
       // 7. Bottom Badges Row (At y = 741, exactly matching Mode A!)
       const badgeY = quoteBoxY + quoteH + 16; // 741
@@ -715,19 +742,19 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
         ctx.stroke();
 
         ctx.fillStyle = '#94a3b8';
-        ctx.font = '500 11px "Outfit", sans-serif';
+        ctx.font = '500 11px "Outfit", "PingFang SC", "Microsoft YaHei", sans-serif';
         ctx.textAlign = 'left';
         ctx.fillText(label, x + 14, badgeY + 22);
 
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 12px "Outfit", sans-serif';
+        ctx.font = 'bold 12px "Outfit", "PingFang SC", "Microsoft YaHei", sans-serif';
         ctx.textAlign = 'right';
         ctx.fillText(val, x + bColW - 14, badgeY + 22);
       };
 
-      drawFocusBadge(plateX, 'STREAK', `${streakDays} ${streakDays === 1 ? 'DAY' : 'DAYS'}`);
-      drawFocusBadge(plateX + bColW + 8, 'PEARLS', `${pearlsFound} FOUND`);
-      drawFocusBadge(plateX + (bColW + 8) * 2, 'CAMP DECOR', `${decorCount} / 4 UNLOCKED`);
+      drawFocusBadge(plateX, t.streakLabel, `${streakDays} ${streakDays === 1 ? t.streakUnitSingular : t.streakUnit}`);
+      drawFocusBadge(plateX + bColW + 8, t.pearlsLabel, `${pearlsFound} ${t.pearlsFound}`);
+      drawFocusBadge(plateX + (bColW + 8) * 2, t.campDecorLabel, t.decorUnlocked.replace('{count}', decorCount.toString()));
     }
 
     // ==========================================
@@ -779,38 +806,55 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
 
     // Mini scan prompt under QR card
     ctx.fillStyle = '#7dd3fc';
-    ctx.font = 'bold 10px "Outfit", sans-serif';
+    ctx.font = 'bold 10px "Outfit", "PingFang SC", sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('SCAN TO VISIT', qrBoxX + qrBoxW / 2, qrBoxY + qrBoxH + 16);
+    ctx.fillText(t.scanPrompt, qrBoxX + qrBoxW / 2, qrBoxY + qrBoxH + 16);
 
     // --- Left Column: Brand & Value Proposition ---
     const infoX = cardX + 2;
     ctx.textAlign = 'left';
 
-    // 1. Polar sanctuary badge
-    ctx.fillStyle = '#38bdf8';
-    ctx.font = 'bold 12px "Outfit", sans-serif';
-    ctx.fillText('🦦  AURORA DRIFT · ICE OTTER SANCTUARY', infoX, qrBoxY + 16);
+    if (lang === 'zh') {
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = 'bold 12px "Outfit", "PingFang SC", "Microsoft YaHei", sans-serif';
+      ctx.fillText('🦦  AURORA DRIFT · 极光漂流自习室', infoX, qrBoxY + 16);
 
-    // 2. Domain Name
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 30px "Outfit", sans-serif';
-    ctx.fillText('iceotter.com', infoX, qrBoxY + 48);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 30px "Outfit", sans-serif';
+      ctx.fillText('iceotter.com', infoX, qrBoxY + 48);
 
-    // 3. Slogan
-    ctx.fillStyle = '#94a3b8';
-    ctx.font = '500 13.5px "Quicksand", sans-serif';
-    ctx.fillText('No Ads · Cozy Ambient Sound & Minimalist Focus Companion', infoX, qrBoxY + 74);
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '500 13.5px "Quicksand", "PingFang SC", "Microsoft YaHei", sans-serif';
+      ctx.fillText('无广告 · 纯净白噪音 · 极简极地专注陪伴空间', infoX, qrBoxY + 74);
 
-    // 4. Call-to-action note
-    ctx.fillStyle = '#7dd3fc';
-    ctx.font = '600 12.5px "Quicksand", sans-serif';
-    ctx.fillText('✨ Scan the QR code to drift with your Ice Otter under the stars', infoX, qrBoxY + 98);
+      ctx.fillStyle = '#7dd3fc';
+      ctx.font = '600 12.5px "Quicksand", "PingFang SC", "Microsoft YaHei", sans-serif';
+      ctx.fillText('✨ 扫码或访问，与你的专属小水獭在星空下漂流专注', infoX, qrBoxY + 98);
 
-    // 5. Features metadata line
-    ctx.fillStyle = '#64748b';
-    ctx.font = '500 11.5px "Outfit", sans-serif';
-    ctx.fillText('100% FREE  ·  NO ADS  ·  DEEP FOCUS  ·  LOFI AMBIENT', infoX, qrBoxY + 122);
+      ctx.fillStyle = '#64748b';
+      ctx.font = '500 11.5px "Outfit", "PingFang SC", sans-serif';
+      ctx.fillText('完全免费  ·  无广告  ·  沉浸心流  ·  极地白噪音', infoX, qrBoxY + 122);
+    } else {
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = 'bold 12px "Outfit", sans-serif';
+      ctx.fillText('🦦  AURORA DRIFT · ICE OTTER SANCTUARY', infoX, qrBoxY + 16);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 30px "Outfit", sans-serif';
+      ctx.fillText('iceotter.com', infoX, qrBoxY + 48);
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '500 13.5px "Quicksand", sans-serif';
+      ctx.fillText('No Ads · Cozy Ambient Sound & Minimalist Focus Companion', infoX, qrBoxY + 74);
+
+      ctx.fillStyle = '#7dd3fc';
+      ctx.font = '600 12.5px "Quicksand", sans-serif';
+      ctx.fillText('✨ Scan the QR code to drift with your Ice Otter under the stars', infoX, qrBoxY + 98);
+
+      ctx.fillStyle = '#64748b';
+      ctx.font = '500 11.5px "Outfit", sans-serif';
+      ctx.fillText('100% FREE  ·  NO ADS  ·  DEEP FOCUS  ·  LOFI AMBIENT', infoX, qrBoxY + 122);
+    }
 
     // Generate exportable DataURL
     try {
@@ -822,9 +866,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
   } catch (err) {
     console.error('Failed to generate share poster:', err);
   }
-  }, [activeType, treasure, progress]);
+  }, [activeType, treasure, progress, lang]);
 
-  // Helper function to wrap text neatly on canvas
+  // Helper function to wrap text neatly on canvas (supporting English words and CJK characters)
   function wrapText(
     ctx: CanvasRenderingContext2D,
     text: string | undefined | null,
@@ -834,23 +878,30 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
     lineHeight: number
   ) {
     if (!text) return;
-    const words = text.split(' ');
+    // Tokenize: split CJK characters individually, keep English words together, preserve spaces
+    const tokens =
+      text.match(/[\u4e00-\u9fff\u3000-\u303f\uff00-\uffef]|[^\s\u4e00-\u9fff\u3000-\u303f\uff00-\uffef]+|\s+/g) || [
+        text,
+      ];
     let line = '';
     let currentY = y;
 
-    for (let n = 0; n < words.length; n++) {
-      const testLine = line + (line ? ' ' : '') + words[n];
+    for (let n = 0; n < tokens.length; n++) {
+      const token = tokens[n];
+      const testLine = line + token;
       const metrics = ctx.measureText(testLine);
       const testWidth = metrics.width;
-      if (testWidth > maxWidth && n > 0) {
-        ctx.fillText(line, x, currentY);
-        line = words[n];
+      if (testWidth > maxWidth && line.trim().length > 0) {
+        ctx.fillText(line.trim(), x, currentY);
+        line = token.trimStart();
         currentY += lineHeight;
       } else {
         line = testLine;
       }
     }
-    ctx.fillText(line, x, currentY);
+    if (line.trim().length > 0) {
+      ctx.fillText(line.trim(), x, currentY);
+    }
   }
 
   // Handle touch swiping left/right between cards
@@ -892,8 +943,11 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
           if (navigator.canShare({ files: [file] })) {
             await navigator.share({
               files: [file],
-              title: 'Ice Otter Sanctuary Postcard',
-              text: 'Relaxing polar focus companion under the aurora lights 🦦✨ Visit iceotter.com',
+              title: lang === 'zh' ? '极光水獭极地打卡海报' : 'Ice Otter Sanctuary Postcard',
+              text:
+                lang === 'zh'
+                  ? '与极光水獭一起在星空与冰洋下沉浸自习 🦦✨ 访问 iceotter.com'
+                  : 'Relaxing polar focus companion under the aurora lights 🦦✨ Visit iceotter.com',
             });
             setIsSharing(false);
             return;
@@ -920,11 +974,19 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
   const handleCopyCaption = () => {
     let caption = '';
     if (activeType === 'treasure' && treasure) {
-      caption = `❄️ Discovered a polar treasure in Aurora Drift at iceotter.com: "${treasure.title}"!\n${treasure.flavorText}\n✨ Peaceful focus companion with an Arctic Ice Otter under the northern lights 🦦 #studywithme #cozyweb #focus #lofi #ambient #iceotter`;
+      const title = lang === 'zh' && treasure.title_zh ? treasure.title_zh : treasure.title;
+      const flavor = lang === 'zh' && treasure.flavorText_zh ? treasure.flavorText_zh : treasure.flavorText;
+      caption =
+        lang === 'zh'
+          ? `❄️ 在 Aurora Drift 极光漂流 (iceotter.com) 发现了极地珍宝：【${title}】！\n${flavor}\n✨ 和可爱的小水獭一起在极光下专注自习 🦦 #自习室 #深度工作 #番茄钟 #白噪音 #极光水獭 #iceotter`
+          : `❄️ Discovered a polar treasure in Aurora Drift at iceotter.com: "${title}"!\n${flavor}\n✨ Peaceful focus companion with an Arctic Ice Otter under the northern lights 🦦 #studywithme #cozyweb #focus #lofi #ambient #iceotter`;
     } else {
       const mins = progress?.totalFocusMinutes ?? 0;
       const shells = progress?.totalShellsCracked ?? 0;
-      caption = `⏱️ Focused for ${mins} minutes and cracked ${shells} shells at iceotter.com today!\n🎧 Procedural polar wind, crackling fire, and ocean waves with my Ice Otter 🦦✨ #studywithme #pomodoro #deepwork #lofi #cozyweb`;
+      caption =
+        lang === 'zh'
+          ? `⏱️ 今天在 iceotter.com 沉浸自习了 ${mins} 分钟，敲开了 ${shells} 个神秘贝壳！\n🎧 听着极地风声、篝火与冰海波涛，和我的专属水獭一起专注 🦦✨ #自习室 #深度工作 #番茄钟 #白噪音 #极光水獭`
+          : `⏱️ Focused for ${mins} minutes and cracked ${shells} shells at iceotter.com today!\n🎧 Procedural polar wind, crackling fire, and ocean waves with my Ice Otter 🦦✨ #studywithme #pomodoro #deepwork #lofi #cozyweb`;
     }
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(caption).catch(() => {});
@@ -965,16 +1027,16 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
             </div>
             <div>
               <h3 className="text-base sm:text-lg font-bold text-white tracking-wide">
-                Share Poster Generator
+                {lang === 'zh' ? '分享海报生成器' : 'Share Poster Generator'}
               </h3>
               <p className="text-[11px] text-sky-300">
-                Save as a high-resolution poster or copy social caption
+                {lang === 'zh' ? '保存高清打卡海报或复制分享文案' : 'Save as a high-resolution poster or copy social caption'}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-xl text-sky-300 hover:text-white hover:bg-sky-800/50 transition-colors"
+            className="p-1.5 rounded-xl text-sky-300 hover:text-white hover:bg-sky-800/50 transition-colors shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
@@ -991,7 +1053,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
                   : 'bg-sky-950/60 text-sky-300 hover:text-white border border-sky-800/50'
               }`}
             >
-              💌 Treasure Postcard
+              💌 {t.tabTreasure}
             </button>
             <button
               onClick={() => setActiveType('focus')}
@@ -1001,7 +1063,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
                   : 'bg-sky-950/60 text-sky-300 hover:text-white border border-sky-800/50'
               }`}
             >
-              ⏱️ Focus Milestone
+              ⏱️ {t.tabFocus}
             </button>
           </div>
         )}
@@ -1023,15 +1085,15 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
               <button
                 onClick={() => setIsZoomed(true)}
                 className="absolute bottom-2 right-2 p-1.5 rounded-lg bg-sky-950/80 hover:bg-sky-900 text-sky-300 hover:text-white border border-sky-500/40 backdrop-blur-sm shadow-md transition-all text-[11px] flex items-center gap-1 opacity-80 hover:opacity-100"
-                title="Tap to view full resolution"
+                title={lang === 'zh' ? '点击查看高清大图' : 'Tap to view full resolution'}
               >
                 <Maximize2 className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Enlarge</span>
+                <span className="hidden sm:inline">{lang === 'zh' ? '查看大图' : 'Enlarge'}</span>
               </button>
             </div>
           ) : (
             <div className="h-56 flex items-center justify-center text-xs text-sky-400">
-              Generating poster...
+              {lang === 'zh' ? '正在绘制海报...' : 'Generating poster...'}
             </div>
           )}
 
@@ -1043,16 +1105,16 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
                 className={`h-1.5 rounded-full transition-all duration-300 ${
                   activeType === 'treasure' ? 'w-6 bg-sky-400 shadow-sm' : 'w-2 bg-sky-800/80 hover:bg-sky-700'
                 }`}
-                aria-label="Treasure Postcard"
-                title="Treasure Postcard"
+                aria-label={t.tabTreasure}
+                title={t.tabTreasure}
               />
               <button
                 onClick={() => setActiveType('focus')}
                 className={`h-1.5 rounded-full transition-all duration-300 ${
                   activeType === 'focus' ? 'w-6 bg-sky-400 shadow-sm' : 'w-2 bg-sky-800/80 hover:bg-sky-700'
                 }`}
-                aria-label="Focus Milestone"
-                title="Focus Milestone"
+                aria-label={t.tabFocus}
+                title={t.tabFocus}
               />
             </div>
           )}
@@ -1066,11 +1128,11 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
             className="flex-1 py-3 px-4 rounded-xl bg-sky-400 hover:bg-sky-300 disabled:opacity-50 text-sky-950 font-bold text-xs flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95 cursor-pointer"
           >
             {isSharing ? (
-              <span>Preparing poster...</span>
+              <span>{lang === 'zh' ? '正在准备海报...' : 'Preparing poster...'}</span>
             ) : (
               <>
                 <Download className="w-4 h-4" />
-                <span>Save Poster Image</span>
+                <span>{t.saveImage}</span>
               </>
             )}
           </button>
@@ -1082,12 +1144,12 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
             {copied ? (
               <>
                 <Check className="w-4 h-4 text-emerald-400" />
-                <span>Caption Copied!</span>
+                <span>{t.copiedToast}</span>
               </>
             ) : (
               <>
                 <Copy className="w-4 h-4" />
-                <span>Copy Caption</span>
+                <span>{t.copyImage}</span>
               </>
             )}
           </button>
@@ -1096,7 +1158,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
         {/* Mobile quick tips */}
         {isMobile && (
           <p className="text-[11px] text-sky-400/80 text-center pt-2 select-none shrink-0">
-            Tip: Tap poster to enlarge or long-press to save directly to Photos
+            {t.mobileHint}
           </p>
         )}
       </div>
@@ -1125,7 +1187,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
             />
           </div>
           <p className="text-xs text-sky-300/90 mt-2 select-none">
-            Tap anywhere outside or press close to return
+            {lang === 'zh' ? '点击外部任意区域或按关闭按钮返回' : 'Tap anywhere outside or press close to return'}
           </p>
         </div>
       )}

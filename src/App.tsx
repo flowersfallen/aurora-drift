@@ -18,12 +18,14 @@ import { CollectionModal } from './components/CollectionModal';
 import { AudioMixerModal } from './components/AudioMixerModal';
 import { CampDecorModal } from './components/CampDecorModal';
 import { ShareModal } from './components/ShareModal';
-import { OtterState, TimeOfDay, PlayerProgress, AudioSettings, Treasure } from './types';
+import { OtterState, TimeOfDay, PlayerProgress, AudioSettings, Treasure, Language } from './types';
 import { ALL_TREASURES } from './data/treasures';
 import { audioEngine } from './services/audioEngine';
+import { TRANSLATIONS } from './i18n/translations';
 
 const STORAGE_KEY_PROGRESS = 'aurora_drift_progress_v1';
 const STORAGE_KEY_AUDIO = 'aurora_drift_audio_v1';
+const STORAGE_KEY_LANG = 'aurora_drift_lang';
 
 const DEFAULT_PROGRESS: PlayerProgress = {
   pearls: 20,
@@ -53,6 +55,31 @@ export const App: React.FC = () => {
   // State
   const [otterState, setOtterState] = useState<OtterState>('idle');
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('aurora');
+
+  // Persistence: Language
+  const [lang, setLang] = useState<Language>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY_LANG);
+      if (saved === 'en' || saved === 'zh') return saved;
+      return typeof navigator !== 'undefined' && navigator.language && navigator.language.startsWith('zh')
+        ? 'zh'
+        : 'en';
+    } catch {
+      return 'en';
+    }
+  });
+
+  const t = TRANSLATIONS[lang];
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY_LANG, lang);
+    } catch {}
+  }, [lang]);
+
+  const toggleLanguage = () => {
+    setLang((prev) => (prev === 'en' ? 'zh' : 'en'));
+  };
 
   // Persistence: Player Progress
   const [progress, setProgress] = useState<PlayerProgress>(() => {
@@ -267,7 +294,7 @@ export const App: React.FC = () => {
             <h1 className="text-xs sm:text-base font-bold text-white tracking-wide flex items-center gap-1.5 sm:gap-2 leading-none whitespace-nowrap">
               <span>Aurora Drift</span>
               <span className="hidden sm:inline-flex items-center justify-center h-[18px] px-2 text-[10px] font-semibold leading-none rounded-full bg-sky-400/20 text-sky-300 border border-sky-400/30 self-center">
-                Cozy Web
+                {t.header.brandBadge}
               </span>
             </h1>
             <p className="text-[10px] sm:text-[11px] text-sky-300/80 font-medium leading-none mt-1">iceotter.com</p>
@@ -276,11 +303,20 @@ export const App: React.FC = () => {
 
         {/* Currency & Quick Toggles */}
         <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+          {/* Language Toggle: 中 / EN */}
+          <button
+            onClick={toggleLanguage}
+            className="px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-2xl glass-panel text-[11px] sm:text-xs font-bold text-sky-200 hover:text-white hover:scale-105 active:scale-95 transition-all border border-sky-400/35 flex items-center justify-center shrink-0 cursor-pointer"
+            title={t.header.langToggle}
+          >
+            {lang === 'en' ? '中' : 'EN'}
+          </button>
+
           {/* Pearls Currency Badge */}
           <div
             onClick={() => setActiveModal('decor')}
             className="flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 rounded-2xl glass-panel text-[11px] sm:text-xs font-bold text-amber-300 hover:scale-105 cursor-pointer transition-all border border-amber-400/30 shrink-0"
-            title="Your Ice Pearls - Click to open Camp Shop"
+            title={t.header.pearlsTitle}
           >
             <span>🦪</span>
             <span>{progress.pearls}</span>
@@ -294,8 +330,15 @@ export const App: React.FC = () => {
                 const next = timeOfDay === 'aurora' ? 'sunset' : timeOfDay === 'sunset' ? 'night' : 'aurora';
                 setTimeOfDay(next);
               }}
-              className="sm:hidden p-1.5 rounded-2xl glass-panel text-xs flex items-center justify-center border border-sky-800/50 shadow-sm transition-transform active:scale-95 shrink-0"
-              title={`Theme: ${timeOfDay} - Tap to cycle sky`}
+              className="sm:hidden p-1.5 rounded-2xl glass-panel text-xs flex items-center justify-center border border-sky-800/50 shadow-sm transition-transform active:scale-95 shrink-0 cursor-pointer"
+              title={t.header.themeCycle.replace(
+                '{theme}',
+                timeOfDay === 'aurora'
+                  ? t.header.themeAurora
+                  : timeOfDay === 'sunset'
+                  ? t.header.themeSunset
+                  : t.header.themeNight
+              )}
             >
               {timeOfDay === 'aurora' && <Sparkles className="w-3.5 h-3.5 text-sky-400" />}
               {timeOfDay === 'sunset' && <Sun className="w-3.5 h-3.5 text-amber-400" />}
@@ -306,28 +349,28 @@ export const App: React.FC = () => {
             <div className="hidden sm:flex items-center glass-panel rounded-2xl p-0.5 sm:p-1 border border-sky-800/40">
               <button
                 onClick={() => setTimeOfDay('aurora')}
-                className={`p-1 sm:p-1.5 rounded-xl text-xs transition-all border-none outline-none ${
+                className={`p-1 sm:p-1.5 rounded-xl text-xs transition-all border-none outline-none cursor-pointer ${
                   timeOfDay === 'aurora' ? 'bg-sky-400 text-sky-950 shadow-sm' : 'bg-transparent text-sky-300 hover:text-white'
                 }`}
-                title="Northern Lights Aurora"
+                title={t.header.themeAurora}
               >
                 <Sparkles className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={() => setTimeOfDay('sunset')}
-                className={`p-1 sm:p-1.5 rounded-xl text-xs transition-all border-none outline-none ${
+                className={`p-1 sm:p-1.5 rounded-xl text-xs transition-all border-none outline-none cursor-pointer ${
                   timeOfDay === 'sunset' ? 'bg-amber-400 text-amber-950 shadow-sm' : 'bg-transparent text-sky-300 hover:text-white'
                 }`}
-                title="Polar Sunset"
+                title={t.header.themeSunset}
               >
                 <Sun className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={() => setTimeOfDay('night')}
-                className={`p-1 sm:p-1.5 rounded-xl text-xs transition-all border-none outline-none ${
+                className={`p-1 sm:p-1.5 rounded-xl text-xs transition-all border-none outline-none cursor-pointer ${
                   timeOfDay === 'night' ? 'bg-indigo-400 text-indigo-950 shadow-sm' : 'bg-transparent text-sky-300 hover:text-white'
                 }`}
-                title="Quiet Midnight"
+                title={t.header.themeNight}
               >
                 <Moon className="w-3.5 h-3.5" />
               </button>
@@ -340,8 +383,8 @@ export const App: React.FC = () => {
               audioEngine.init();
               setActiveModal('audio');
             }}
-            className="p-1.5 sm:p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all hover:scale-105 shrink-0"
-            title="Ambient Sound Mixer"
+            className="p-1.5 sm:p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all hover:scale-105 shrink-0 cursor-pointer"
+            title={t.header.mixer}
           >
             {audioSettings.isMuted ? <VolumeX className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-400" /> : <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
           </button>
@@ -349,11 +392,11 @@ export const App: React.FC = () => {
           {/* Collection Album Button (Mobile: icon with corner badge; Desktop: text pill) */}
           <button
             onClick={() => setActiveModal('collection')}
-            className="relative p-1.5 sm:px-3 sm:py-1.5 rounded-2xl glass-panel text-xs font-semibold text-sky-200 hover:text-white hover:scale-105 transition-all border border-sky-400/30 flex items-center sm:gap-1.5 shrink-0"
-            title="Open Polar Memory Album"
+            className="relative p-1.5 sm:px-3 sm:py-1.5 rounded-2xl glass-panel text-xs font-semibold text-sky-200 hover:text-white hover:scale-105 transition-all border border-sky-400/30 flex items-center sm:gap-1.5 shrink-0 cursor-pointer"
+            title={t.header.albumTitle}
           >
             <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sky-400" />
-            <span className="hidden sm:inline">Album</span>
+            <span className="hidden sm:inline">{t.header.album}</span>
             <span className="absolute -top-1 -right-1 sm:static sm:top-auto sm:right-auto bg-sky-400 text-sky-950 text-[9px] sm:text-[10px] font-black w-3.5 h-3.5 sm:w-auto sm:h-auto sm:px-1.5 sm:py-0.2 rounded-full flex items-center justify-center shadow-sm">
               {progress.unlockedTreasureIds.length}
             </span>
@@ -362,8 +405,8 @@ export const App: React.FC = () => {
           {/* Info Modal */}
           <button
             onClick={() => setActiveModal('info')}
-            className="p-1.5 sm:p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all shrink-0"
-            title="About Ice Otter"
+            className="p-1.5 sm:p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all shrink-0 cursor-pointer"
+            title={t.header.info}
           >
             <HelpCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
@@ -374,8 +417,8 @@ export const App: React.FC = () => {
               setShareTreasure(null);
               setActiveModal('share');
             }}
-            className="hidden sm:flex p-1.5 sm:p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all hover:scale-105 shrink-0"
-            title="Share & Generate Poster"
+            className="hidden sm:flex p-1.5 sm:p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all hover:scale-105 shrink-0 cursor-pointer"
+            title={t.header.share}
           >
             <Share2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
@@ -383,8 +426,8 @@ export const App: React.FC = () => {
           {/* Fullscreen Toggle */}
           <button
             onClick={toggleFullscreen}
-            className="hidden md:block p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all shrink-0"
-            title="Toggle Fullscreen"
+            className="hidden md:block p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all shrink-0 cursor-pointer"
+            title={t.header.fullscreen}
           >
             <Maximize2 className="w-4 h-4" />
           </button>
@@ -396,6 +439,7 @@ export const App: React.FC = () => {
         <IceOtter
           state={otterState}
           decorations={progress.decorations}
+          lang={lang}
           onOtterClick={() => {
             audioEngine.init();
             if (otterState === 'surfaced') {
@@ -413,6 +457,7 @@ export const App: React.FC = () => {
           onStartDive={handleStartDive}
           onCancelDive={handleCancelDive}
           onCompleteDive={handleCompleteDive}
+          lang={lang}
         />
       </footer>
 
@@ -423,6 +468,7 @@ export const App: React.FC = () => {
         <ClamCrackingModal
           treasure={currentTreasure}
           onClose={handleCrackingClosed}
+          lang={lang}
         />
       )}
 
@@ -430,11 +476,12 @@ export const App: React.FC = () => {
       {activeModal === 'collection' && (
         <CollectionModal
           unlockedIds={progress.unlockedTreasureIds}
-          onShareTreasure={(t) => {
-            setShareTreasure(t);
+          onShareTreasure={(tr) => {
+            setShareTreasure(tr);
             setActiveModal('share');
           }}
           onClose={() => setActiveModal(null)}
+          lang={lang}
         />
       )}
 
@@ -444,6 +491,7 @@ export const App: React.FC = () => {
           settings={audioSettings}
           onUpdateSettings={(newSettings) => setAudioSettings(newSettings)}
           onClose={() => setActiveModal(null)}
+          lang={lang}
         />
       )}
 
@@ -454,6 +502,7 @@ export const App: React.FC = () => {
           decorations={progress.decorations}
           onUnlockItem={handleUnlockDecor}
           onClose={() => setActiveModal(null)}
+          lang={lang}
         />
       )}
 
@@ -466,6 +515,7 @@ export const App: React.FC = () => {
             setActiveModal(null);
             setShareTreasure(null);
           }}
+          lang={lang}
         />
       )}
 
@@ -483,21 +533,15 @@ export const App: React.FC = () => {
             <div className="w-16 h-16 rounded-2xl bg-sky-400/20 border border-sky-300/30 flex items-center justify-center text-3xl mb-3 shadow-inner">
               🦦
             </div>
-            <h3 className="text-xl font-bold text-white mb-1">About Aurora Drift</h3>
-            <p className="text-xs text-sky-300 font-semibold mb-3">Crafted for iceotter.com</p>
+            <h3 className="text-xl font-bold text-white mb-1">{t.about.title}</h3>
+            <p className="text-xs text-sky-300 font-semibold mb-3">{t.about.subtitle}</p>
 
             <div className="text-xs text-sky-100/90 space-y-2.5 text-left bg-sky-950/60 p-4 rounded-2xl border border-sky-800/40 mb-4 leading-relaxed">
-              <p>
-                ❄️ <strong>Cozy Ambient Focus:</strong> A peaceful haven designed for deep work, study, or simple relaxation.
-              </p>
-              <p>
-                🤿 <strong>The Arctic Dive:</strong> While you focus, your little Ice Otter explores the deep glacial waters and returns with mysterious shells.
-              </p>
-              <p>
-                ✨ <strong>Tactile ASMR:</strong> Tap with your lucky pebble to crack shells and uncover 16 collectible polar postcards, ancient relics, and heartwarming bottle letters.
-              </p>
+              <p dangerouslySetInnerHTML={{ __html: t.about.p1 }} />
+              <p dangerouslySetInnerHTML={{ __html: t.about.p2 }} />
+              <p dangerouslySetInnerHTML={{ __html: t.about.p3 }} />
               <p className="text-amber-200/90 italic">
-                “Slide on your belly whenever you find snow. Keep your favourite stone close.”
+                {t.about.quote}
               </p>
             </div>
 
@@ -506,16 +550,16 @@ export const App: React.FC = () => {
                 setShareTreasure(null);
                 setActiveModal('share');
               }}
-              className="w-full py-2.5 rounded-xl bg-gradient-to-r from-sky-400 to-teal-300 hover:from-sky-300 hover:to-teal-200 text-sky-950 font-bold text-xs shadow-lg transition-all mb-2 flex items-center justify-center gap-1.5 active:scale-95"
+              className="w-full py-2.5 rounded-xl bg-gradient-to-r from-sky-400 to-teal-300 hover:from-sky-300 hover:to-teal-200 text-sky-950 font-bold text-xs shadow-lg transition-all mb-2 flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer"
             >
-              <Sparkles className="w-4 h-4" /> Generate Share Poster
+              <Sparkles className="w-4 h-4" /> {t.about.generatePoster}
             </button>
 
             <button
               onClick={() => setActiveModal(null)}
-              className="w-full py-2 rounded-xl bg-sky-900/60 hover:bg-sky-800 text-sky-200 font-semibold text-xs border border-sky-700/50 transition-all"
+              className="w-full py-2 rounded-xl bg-sky-900/60 hover:bg-sky-800 text-sky-200 font-semibold text-xs border border-sky-700/50 transition-all cursor-pointer"
             >
-              Back to Campsite
+              {t.about.backToCamp}
             </button>
           </div>
         </div>

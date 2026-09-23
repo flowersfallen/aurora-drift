@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { OtterState, CampDecorations } from '../types';
+import { OtterState, CampDecorations, Language } from '../types';
+import { TRANSLATIONS } from '../i18n/translations';
 
 // Feature detection for Unicode 14 bubble emoji 🫧
 function checkBubbleEmojiSupport(): boolean {
@@ -45,10 +46,11 @@ function checkBubbleEmojiSupport(): boolean {
 interface IceOtterProps {
   state: OtterState;
   decorations: CampDecorations;
+  lang?: Language;
   onOtterClick: () => void;
 }
 
-export const IceOtter: React.FC<IceOtterProps> = ({ state, decorations, onOtterClick }) => {
+export const IceOtter: React.FC<IceOtterProps> = ({ state, decorations, lang = 'en', onOtterClick }) => {
   const [blink, setBlink] = useState(false);
   const [dialogue, setDialogue] = useState<string | null>(null);
   const [supportsBubbleEmoji, setSupportsBubbleEmoji] = useState(false);
@@ -66,16 +68,7 @@ export const IceOtter: React.FC<IceOtterProps> = ({ state, decorations, onOtterC
     return () => clearInterval(interval);
   }, []);
 
-  const cozyQuotes = [
-    "A little otter in a cooler world ✨",
-    "Slide on your belly whenever you find snow! ❄️",
-    "Chill, swim, crack shells, repeat~ 🦦",
-    "Look! I found the sparkliest ice cube 🧊",
-    "Take a cozy deep breath... you're doing great ☕",
-    "Always keep your favorite pebble close 🪨",
-    "Small otter, big cozy dreams! 🏔️",
-    "The polar aurora is dancing just for you 🌌",
-  ];
+  const cozyQuotes = TRANSLATIONS[lang].otter.dialogues;
 
   const handleInteraction = () => {
     if (state === 'diving') return;

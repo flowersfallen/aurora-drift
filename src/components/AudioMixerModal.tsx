@@ -1,19 +1,24 @@
 import React from 'react';
 import { X, Volume2, VolumeX, Wind, Flame, Waves, Music, Sparkles } from 'lucide-react';
-import { AudioSettings } from '../types';
+import { AudioSettings, Language } from '../types';
 import { audioEngine } from '../services/audioEngine';
+import { TRANSLATIONS } from '../i18n/translations';
 
 interface AudioMixerModalProps {
   settings: AudioSettings;
   onUpdateSettings: (newSettings: AudioSettings) => void;
   onClose: () => void;
+  lang?: Language;
 }
 
 export const AudioMixerModal: React.FC<AudioMixerModalProps> = ({
   settings,
   onUpdateSettings,
   onClose,
+  lang = 'en',
 }) => {
+  const t = TRANSLATIONS[lang].mixer;
+
   const handleVolumeChange = (key: keyof AudioSettings, val: number) => {
     const updated = { ...settings, [key]: val };
     onUpdateSettings(updated);
@@ -35,28 +40,28 @@ export const AudioMixerModal: React.FC<AudioMixerModalProps> = ({
   const soundChannels = [
     {
       key: 'windVolume' as const,
-      label: 'Arctic Wind',
+      label: t.channels.wind,
       icon: Wind,
       color: 'text-sky-300',
       val: settings.windVolume,
     },
     {
       key: 'fireVolume' as const,
-      label: 'Campfire Crackle',
+      label: t.channels.fire,
       icon: Flame,
       color: 'text-amber-400',
       val: settings.fireVolume,
     },
     {
       key: 'wavesVolume' as const,
-      label: 'Ocean Waves',
+      label: t.channels.waves,
       icon: Waves,
       color: 'text-teal-300',
       val: settings.wavesVolume,
     },
     {
       key: 'musicVolume' as const,
-      label: 'Lo-fi Chimes',
+      label: t.channels.music,
       icon: Music,
       color: 'text-purple-300',
       val: settings.musicVolume,
@@ -79,8 +84,8 @@ export const AudioMixerModal: React.FC<AudioMixerModalProps> = ({
               <Volume2 className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-bold text-white">Ambient Sound Mixer</h3>
-              <p className="text-[11px] sm:text-xs text-sky-300/80">Craft your personal arctic focus sanctuary</p>
+              <h3 className="text-base sm:text-lg font-bold text-white">{t.title}</h3>
+              <p className="text-[11px] sm:text-xs text-sky-300/80">{t.subtitle}</p>
             </div>
           </div>
           <button
@@ -103,11 +108,11 @@ export const AudioMixerModal: React.FC<AudioMixerModalProps> = ({
               }`}
             >
               {settings.isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-              {settings.isMuted ? 'Muted' : 'Sound Active'}
+              {settings.isMuted ? t.muted : t.soundActive}
             </button>
 
             <div className="flex items-center gap-1.5 text-xs text-sky-300/80 font-semibold">
-              <span>Master Volume:</span>
+              <span>{t.masterVolume}</span>
               <span className="font-mono text-white text-xs w-9 text-right font-bold">
                 {settings.isMuted ? '0%' : `${Math.round(settings.masterVolume * 100)}%`}
               </span>
@@ -166,7 +171,7 @@ export const AudioMixerModal: React.FC<AudioMixerModalProps> = ({
           onClick={() => audioEngine.playGentleChime(587.33, 2.5)}
           className="mt-2 py-2.5 rounded-xl bg-sky-950/60 hover:bg-sky-900/60 border border-sky-700/40 text-xs font-semibold text-sky-300 flex items-center justify-center gap-2 transition-all active:scale-95"
         >
-          <Sparkles className="w-3.5 h-3.5" /> Play Gentle Kalimba Chime
+          <Sparkles className="w-3.5 h-3.5" /> {lang === 'zh' ? '试听极地空灵风铃' : 'Play Gentle Kalimba Chime'}
         </button>
       </div>
     </div>

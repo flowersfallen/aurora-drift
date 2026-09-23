@@ -1,12 +1,14 @@
 import React from 'react';
 import { X, Check } from 'lucide-react';
-import { CampDecorations } from '../types';
+import { CampDecorations, Language } from '../types';
+import { TRANSLATIONS } from '../i18n/translations';
 
 interface CampDecorModalProps {
   pearls: number;
   decorations: CampDecorations;
   onUnlockItem: (itemKey: keyof CampDecorations, cost: number) => void;
   onClose: () => void;
+  lang?: Language;
 }
 
 interface DecorShopItem {
@@ -175,7 +177,10 @@ export const CampDecorModal: React.FC<CampDecorModalProps> = ({
   decorations,
   onUnlockItem,
   onClose,
+  lang = 'en',
 }) => {
+  const t = TRANSLATIONS[lang].shop;
+
   return (
     <div
       onClick={onClose}
@@ -189,9 +194,9 @@ export const CampDecorModal: React.FC<CampDecorModalProps> = ({
         <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-sky-800/50 shrink-0">
           <div>
             <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
-              <span>⛺</span> Iceberg Camp Decor
+              <span>⛺</span> {t.title}
             </h3>
-            <p className="text-[11px] sm:text-xs text-sky-300">Make your floating ice sanctuary warm & cozy</p>
+            <p className="text-[11px] sm:text-xs text-sky-300">{t.subtitle}</p>
           </div>
           <button
             onClick={onClose}
@@ -203,9 +208,9 @@ export const CampDecorModal: React.FC<CampDecorModalProps> = ({
 
         {/* Currency Display */}
         <div className="flex items-center justify-between py-2.5 px-3.5 bg-sky-900/40 rounded-2xl border border-sky-700/50 my-2.5 shrink-0">
-          <span className="text-xs text-sky-200 font-medium">Your Ice Pearls:</span>
+          <span className="text-xs text-sky-200 font-medium">{t.pearlsLabel}</span>
           <span className="text-sm font-bold text-amber-300 flex items-center gap-1.5">
-            <span>🦪</span> {pearls} Pearls
+            <span>🦪</span> {pearls} {t.pearlsUnit}
           </span>
         </div>
 
@@ -217,6 +222,7 @@ export const CampDecorModal: React.FC<CampDecorModalProps> = ({
           {SHOP_ITEMS.map((item) => {
             const isOwned = decorations[item.key];
             const canAfford = pearls >= item.cost;
+            const itemLocalized = t.items[item.key] || { title: item.title, desc: item.desc };
 
             return (
               <div
@@ -231,9 +237,9 @@ export const CampDecorModal: React.FC<CampDecorModalProps> = ({
                   </div>
                   {/* Text Details */}
                   <div className="flex-1 min-w-0 pr-1.5 flex flex-col justify-center">
-                    <h4 className="text-sm font-bold text-white leading-snug">{item.title}</h4>
+                    <h4 className="text-sm font-bold text-white leading-snug">{itemLocalized.title}</h4>
                     <p className="text-xs text-sky-200/80 leading-relaxed mt-1 break-words">
-                      {item.desc}
+                      {itemLocalized.desc}
                     </p>
                   </div>
                 </div>
@@ -241,7 +247,7 @@ export const CampDecorModal: React.FC<CampDecorModalProps> = ({
                 {/* Right: Buy / Placed Button */}
                 {isOwned ? (
                   <span className="px-3 py-2 rounded-xl bg-teal-500/20 text-teal-300 text-xs font-bold border border-teal-400/30 flex items-center gap-1 shrink-0 ml-1">
-                    <Check className="w-3.5 h-3.5" /> Placed
+                    <Check className="w-3.5 h-3.5" /> {t.placed}
                   </span>
                 ) : (
                   <button

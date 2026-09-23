@@ -1,27 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Play, Pause, RotateCcw, Compass } from 'lucide-react';
-import { OtterState } from '../types';
+import { OtterState, Language } from '../types';
+import { TRANSLATIONS } from '../i18n/translations';
 
 interface FocusTimerProps {
   otterState: OtterState;
+  lang?: Language;
   onStartDive: (durationMinutes: number) => void;
   onCancelDive: () => void;
   onCompleteDive: () => void;
 }
 
-const PRESETS = [
-  { label: '1m Demo', minutes: 1, desc: 'Quick demo' },
-  { label: '5m Chill', minutes: 5, desc: 'Short break' },
-  { label: '25m Focus', minutes: 25, desc: 'Classic Pomodoro' },
-  { label: '45m Deep', minutes: 45, desc: 'Deep flow' },
-];
+const PRESET_MINUTES: (1 | 5 | 25 | 45)[] = [1, 5, 25, 45];
 
 export const FocusTimer: React.FC<FocusTimerProps> = ({
   otterState,
+  lang = 'en',
   onStartDive,
   onCancelDive,
   onCompleteDive,
 }) => {
+  const t = TRANSLATIONS[lang].timer;
   const [selectedMinutes, setSelectedMinutes] = useState<number>(1);
   const [timeLeft, setTimeLeft] = useState<number>(60);
   const [totalTime, setTotalTime] = useState<number>(60);
@@ -41,7 +40,7 @@ export const FocusTimer: React.FC<FocusTimerProps> = ({
   const handleToggleStart = () => {
     if (isDiving) {
       // Pause or cancel
-      if (confirm('Cancel current deep dive? The otter will return to the iceberg without a treasure.')) {
+      if (confirm(t.cancelConfirm)) {
         setIsActive(false);
         setTimeLeft(selectedMinutes * 60);
         onCancelDive();
@@ -92,24 +91,24 @@ export const FocusTimer: React.FC<FocusTimerProps> = ({
       <div className="h-8 flex items-center justify-center w-full">
         {!isDiving ? (
           <div className="flex items-center gap-1 sm:gap-2 p-0.5 sm:p-1 bg-sky-950/60 rounded-xl sm:rounded-2xl border border-sky-800/40">
-            {PRESETS.map((p) => (
+            {PRESET_MINUTES.map((m) => (
               <button
-                key={p.minutes}
-                onClick={() => handleSelectPreset(p.minutes)}
+                key={m}
+                onClick={() => handleSelectPreset(m)}
                 className={`px-2 sm:px-3 py-1 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-semibold transition-all border-none outline-none ${
-                  selectedMinutes === p.minutes
+                  selectedMinutes === m
                     ? 'bg-sky-400 text-sky-950 shadow-md scale-105'
                     : 'bg-transparent text-sky-300/80 hover:text-white hover:bg-sky-900/40'
                 }`}
               >
-                {p.label}
+                {t.presets[m].label}
               </button>
             ))}
           </div>
         ) : (
           <div className="flex items-center gap-2 px-3 sm:px-4 py-1 bg-sky-950/80 rounded-xl sm:rounded-2xl border border-sky-600/40 text-sky-300 text-[11px] sm:text-xs font-semibold animate-pulse shadow-inner">
             <Compass className="w-3.5 h-3.5 text-sky-400 animate-spin" style={{ animationDuration: '6s' }} />
-            <span>Diving to {Math.round(progressPercent * 2)}m depth</span>
+            <span>{t.divingDepth.replace('{depth}', String(Math.round(progressPercent * 2)))}</span>
           </div>
         )}
       </div>
@@ -143,11 +142,11 @@ export const FocusTimer: React.FC<FocusTimerProps> = ({
         >
           {isDiving ? (
             <>
-              <Pause className="w-4 h-4" /> Cancel Dive
+              <Pause className="w-4 h-4" /> {t.cancelDive}
             </>
           ) : (
             <>
-              <Play className="w-4 h-4 fill-sky-950" /> Start Ice Dive
+              <Play className="w-4 h-4 fill-sky-950" /> {t.startDive}
             </>
           )}
         </button>
@@ -156,7 +155,7 @@ export const FocusTimer: React.FC<FocusTimerProps> = ({
           <button
             onClick={handleReset}
             className="p-2.5 rounded-2xl bg-sky-950/80 border border-sky-700/50 text-sky-300 hover:text-white hover:bg-sky-800/50 shadow-md transition-all active:scale-95 flex items-center justify-center"
-            title="Reset timer"
+            title={t.resetTimer}
           >
             <RotateCcw className="w-4 h-4" />
           </button>
