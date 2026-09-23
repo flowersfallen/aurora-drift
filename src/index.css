@@ -394,16 +394,3 @@ input[type="range"]::-moz-range-thumb {
   transform-origin: -14px 34px;
 }
 
-@keyframes otterPushHeave {
-  0%, 100% {
-    transform: translate(0px, 0px);
-  }
-  45% {
-    transform: translate(2.5px, -1.5px);
-  }
-}
-
-.animate-otter-pushing {
-  animation: otterPushHeave 1.2s ease-in-out infinite;
-}
-

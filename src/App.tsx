@@ -782,7 +782,7 @@ export const App: React.FC = () => {
               onClick={() => setOtterState(prev => prev === 'cruising' ? 'idle' : 'cruising')}
               className="px-2 py-1 bg-amber-800/80 hover:bg-amber-700 rounded text-white font-medium cursor-pointer"
             >
-              {otterState === 'cruising' ? '停船(idle)' : '划桨巡航(cruising)'}
+              {otterState === 'cruising' ? '停船(idle)' : '推冰巡航(cruising)'}
             </button>
           </div>
         </div>

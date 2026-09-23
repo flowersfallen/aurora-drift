@@ -735,120 +735,167 @@ export const IceOtter: React.FC<IceOtterProps> = ({
               </g>
             ) : isCruising ? (
               /* ========================================================================= */
-              /* 8. CRUISING STATE: AUTHENTIC ON-MODEL OTTER PUSHING & KICKING IN WATER     */
-              /* 100% Mascot Line Weights (3.8px), Same Face, Same Colors, Paws on Ice    */
+              /* 8. CRUISING STATE: AUTHENTIC 100% ON-MODEL MASCOT PUSHING IN WATER       */
+              /* Same Scale, Exact Mascot Face, Same Colors, Waist at Waterline Y=255      */
               /* ========================================================================= */
               <g
                 id="pushing-otter"
-                transform="translate(64, 224)"
-                className="cursor-pointer group animate-otter-pushing"
+                transform="translate(-18, 142) rotate(6 78 115)"
+                className="cursor-pointer group hover:brightness-105 transition-all"
                 onClick={handleInteraction}
               >
-                {/* 1. Translucent Water Surface Ripples around Waist */}
-                <ellipse cx="-16" cy="26" rx="36" ry="11" fill="none" stroke="#7dd3fc" strokeWidth="2.5" opacity="0.7" />
-                <ellipse cx="-16" cy="26" rx="25" ry="7" fill="#38bdf8" opacity="0.22" />
-
-                {/* 2. Water Wake Speed Streaks trailing behind */}
-                <path d="M -36 24 C -60 28 -90 34 -120 38" stroke="#ffffff" strokeWidth="3" strokeDasharray="8 4" opacity="0.85" fill="none" className="animate-pulse" />
-                <path d="M -30 30 C -55 36 -80 42 -105 46" stroke="#bae6fd" strokeWidth="2.2" strokeDasharray="6 3" opacity="0.7" fill="none" />
-
-                {/* 3. Churning Propeller Jet Bubbles behind Kicking Flippers */}
-                <circle cx="-48" cy="24" r="4.5" fill="#ffffff" opacity="0.9" className="animate-ping" style={{ animationDuration: '0.8s' }} />
-                <circle cx="-60" cy="30" r="5.5" fill="#bae6fd" opacity="0.8" className="animate-ping" style={{ animationDuration: '1.1s' }} />
-                <circle cx="-72" cy="20" r="4" fill="#7dd3fc" opacity="0.7" className="animate-ping" style={{ animationDuration: '1.4s' }} />
-                <circle cx="-84" cy="32" r="3" fill="#e0f2fe" opacity="0.6" className="animate-ping" style={{ animationDuration: '0.9s' }} />
-
-                {/* 4. Chubby Tail swishing in water */}
-                <path
-                  d="M -26 18 C -44 14 -52 24 -46 30 C -40 32 -32 26 -26 22 Z"
-                  fill="#3c4556"
-                  stroke="#2e384d"
-                  strokeWidth="3.5"
-                  strokeLinejoin="round"
+                {/* Subtle pushing heave animation via native SVG transform (never overridden by CSS) */}
+                <animateTransform
+                  attributeName="transform"
+                  type="translate"
+                  values="0,0; 2,-1.5; 0,0"
+                  dur="1.2s"
+                  repeatCount="indefinite"
+                  additive="sum"
                 />
 
-                {/* 5. Alternating Flutter-Kicking Hind Flippers */}
-                {/* Back Left Leg & Webbed Flipper */}
-                <g className="animate-flutter-kick-1">
+                {/* 1. Water Wake Speed Streaks trailing behind into sea */}
+                <path d="M 28 120 C 5 125 -22 131 -50 135" stroke="#ffffff" strokeWidth="2.8" strokeDasharray="8 4" opacity="0.85" fill="none" className="animate-pulse" />
+                <path d="M 34 128 C 12 134 -12 140 -38 144" stroke="#bae6fd" strokeWidth="2" strokeDasharray="6 3" opacity="0.7" fill="none" />
+
+                {/* 2. Churning Propeller Jet Bubbles behind Kicking Flippers */}
+                <circle cx="20" cy="128" r="4" fill="#ffffff" opacity="0.9" className="animate-ping" style={{ animationDuration: '0.9s' }} />
+                <circle cx="6" cy="136" r="5" fill="#bae6fd" opacity="0.8" className="animate-ping" style={{ animationDuration: '1.2s' }} />
+                <circle cx="-8" cy="126" r="3.8" fill="#7dd3fc" opacity="0.7" className="animate-ping" style={{ animationDuration: '1.5s' }} />
+                <circle cx="-22" cy="138" r="3" fill="#e0f2fe" opacity="0.6" className="animate-ping" style={{ animationDuration: '1s' }} />
+
+                {/* 3. Translucent Sea Surface Ring BEHIND body */}
+                <ellipse cx="78" cy="115" rx="46" ry="11" fill="none" stroke="#7dd3fc" strokeWidth="2" opacity="0.55" />
+                <ellipse cx="78" cy="115" rx="38" ry="7" fill="#38bdf8" opacity="0.2" />
+
+                {/* 4. Chubby Beaver/Otter Tail swishing in water */}
+                <g>
                   <path
-                    d="M -22 24 C -36 20 -46 28 -40 34 C -34 36 -28 30 -24 28 Z"
+                    d="M48 126 C26 122 10 132 14 142 C18 150 40 146 52 136 Z"
                     fill="#3c4556"
                     stroke="#2e384d"
-                    strokeWidth="3.2"
+                    strokeWidth="3.5"
                     strokeLinejoin="round"
+                  />
+                  <animateTransform
+                    attributeName="transform"
+                    type="rotate"
+                    values="0 48 130; -8 48 130; 0 48 130"
+                    dur="0.9s"
+                    repeatCount="indefinite"
+                    additive="sum"
+                  />
+                </g>
+
+                {/* 5. Underwater Flutter-Kicking Hind Webbed Flippers */}
+                {/* Back Left Leg & Webbed Flipper */}
+                <g>
+                  <ellipse cx="56" cy="138" rx="10" ry="13" fill="#3c4556" stroke="#2e384d" strokeWidth="3.2" transform="rotate(-15 56 138)" />
+                  <animateTransform
+                    attributeName="transform"
+                    type="translate"
+                    values="0,0; -3,4; 0,0"
+                    dur="0.5s"
+                    repeatCount="indefinite"
+                    additive="sum"
                   />
                 </g>
                 {/* Back Right Leg & Webbed Flipper */}
-                <g className="animate-flutter-kick-2">
-                  <path
-                    d="M -16 28 C -30 28 -40 38 -32 42 C -26 42 -20 34 -16 32 Z"
-                    fill="#3c4556"
-                    stroke="#2e384d"
-                    strokeWidth="3.2"
-                    strokeLinejoin="round"
+                <g>
+                  <ellipse cx="84" cy="140" rx="10" ry="13" fill="#3c4556" stroke="#2e384d" strokeWidth="3.2" transform="rotate(12 84 140)" />
+                  <animateTransform
+                    attributeName="transform"
+                    type="translate"
+                    values="0,0; 3,-4; 0,0"
+                    dur="0.5s"
+                    begin="0.25s"
+                    repeatCount="indefinite"
+                    additive="sum"
                   />
                 </g>
 
-                {/* 6. Chubby Cream Body (Leaning forward into the ice shelf) */}
+                {/* 6. AUTHENTIC CHUBBY CREAM MASCOT BODY */}
                 <path
-                  d="M -4 4 C -24 8 -30 24 -22 34 C -12 42 12 36 20 22 C 24 14 18 4 8 2 Z"
+                  d="M44 65 C44 32 116 32 116 65 C116 82 126 106 120 128 C116 142 44 142 40 128 C34 106 44 82 44 65 Z"
                   fill="#fdfbf7"
                   stroke="#2e384d"
                   strokeWidth="3.8"
                   strokeLinejoin="round"
                 />
 
-                {/* 7. Front Paws Firmly Pressed against the Ice Shelf */}
-                {/* Upper Paw */}
-                <path d="M 16 6 C 22 4 30 8 28 16" stroke="#2e384d" strokeWidth="3.8" strokeLinecap="round" fill="none" />
-                <ellipse cx="30" cy="16" rx="8" ry="7" fill="#3c4556" stroke="#2e384d" strokeWidth="3.5" />
-                <line x1="27" y1="13" x2="32" y2="15" stroke="#2e384d" strokeWidth="1.8" strokeLinecap="round" />
-                {/* Lower Paw */}
-                <path d="M 10 14 C 16 14 24 20 22 26" stroke="#2e384d" strokeWidth="3.8" strokeLinecap="round" fill="none" />
-                <ellipse cx="24" cy="26" rx="8" ry="7" fill="#3c4556" stroke="#2e384d" strokeWidth="3.5" />
-                <line x1="21" y1="23" x2="26" y2="25" stroke="#2e384d" strokeWidth="1.8" strokeLinecap="round" />
+                {/* 7. Front Chubby Arms & Paws Firmly Pressed against the Ice Shelf */}
+                {/* Upper Arm White Underlay (covers body edge cleanly) */}
+                <path
+                  d="M 92 86 C 108 86 122 92 127 100 C 122 107 106 104 90 98 Z"
+                  fill="#fdfbf7"
+                />
+                <path
+                  d="M 94 86 C 108 88 120 94 126 100"
+                  stroke="#2e384d"
+                  strokeWidth="3.8"
+                  strokeLinecap="round"
+                  fill="none"
+                />
+                {/* Upper Charcoal Mitten Paw gripping ice ledge */}
+                <ellipse cx="127" cy="101" rx="8.5" ry="7.5" fill="#3c4556" stroke="#2e384d" strokeWidth="3.2" />
+                <line x1="123" y1="98" x2="129" y2="100" stroke="#2e384d" strokeWidth="1.6" strokeLinecap="round" />
+                <line x1="123" y1="104" x2="129" y2="102" stroke="#2e384d" strokeWidth="1.6" strokeLinecap="round" />
 
-                {/* Splash froth where paws press against ice shelf */}
-                <path d="M 22 22 Q 28 18 36 24" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" fill="none" opacity="0.9" />
+                {/* Lower Arm: Single cute curve from tummy to paw */}
+                <path
+                  d="M 88 108 C 100 112 110 115 118 119"
+                  stroke="#2e384d"
+                  strokeWidth="3.8"
+                  strokeLinecap="round"
+                  fill="none"
+                />
+                {/* Lower Charcoal Mitten Paw pressing ice wall */}
+                <ellipse cx="119" cy="119" rx="8.5" ry="7.5" fill="#3c4556" stroke="#2e384d" strokeWidth="3.2" />
+                <line x1="115" y1="116" x2="121" y2="118" stroke="#2e384d" strokeWidth="1.6" strokeLinecap="round" />
+                <line x1="115" y1="122" x2="121" y2="120" stroke="#2e384d" strokeWidth="1.6" strokeLinecap="round" />
 
-                {/* 8. Water spray droplets splashing around */}
-                <circle cx="-42" cy="18" r="3" fill="#ffffff" className="animate-bounce" />
-                <circle cx="-32" cy="14" r="2.2" fill="#bae6fd" className="animate-bounce" style={{ animationDelay: '0.3s' }} />
-                <circle cx="-22" cy="10" r="2" fill="#e0f2fe" className="animate-bounce" style={{ animationDelay: '0.6s' }} />
+                {/* Splash & Ice froth at paw contact point */}
+                <path d="M120 114 Q127 110 133 116" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.9" />
 
-                {/* 9. ON-MODEL MASCOT HEAD (3/4 Angled, Same Size, Same Colors) */}
-                <ellipse cx="14" cy="-6" rx="23" ry="20" fill="#fdfbf7" stroke="#2e384d" strokeWidth="3.8" />
+                {/* 8. Front Water Surface Wave & Foam IN FRONT of Waist (Y_local = 115) */}
+                <path d="M 36 116 Q 78 123 120 116" stroke="#ffffff" strokeWidth="3.2" strokeLinecap="round" fill="none" opacity="0.95" />
+                <path d="M 42 120 Q 78 126 114 120" stroke="#7dd3fc" strokeWidth="2.2" strokeLinecap="round" fill="none" opacity="0.8" />
 
-                {/* Charcoal Ears (Same shape and stroke) */}
-                <ellipse cx="1" cy="-21" rx="6" ry="8.5" fill="#3c4556" stroke="#2e384d" strokeWidth="3.2" transform="rotate(-18 1 -21)" />
-                <ellipse cx="27" cy="-21" rx="6" ry="8.5" fill="#3c4556" stroke="#2e384d" strokeWidth="3.2" transform="rotate(18 27 -21)" />
+                {/* Water splash droplets around waist */}
+                <circle cx="34" cy="112" r="2.8" fill="#ffffff" className="animate-bounce" />
+                <circle cx="46" cy="108" r="2" fill="#bae6fd" className="animate-bounce" style={{ animationDelay: '0.3s' }} />
 
-                {/* Whiskers (Same strokeWidth 2.6) */}
-                <path d="M -7 -1 Q 0 1 5 2" stroke="#2e384d" strokeWidth="2.6" strokeLinecap="round" fill="none" />
-                <path d="M -6 6 Q 1 6 5 5" stroke="#2e384d" strokeWidth="2.6" strokeLinecap="round" fill="none" />
-                <path d="M 37 -1 Q 30 1 25 2" stroke="#2e384d" strokeWidth="2.6" strokeLinecap="round" fill="none" />
-                <path d="M 36 6 Q 29 6 25 5" stroke="#2e384d" strokeWidth="2.6" strokeLinecap="round" fill="none" />
+                {/* 8. AUTHENTIC MASCOT HEAD & EARS (100% Identical to Sitting Mascot) */}
+                {/* Tiny Charcoal Ears */}
+                <ellipse cx="42" cy="56" rx="6" ry="8.5" fill="#3c4556" stroke="#2e384d" strokeWidth="3.2" transform="rotate(-15 42 56)" />
+                <ellipse cx="118" cy="56" rx="6" ry="8.5" fill="#3c4556" stroke="#2e384d" strokeWidth="3.2" transform="rotate(15 118 56)" />
 
-                {/* Eyes (Blinking animation, same cute eyes!) */}
+                {/* Whiskers (Exact 2.6px stroke) */}
+                <path d="M30 70 Q40 73 46 74" stroke="#2e384d" strokeWidth="2.6" strokeLinecap="round" fill="none" />
+                <path d="M31 79 Q41 80 46 79" stroke="#2e384d" strokeWidth="2.6" strokeLinecap="round" fill="none" />
+                <path d="M130 70 Q120 73 114 74" stroke="#2e384d" strokeWidth="2.6" strokeLinecap="round" fill="none" />
+                <path d="M129 79 Q119 80 114 79" stroke="#2e384d" strokeWidth="2.6" strokeLinecap="round" fill="none" />
+
+                {/* Eyes (Blinking animation, same cute eyes) */}
                 {blink ? (
                   <>
-                    <path d="M 6 -6 Q 10 -11 14 -6" stroke="#2e384d" strokeWidth="3.2" strokeLinecap="round" fill="none" />
-                    <path d="M 20 -6 Q 24 -11 28 -6" stroke="#2e384d" strokeWidth="3.2" strokeLinecap="round" fill="none" />
+                    <path d="M60 64 Q66 58 72 64" stroke="#2e384d" strokeWidth="3.2" strokeLinecap="round" fill="none" />
+                    <path d="M88 64 Q94 58 100 64" stroke="#2e384d" strokeWidth="3.2" strokeLinecap="round" fill="none" />
                   </>
                 ) : (
                   <>
-                    <ellipse cx="10" cy="-6" rx="3.6" ry="5.2" fill="#2e384d" />
-                    <ellipse cx="24" cy="-6" rx="3.6" ry="5.2" fill="#2e384d" />
+                    <ellipse cx="66" cy="64" rx="3.6" ry="5.2" fill="#2e384d" />
+                    <ellipse cx="94" cy="64" rx="3.6" ry="5.2" fill="#2e384d" />
                   </>
                 )}
 
                 {/* Button Nose & Cheerful Smiling Mouth */}
-                <path d="M 14 -3 Q 17 -5 20 -3 Q 17 0 14 -3 Z" fill="#2e384d" />
-                <path d="M 14 0 Q 17 4 20 0" stroke="#2e384d" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+                <path d="M76 66 Q80 64 84 66 Q80 71 76 66 Z" fill="#2e384d" />
+                <path d="M76 70 Q80 73 84 70" stroke="#2e384d" strokeWidth="2.2" strokeLinecap="round" fill="none" />
 
-                {/* Soft Pastel Pink Blush (Same #fecdd3 cheeks!) */}
-                <ellipse cx="4" cy="-1" rx="7.5" ry="4.5" fill="#fecdd3" opacity="0.85" />
-                <ellipse cx="30" cy="-1" rx="7.5" ry="4.5" fill="#fecdd3" opacity="0.85" />
+                {/* Soft Pastel Blush Cheeks */}
+                <ellipse cx="52" cy="70" rx="7.5" ry="4.5" fill="#fecdd3" opacity="0.85" />
+                <ellipse cx="108" cy="70" rx="7.5" ry="4.5" fill="#fecdd3" opacity="0.85" />
               </g>
             ) : (
               /* ----------------------------------------------------------------- */
