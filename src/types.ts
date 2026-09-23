@@ -1,4 +1,4 @@
-export type OtterState = 'idle' | 'sleeping' | 'grooming' | 'diving' | 'surfaced' | 'cracking';
+export type OtterState = 'idle' | 'sleeping' | 'grooming' | 'diving' | 'surfaced' | 'cracking' | 'cruising';
 
 export type TimeOfDay = 'aurora' | 'sunset' | 'night' | 'day';
 

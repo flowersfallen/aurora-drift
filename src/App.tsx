@@ -106,6 +106,9 @@ export const App: React.FC = () => {
     }
   });
 
+  // Stage 1 vs Stage 2 Gating: All 16 memories collected in the album
+  const isAlbumCompleted = progress.unlockedTreasureIds.length >= 16;
+
   // Derived polar drift metrics
   const currentMiles = progress.driftMiles ?? progress.totalFocusMinutes;
   const nextWaypoint =
@@ -124,7 +127,7 @@ export const App: React.FC = () => {
 
   // Modals
   const [activeModal, setActiveModal] = useState<
-    'collection' | 'audio' | 'decor' | 'info' | 'share' | 'voyage' | null
+    'collection' | 'audio' | 'decor' | 'info' | 'share' | 'voyage' | 'ceremony' | null
   >(null);
   const [shareTreasure, setShareTreasure] = useState<Treasure | null>(null);
   const [currentTreasure, setCurrentTreasure] = useState<Treasure | null>(null);
@@ -176,45 +179,66 @@ export const App: React.FC = () => {
     }
   }, [isAnyModalOpen]);
 
-  // Start Dive Handler
+  // Start Dive or Cruise Handler
   const handleStartDive = (durationMinutes: number) => {
     audioEngine.init();
     audioEngine.playBubbleSplash();
-    setOtterState('diving');
-    setProgress((prev) => {
-      const newMinutes = prev.totalFocusMinutes + durationMinutes;
-      const currentDrift = prev.driftMiles ?? prev.totalFocusMinutes;
-      const newMiles = currentDrift + durationMinutes;
 
-      // Check waypoint unlocks
-      const currentVisited = prev.visitedWaypointIds ?? ['still_floe'];
-      const newlyReached = DRIFT_WAYPOINTS
-        .filter((wp) => newMiles >= wp.requiredMiles && !currentVisited.includes(wp.id))
-        .map((wp) => wp.id);
+    if (isAlbumCompleted) {
+      // Phase 2: Polar Cruise & Ice Sanctuary Drifting
+      setOtterState('cruising');
+      setProgress((prev) => {
+        const newMinutes = prev.totalFocusMinutes + durationMinutes;
+        const currentDrift = prev.driftMiles ?? prev.totalFocusMinutes;
+        const newMiles = currentDrift + durationMinutes;
 
-      return {
+        // Check waypoint unlocks
+        const currentVisited = prev.visitedWaypointIds ?? ['still_floe'];
+        const newlyReached = DRIFT_WAYPOINTS
+          .filter((wp) => newMiles >= wp.requiredMiles && !currentVisited.includes(wp.id))
+          .map((wp) => wp.id);
+
+        return {
+          ...prev,
+          totalFocusMinutes: newMinutes,
+          driftMiles: newMiles,
+          visitedWaypointIds: newlyReached.length > 0 ? [...currentVisited, ...newlyReached] : currentVisited,
+        };
+      });
+    } else {
+      // Phase 1: Deep Ice Dive for mysterious shells
+      setOtterState('diving');
+      setProgress((prev) => ({
         ...prev,
-        totalFocusMinutes: newMinutes,
-        driftMiles: newMiles,
-        visitedWaypointIds: newlyReached.length > 0 ? [...currentVisited, ...newlyReached] : currentVisited,
-      };
-    });
+        totalFocusMinutes: prev.totalFocusMinutes + durationMinutes,
+      }));
+    }
   };
 
-  // Cancel Dive Handler
+  // Cancel Dive or Cruise Handler
   const handleCancelDive = () => {
     setOtterState('idle');
   };
 
-  // Complete Dive Handler (Surfaced with Clam!)
+  // Complete Dive or Cruise Handler
   const handleCompleteDive = () => {
-    // Pick next treasure (prefer undiscovered items)
-    const undiscovered = ALL_TREASURES.filter((t) => !progress.unlockedTreasureIds.includes(t.id));
-    const pool = undiscovered.length > 0 ? undiscovered : ALL_TREASURES;
-    const selected = pool[Math.floor(Math.random() * pool.length)];
+    if (isAlbumCompleted) {
+      // Phase 2: Polar Cruise Leg Complete!
+      setOtterState('idle');
+      audioEngine.playGentleChime(880, 2.5);
+      setProgress((prev) => ({
+        ...prev,
+        pearls: prev.pearls + 15,
+      }));
+    } else {
+      // Phase 1: Surfaced with Clam from deep trench!
+      const undiscovered = ALL_TREASURES.filter((t) => !progress.unlockedTreasureIds.includes(t.id));
+      const pool = undiscovered.length > 0 ? undiscovered : ALL_TREASURES;
+      const selected = pool[Math.floor(Math.random() * pool.length)];
 
-    setCurrentTreasure(selected);
-    setOtterState('surfaced');
+      setCurrentTreasure(selected);
+      setOtterState('surfaced');
+    }
   };
 
   // Clam Cracking modal closed
@@ -223,14 +247,25 @@ export const App: React.FC = () => {
     setOtterState('idle');
 
     setProgress((prev) => {
-      const ids = prev.unlockedTreasureIds.includes(unlockedTreasure.id)
+      const alreadyHad = prev.unlockedTreasureIds.includes(unlockedTreasure.id);
+      const ids = alreadyHad
         ? prev.unlockedTreasureIds
         : [...prev.unlockedTreasureIds, unlockedTreasure.id];
+
+      // Check if newly unlocked item completes the 16 memories collection!
+      if (!alreadyHad && ids.length >= 16) {
+        setTimeout(() => {
+          audioEngine.playGentleChime(1046, 3);
+          setActiveModal('ceremony');
+        }, 500);
+      }
+
       return {
         ...prev,
         pearls: prev.pearls + earnedPearls,
         totalShellsCracked: prev.totalShellsCracked + 1,
         unlockedTreasureIds: ids,
+        driftMiles: prev.driftMiles ?? prev.totalFocusMinutes,
       };
     });
   };
@@ -261,7 +296,11 @@ export const App: React.FC = () => {
   return (
     <div className="relative w-full app-viewport overflow-x-hidden flex flex-col justify-between select-none">
       {/* 1. Dynamic Canvas Layer (Aurora, Stars, Snow, Waves) */}
-      <ArcticCanvas timeOfDay={timeOfDay} isDiving={otterState === 'diving'} />
+      <ArcticCanvas
+        timeOfDay={timeOfDay}
+        isDiving={otterState === 'diving'}
+        isCruising={otterState === 'cruising'}
+      />
 
       {/* 2. Top Header Navigation Bar */}
       <header className="relative z-30 px-4 sm:px-6 pt-[max(0.5rem,env(safe-area-inset-top))] pb-1 sm:py-3 flex items-center justify-between w-full max-w-6xl mx-auto">
@@ -426,18 +465,20 @@ export const App: React.FC = () => {
             {audioSettings.isMuted ? <VolumeX className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-400" /> : <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
           </button>
 
-          {/* Polar Drift Navigational Chart Button */}
-          <button
-            onClick={() => setActiveModal('voyage')}
-            className="relative p-1.5 sm:px-3 sm:py-1.5 rounded-2xl glass-panel text-xs font-semibold text-teal-200 hover:text-white hover:scale-105 transition-all border border-teal-400/35 flex items-center sm:gap-1.5 shrink-0 cursor-pointer shadow-sm"
-            title={t.header.voyageTitle}
-          >
-            <Compass className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-teal-300" />
-            <span className="hidden sm:inline">{t.header.voyage}</span>
-            <span className="bg-teal-500/30 text-teal-200 text-[9px] sm:text-[10px] font-mono px-1 sm:px-1.5 py-0.2 rounded-full border border-teal-400/30">
-              {currentMiles} {t.voyage.nmUnit}
-            </span>
-          </button>
+          {/* Polar Drift Navigational Chart Button (Unlocked after all 16 memories collected) */}
+          {isAlbumCompleted && (
+            <button
+              onClick={() => setActiveModal('voyage')}
+              className="relative p-1.5 sm:px-3 sm:py-1.5 rounded-2xl glass-panel text-xs font-semibold text-teal-200 hover:text-white hover:scale-105 transition-all border border-teal-400/35 flex items-center sm:gap-1.5 shrink-0 cursor-pointer shadow-sm animate-fade-in"
+              title={t.header.voyageTitle}
+            >
+              <Compass className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-teal-300" />
+              <span className="hidden sm:inline">{t.header.voyage}</span>
+              <span className="bg-teal-500/30 text-teal-200 text-[9px] sm:text-[10px] font-mono px-1 sm:px-1.5 py-0.2 rounded-full border border-teal-400/30">
+                {currentMiles} {t.voyage.nmUnit}
+              </span>
+            </button>
+          )}
 
           {/* Collection Album Button (Mobile: icon with corner badge; Desktop: text pill) */}
           <button
@@ -503,28 +544,31 @@ export const App: React.FC = () => {
 
       {/* 4. Bottom Focus & Dive Control Dock */}
       <footer className="relative z-30 pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:pb-6 px-3 sm:px-4 w-full">
-        {/* Compact Polar Drift Course Navigation Pill */}
-        <div className="flex justify-center mb-2">
-          <button
-            onClick={() => setActiveModal('voyage')}
-            className="group flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-sky-950/70 hover:bg-sky-900/90 border border-teal-500/35 hover:border-teal-400/60 backdrop-blur-md text-[11px] sm:text-xs text-sky-200 transition-all cursor-pointer shadow-md hover:scale-[1.02] active:scale-95"
-            title={t.header.voyageTitle}
-          >
-            <Compass className="w-3.5 h-3.5 text-teal-300 group-hover:rotate-45 transition-transform" />
-            <span className="font-medium text-teal-200">
-              {t.voyage.sailingTo}:{' '}
-              <strong className="text-white">
-                {lang === 'zh' ? nextWaypoint.name_zh : nextWaypoint.name}
-              </strong>
-            </span>
-            <span className="text-amber-300 font-bold font-mono">
-              ({currentMiles} / {nextWaypoint.requiredMiles} {t.voyage.nmUnit})
-            </span>
-          </button>
-        </div>
+        {/* Compact Polar Drift Course Navigation Pill (Unlocked after all 16 memories collected) */}
+        {isAlbumCompleted && (
+          <div className="flex justify-center mb-2 animate-fade-in">
+            <button
+              onClick={() => setActiveModal('voyage')}
+              className="group flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-sky-950/70 hover:bg-sky-900/90 border border-teal-500/35 hover:border-teal-400/60 backdrop-blur-md text-[11px] sm:text-xs text-sky-200 transition-all cursor-pointer shadow-md hover:scale-[1.02] active:scale-95"
+              title={t.header.voyageTitle}
+            >
+              <Compass className="w-3.5 h-3.5 text-teal-300 group-hover:rotate-45 transition-transform" />
+              <span className="font-medium text-teal-200">
+                {t.voyage.sailingTo}:{' '}
+                <strong className="text-white">
+                  {lang === 'zh' ? nextWaypoint.name_zh : nextWaypoint.name}
+                </strong>
+              </span>
+              <span className="text-amber-300 font-bold font-mono">
+                ({currentMiles} / {nextWaypoint.requiredMiles} {t.voyage.nmUnit})
+              </span>
+            </button>
+          </div>
+        )}
 
         <FocusTimer
           otterState={otterState}
+          isDriftMode={isAlbumCompleted}
           onStartDive={handleStartDive}
           onCancelDive={handleCancelDive}
           onCompleteDive={handleCompleteDive}
@@ -644,6 +688,51 @@ export const App: React.FC = () => {
           lang={lang}
           onClose={() => setActiveModal(null)}
         />
+      )}
+
+      {/* Awakening Ceremony Modal: Transition from Diving to Polar Drift Odyssey */}
+      {activeModal === 'ceremony' && (
+        <div
+          onClick={() => setActiveModal('voyage')}
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-sky-950/80 backdrop-blur-md animate-fade-in"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-lg bg-gradient-to-b from-[#0a2540] via-[#071d33] to-[#041224] rounded-3xl p-6 sm:p-8 text-center flex flex-col items-center border border-teal-400/50 shadow-2xl shadow-teal-500/20 overflow-hidden animate-scale-up"
+          >
+            {/* Ambient Background Aura */}
+            <div className="absolute -top-20 -left-20 w-56 h-56 bg-teal-400/20 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-20 -right-20 w-56 h-56 bg-sky-400/20 rounded-full blur-3xl pointer-events-none" />
+
+            {/* Glowing Trophy Compass Icon */}
+            <div className="relative w-20 h-20 rounded-3xl bg-gradient-to-br from-teal-400/30 to-sky-500/20 border-2 border-teal-300/60 flex items-center justify-center text-4xl mb-4 shadow-lg shadow-teal-500/30">
+              <span className="text-3xl">🧭</span>
+              <Sparkles className="absolute -top-2 -right-2 w-6 h-6 text-amber-300 animate-bounce" />
+            </div>
+
+            <h3 className="text-xl sm:text-2xl font-black text-white tracking-wide mb-1">
+              {t.voyage.ceremonyTitle}
+            </h3>
+            <p className="text-xs sm:text-sm text-teal-300 font-semibold mb-4">
+              {t.voyage.ceremonySubtitle}
+            </p>
+
+            <div className="text-xs sm:text-sm text-sky-100/90 bg-sky-950/60 p-4 sm:p-5 rounded-2xl border border-sky-800/50 mb-6 leading-relaxed text-left shadow-inner">
+              <p>{t.voyage.ceremonyText}</p>
+            </div>
+
+            <button
+              onClick={() => {
+                audioEngine.playGentleChime(784, 2);
+                setActiveModal('voyage');
+              }}
+              className="w-full py-3 sm:py-3.5 rounded-2xl bg-gradient-to-r from-teal-400 via-sky-400 to-indigo-400 hover:from-teal-300 hover:to-indigo-300 text-sky-950 font-bold text-sm shadow-xl shadow-teal-500/30 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <Compass className="w-4 h-4 animate-spin-slow" />
+              <span>{t.voyage.ceremonyBtn}</span>
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

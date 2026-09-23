@@ -35,6 +35,11 @@ export interface Translations {
     close: string;
     guestBadge: string;
     foxDialogues: string[];
+    ceremonyTitle: string;
+    ceremonySubtitle: string;
+    ceremonyText: string;
+    ceremonyBtn: string;
+    pushingDialogues: string[];
   };
   timer: {
     presets: {
@@ -48,6 +53,12 @@ export interface Translations {
     resetTimer: string;
     divingDepth: string;
     cancelConfirm: string;
+    startCruise: string;
+    stopCruise: string;
+    cruisingStatus: string;
+    stopCruiseConfirm: string;
+    cruiseCompleteTitle: string;
+    cruiseCompleteSubtitle: string;
   };
   otter: {
     dialogues: string[];
@@ -186,6 +197,12 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       resetTimer: 'Reset timer',
       divingDepth: 'Diving to {depth}m depth',
       cancelConfirm: 'Cancel current deep dive? The otter will return to the iceberg without a treasure.',
+      startCruise: 'Set Sail & Drift',
+      stopCruise: 'Drop Anchor',
+      cruisingStatus: 'Floe cruising with the current · +{miles} NM',
+      stopCruiseConfirm: 'Drop anchor and pause drift? The otter will return to rest on the ice.',
+      cruiseCompleteTitle: 'Cruising Leg Completed!',
+      cruiseCompleteSubtitle: 'Your ice sanctuary navigated {miles} nautical miles forward ✨',
     },
     otter: {
       dialogues: [
@@ -337,6 +354,16 @@ export const TRANSLATIONS: Record<Language, Translations> = {
         '“The polar lights reflect so beautifully off your iceberg.” ✨',
         '“Curling up beside a focused friend is my favorite thing.” 🦊',
       ],
+      ceremonyTitle: '🎉 All 16 Polar Memories Collected!',
+      ceremonySubtitle: 'The Arctic ocean currents awaken...',
+      ceremonyText: 'You and your little Ice Otter have gathered every lost treasure across the deep glacial trenches. With a crackling campfire, steaming cocoa, cozy quilt, and sweet vinyl melodies, your ice floe transforms into a floating sanctuary. The Polar Drift Odyssey begins now!',
+      ceremonyBtn: 'Set Sail into the Polar Sea! 🧭',
+      pushingDialogues: [
+        'Pushing our ice sanctuary forward! 🌊',
+        'Paddle paddle paddle~ feel the cold refreshing spray! ❄️',
+        'Hold onto your hot cocoa, cruising full steam ahead! ☕',
+        'Next stop, uncharted arctic horizons! 🧭',
+      ],
     },
   },
   zh: {
@@ -370,6 +397,12 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       resetTimer: '重置计时器',
       divingDepth: '正在潜行至 {depth} 米深处',
       cancelConfirm: '确认中断本次深度潜水吗？小水獭将空手返回浮冰哦。',
+      startCruise: '启航漂流',
+      stopCruise: '抛锚停航',
+      cruisingStatus: '浮冰全速航行中 · 巡航海里 +{miles}',
+      stopCruiseConfirm: '确认抛锚停航吗？小水獭将爬上浮冰休息，已航行里程将自动保存。',
+      cruiseCompleteTitle: '本次航程圆满抵达！',
+      cruiseCompleteSubtitle: '你的浮冰方舟向前航行了 {miles} 海里 ✨',
     },
     otter: {
       dialogues: [
@@ -520,6 +553,16 @@ export const TRANSLATIONS: Record<Language, Translations> = {
         '“这里的羊绒毯暖烘烘的。深吸一口气，继续专注前行吧！” ❄️',
         '“天空中翩跹起舞的极光，倒映在你的浮冰上真美。” ✨',
         '“蜷缩在自律又温柔的朋友身边，是世界上最惬意的事。” 🦊',
+      ],
+      ceremonyTitle: '🎉 16 件极地记忆已全部集齐！',
+      ceremonySubtitle: '世界尽头的洋流开始涌动...',
+      ceremonyText: '你和小水獭一起寻回了冰洋深处散落的每一件温暖记忆。如今营地炉火熊熊、热可可香气弥漫、留声机旋律悠扬，这块孤独的冰块已然成为极地中最温暖的方舟。属于你们的《极地漂流》史诗纪元正式开启！',
+      ceremonyBtn: '启航！驶向浩瀚冰海 🧭',
+      pushingDialogues: [
+        '水獭正在卖力推冰前行中~ 🌊',
+        '扑通扑通蹬脚蹼！迎面的海风真清爽 ❄️',
+        '抓稳热可可，浮冰方舟全速前进！☕',
+        '下一个目标，未知的美丽海峡！🧭',
       ],
     },
   },

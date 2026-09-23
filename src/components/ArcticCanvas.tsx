@@ -4,6 +4,7 @@ import { TimeOfDay } from '../types';
 interface ArcticCanvasProps {
   timeOfDay: TimeOfDay;
   isDiving: boolean;
+  isCruising?: boolean;
 }
 
 interface Snowflake {
@@ -23,7 +24,7 @@ interface Star {
   blinkSpeed: number;
 }
 
-export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({ timeOfDay, isDiving }) => {
+export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({ timeOfDay, isDiving, isCruising = false }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -411,6 +412,23 @@ export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({ timeOfDay, isDiving 
         }
       }
 
+      // Cruising Water Currents & Spray (when isCruising is true)
+      if (isCruising) {
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.28)';
+        ctx.lineWidth = 1.6;
+        for (let s = 0; s < 14; s++) {
+          const sy = oceanY + 16 + ((s * 26 + time * 12) % (height - oceanY - 24));
+          const sx = ((s * 180 - time * 160) % (width + 300)) - 100;
+          const streakLen = 40 + (s % 3) * 28;
+          ctx.beginPath();
+          ctx.moveTo(sx, sy);
+          ctx.lineTo(sx + streakLen, sy);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
       // 8. Gentle Falling Snowflakes
       ctx.fillStyle = '#ffffff';
       snowflakes.forEach((f) => {
@@ -443,7 +461,7 @@ export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({ timeOfDay, isDiving 
         window.visualViewport.removeEventListener('resize', handleResize);
       }
     };
-  }, [timeOfDay, isDiving]);
+  }, [timeOfDay, isDiving, isCruising]);
 
   return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-0" />;
 };
