@@ -138,8 +138,8 @@ export const IceOtter: React.FC<IceOtterProps> = ({
         onClick={handleInteraction}
         className="relative w-auto max-w-[88vw] max-h-[30vh] sm:max-h-[35vh] md:w-[92vw] md:max-w-[460px] md:max-h-none aspect-[460/320] flex items-center justify-center mx-auto"
       >
-        {/* Soft, natural water bobbing physics applied to the whole floe */}
-        <div className="animate-float-slow relative w-full h-full">
+        {/* Soft, natural water bobbing physics applied to the whole floe; surges forward during cruise */}
+        <div className={`${isCruising ? 'animate-cruise-surge' : 'animate-float-slow'} relative w-full h-full`}>
 
           {/* ========================================================================= */}
           {/* COMPLETE UNIFIED VECTOR SVG STAGE                                         */}
@@ -249,15 +249,38 @@ export const IceOtter: React.FC<IceOtterProps> = ({
               opacity="0.9"
             />
 
-            {/* Cruise Wave Spray & Wake Trails */}
+            {/* Cruise Wave Spray, Bow Slicing Wave & Streamed Wake Trails */}
             {isCruising && (
               <g>
-                {/* Left streaming wake streak */}
-                <path d="M 45 256 C 20 264 -10 274 -40 282" stroke="#ffffff" strokeWidth="3" strokeDasharray="8 4" opacity="0.85" fill="none" className="animate-pulse" />
-                <path d="M 48 260 C 25 270 5 280 -25 288" stroke="#bae6fd" strokeWidth="2" strokeDasharray="6 3" opacity="0.7" fill="none" />
-                {/* Right streaming wake streak */}
-                <path d="M 412 256 C 440 264 470 274 500 282" stroke="#ffffff" strokeWidth="3" strokeDasharray="8 4" opacity="0.85" fill="none" className="animate-pulse" />
-                <path d="M 408 260 C 435 270 455 280 485 288" stroke="#bae6fd" strokeWidth="2" strokeDasharray="6 3" opacity="0.7" fill="none" />
+                {/* 1. Left streaming wake streaks (Stern wake rushing backward into the sea) */}
+                <path d="M 45 256 C 20 264 -10 274 -40 282" stroke="#ffffff" strokeWidth="3" strokeDasharray="10 5" opacity="0.9" fill="none" className="animate-wake-stream" />
+                <path d="M 48 260 C 25 270 5 280 -25 288" stroke="#bae6fd" strokeWidth="2.2" strokeDasharray="8 4" opacity="0.75" fill="none" className="animate-wake-stream" />
+
+                {/* 2. Right Bow Wave & Splashing Spray (Front edge of Floe slicing forward through water) */}
+                {/* Foaming Bow Wave Slicing Forward */}
+                <path
+                  d="M 406 253 C 424 250 442 255 454 263 C 440 267 424 264 410 259 Z"
+                  fill="#ffffff"
+                  opacity="0.95"
+                  className="animate-pulse"
+                />
+                <path
+                  d="M 412 254 C 430 252 448 259 465 270"
+                  stroke="#7dd3fc"
+                  strokeWidth="3.2"
+                  strokeLinecap="round"
+                  fill="none"
+                  opacity="0.85"
+                />
+                {/* Splashing Bow Spray Drops */}
+                <circle cx="438" cy="249" r="3" fill="#ffffff" className="animate-bounce" style={{ animationDuration: '0.8s' }} />
+                <circle cx="448" cy="253" r="2.2" fill="#bae6fd" className="animate-bounce" style={{ animationDuration: '1.0s', animationDelay: '0.2s' }} />
+                <circle cx="456" cy="261" r="2.5" fill="#e0f2fe" className="animate-bounce" style={{ animationDuration: '0.9s', animationDelay: '0.4s' }} />
+                <circle cx="432" cy="246" r="2" fill="#ffffff" className="animate-ping" style={{ animationDuration: '1.2s' }} />
+
+                {/* 3. Right streaming wake streaks (peeling away from the cutting bow) */}
+                <path d="M 412 256 C 440 264 470 274 500 282" stroke="#ffffff" strokeWidth="3" strokeDasharray="10 5" opacity="0.85" fill="none" className="animate-wake-stream" />
+                <path d="M 408 260 C 435 270 455 280 485 288" stroke="#bae6fd" strokeWidth="2" strokeDasharray="8 4" opacity="0.7" fill="none" className="animate-wake-stream" />
               </g>
             )}
 
@@ -755,8 +778,8 @@ export const IceOtter: React.FC<IceOtterProps> = ({
                 />
 
                 {/* 1. Water Wake Speed Streaks trailing behind into sea */}
-                <path d="M 28 120 C 5 125 -22 131 -50 135" stroke="#ffffff" strokeWidth="2.8" strokeDasharray="8 4" opacity="0.85" fill="none" className="animate-pulse" />
-                <path d="M 34 128 C 12 134 -12 140 -38 144" stroke="#bae6fd" strokeWidth="2" strokeDasharray="6 3" opacity="0.7" fill="none" />
+                <path d="M 28 120 C 5 125 -22 131 -50 135" stroke="#ffffff" strokeWidth="3" strokeDasharray="10 5" opacity="0.9" fill="none" className="animate-wake-stream" />
+                <path d="M 34 128 C 12 134 -12 140 -38 144" stroke="#bae6fd" strokeWidth="2.2" strokeDasharray="8 4" opacity="0.75" fill="none" className="animate-wake-stream" />
 
                 {/* 2. Churning Propeller Jet Bubbles behind Kicking Flippers */}
                 <circle cx="20" cy="128" r="4" fill="#ffffff" opacity="0.9" className="animate-ping" style={{ animationDuration: '0.9s' }} />

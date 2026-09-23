@@ -94,6 +94,43 @@ export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({ timeOfDay, isDiving,
       nextSpawn: 90, // First meteor shortly after entering night mode
     };
 
+    // Parallax Layer 1: Seamless Glacial Mountain Ridge
+    let mountainScroll = 0;
+    const mountainRidge = [
+      { dx: 0, dy: 50, snow: false },
+      { dx: 130, dy: 125, snow: true },
+      { dx: 260, dy: 65, snow: false },
+      { dx: 420, dy: 155, snow: true },
+      { dx: 570, dy: 80, snow: false },
+      { dx: 720, dy: 135, snow: true },
+      { dx: 870, dy: 70, snow: false },
+      { dx: 1040, dy: 160, snow: true },
+      { dx: 1220, dy: 90, snow: false },
+      { dx: 1400, dy: 50, snow: false },
+    ];
+    const mountainPeriod = 1400;
+
+    // Parallax Layer 2: Midground Floating Icebergs
+    const icebergs = [
+      { x: width * 0.15, yOffset: 25, w: 105, h: 44, speed: 1.3, bob: 0 },
+      { x: width * 0.45, yOffset: 42, w: 140, h: 56, speed: 1.8, bob: 1.8 },
+      { x: width * 0.80, yOffset: 28, w: 115, h: 48, speed: 1.4, bob: 3.4 },
+      { x: width * 1.15, yOffset: 48, w: 130, h: 52, speed: 1.9, bob: 5.1 },
+    ];
+
+    // Parallax Layer 3: High-Speed Perspective Ocean Currents & Foaming Wavelets
+    const waterCurrents: Array<{ x: number; yRatio: number; len: number; speedMult: number; opacity: number; amp: number }> = [];
+    for (let i = 0; i < 32; i++) {
+      waterCurrents.push({
+        x: Math.random() * (width + 300) - 150,
+        yRatio: 0.08 + (i / 32) * 0.84,
+        len: 45 + Math.random() * 65,
+        speedMult: 0.85 + Math.random() * 0.35,
+        opacity: 0.35 + Math.random() * 0.45,
+        amp: 2 + Math.random() * 2.5,
+      });
+    }
+
     let time = 0;
 
     const render = () => {
@@ -262,42 +299,55 @@ export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({ timeOfDay, isDiving,
         ctx.restore();
       }
 
-      // 5. Distant Glacial Mountains
+      // 5. Distant Glacial Mountains (Parallax Layer 1: Seamless Infinitely Scrolling Ridge)
       const oceanY = height * 0.48;
+      if (isCruising) {
+        mountainScroll += 0.55;
+      }
+      const normScroll = mountainScroll % mountainPeriod;
+      const startX = -normScroll - mountainPeriod;
+      const endX = width + mountainPeriod;
+
       ctx.fillStyle = timeOfDay === 'sunset' ? '#2e1c3e' : timeOfDay === 'night' ? '#041324' : '#07243c';
       ctx.beginPath();
-      ctx.moveTo(0, oceanY);
-      ctx.lineTo(0, oceanY - 60);
-      ctx.lineTo(width * 0.18, oceanY - 130);
-      ctx.lineTo(width * 0.32, oceanY - 75);
-      ctx.lineTo(width * 0.52, oceanY - 150);
-      ctx.lineTo(width * 0.72, oceanY - 85);
-      ctx.lineTo(width * 0.88, oceanY - 120);
-      ctx.lineTo(width, oceanY - 50);
-      ctx.lineTo(width, oceanY);
+      ctx.moveTo(startX, oceanY);
+
+      for (let tileX = startX; tileX < endX; tileX += mountainPeriod) {
+        for (let i = 0; i < mountainRidge.length; i++) {
+          const pt = mountainRidge[i];
+          ctx.lineTo(tileX + pt.dx, oceanY - pt.dy);
+        }
+      }
+      ctx.lineTo(endX + mountainPeriod, oceanY);
+      ctx.lineTo(startX, oceanY);
       ctx.closePath();
       ctx.fill();
 
-      // Mountain Snow Highlights
+      // Mountain Snow Highlights (Tiled seamlessly with the peaks)
       ctx.fillStyle =
         timeOfDay === 'sunset'
           ? 'rgba(244, 114, 182, 0.35)'
           : timeOfDay === 'night'
           ? 'rgba(224, 242, 254, 0.20)'
           : 'rgba(110, 231, 183, 0.25)';
-      ctx.beginPath();
-      ctx.moveTo(width * 0.18, oceanY - 130);
-      ctx.lineTo(width * 0.14, oceanY - 95);
-      ctx.lineTo(width * 0.22, oceanY - 90);
-      ctx.closePath();
-      ctx.fill();
 
-      ctx.beginPath();
-      ctx.moveTo(width * 0.52, oceanY - 150);
-      ctx.lineTo(width * 0.48, oceanY - 105);
-      ctx.lineTo(width * 0.56, oceanY - 100);
-      ctx.closePath();
-      ctx.fill();
+      for (let tileX = startX; tileX < endX; tileX += mountainPeriod) {
+        for (let i = 0; i < mountainRidge.length; i++) {
+          const pt = mountainRidge[i];
+          if (pt.snow) {
+            const px = tileX + pt.dx;
+            const py = oceanY - pt.dy;
+            if (px >= -80 && px <= width + 80) {
+              ctx.beginPath();
+              ctx.moveTo(px, py);
+              ctx.lineTo(px - 36, py + 38);
+              ctx.lineTo(px + 38, py + 42);
+              ctx.closePath();
+              ctx.fill();
+            }
+          }
+        }
+      }
 
       // 6. Ocean Surface
       const oceanGrad = ctx.createLinearGradient(0, oceanY, 0, height);
@@ -376,7 +426,7 @@ export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({ timeOfDay, isDiving,
         ctx.restore();
       }
 
-      // 6. Floating Distant Icebergs
+      // 7. Floating Distant Icebergs (Parallax Layer 2: Midground Drift past the player)
       const drawIceberg = (bx: number, by: number, bWidth: number, bHeight: number) => {
         ctx.fillStyle = '#104e7a';
         ctx.beginPath();
@@ -397,10 +447,20 @@ export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({ timeOfDay, isDiving,
         ctx.fill();
       };
 
-      drawIceberg(width * 0.15, oceanY + 25, 110, 45);
-      drawIceberg(width * 0.82, oceanY + 35, 140, 55);
+      icebergs.forEach((b) => {
+        if (isCruising) {
+          b.x -= b.speed;
+          if (b.x < -b.w) {
+            b.x = width + Math.random() * 200 + 80;
+            b.yOffset = 20 + Math.random() * 35;
+            b.speed = 1.2 + Math.random() * 0.8;
+          }
+        }
+        const by = oceanY + b.yOffset + Math.sin(time * 0.8 + b.bob) * 2;
+        drawIceberg(b.x, by, b.w, b.h);
+      });
 
-      // 7. Diving Bubbles Effect (when isDiving is true)
+      // 8. Diving Bubbles Effect (when isDiving is true)
       if (isDiving) {
         ctx.fillStyle = 'rgba(186, 230, 253, 0.45)';
         for (let b = 0; b < 18; b++) {
@@ -412,40 +472,67 @@ export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({ timeOfDay, isDiving,
         }
       }
 
-      // Cruising Water Currents & Spray (when isCruising is true)
+      // 9. Cruising Rapid Ocean Currents & Spray (Parallax Layer 3: High-Speed Perspective Foam Lines)
       if (isCruising) {
         ctx.save();
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.28)';
-        ctx.lineWidth = 1.6;
-        for (let s = 0; s < 14; s++) {
-          const sy = oceanY + 16 + ((s * 26 + time * 12) % (height - oceanY - 24));
-          const sx = ((s * 180 - time * 160) % (width + 300)) - 100;
-          const streakLen = 40 + (s % 3) * 28;
+        waterCurrents.forEach((c) => {
+          // Perspective velocity: foreground moves over 3x faster than horizon!
+          const v = (3.6 + c.yRatio * 8.2) * c.speedMult;
+          c.x -= v;
+          if (c.x < -c.len - 80) {
+            c.x = width + Math.random() * 150 + 20;
+          }
+
+          const cy = oceanY + (height - oceanY) * c.yRatio;
+
+          // Glowing cyan water wave crest
           ctx.beginPath();
-          ctx.moveTo(sx, sy);
-          ctx.lineTo(sx + streakLen, sy);
+          ctx.moveTo(c.x, cy);
+          ctx.quadraticCurveTo(c.x + c.len * 0.5, cy - c.amp, c.x + c.len, cy);
+          ctx.strokeStyle = `rgba(125, 211, 252, ${c.opacity * 0.65})`;
+          ctx.lineWidth = 1.4 + c.yRatio * 1.8;
+          ctx.lineCap = 'round';
           ctx.stroke();
-        }
+
+          // Bright white foam cap on wave crest
+          ctx.beginPath();
+          ctx.moveTo(c.x + c.len * 0.25, cy - c.amp * 0.7);
+          ctx.lineTo(c.x + c.len * 0.75, cy - c.amp * 0.7);
+          ctx.strokeStyle = `rgba(255, 255, 255, ${c.opacity * 0.9})`;
+          ctx.lineWidth = 1.0 + c.yRatio * 1.2;
+          ctx.lineCap = 'round';
+          ctx.stroke();
+        });
         ctx.restore();
       }
 
-      // 8. Gentle Falling Snowflakes
-      ctx.fillStyle = '#ffffff';
+      // 10. Gentle Falling Snowflakes / Cruising Blizzard Wind Streaks (Parallax Layer 4)
       snowflakes.forEach((f) => {
         f.y += f.speed;
-        f.x += f.wind + Math.sin(time + f.y * 0.01) * 0.5;
+        const cruiseWind = isCruising ? -(4.0 + f.speed * 2.2) : 0;
+        f.x += f.wind + cruiseWind + Math.sin(time + f.y * 0.01) * 0.5;
 
         if (f.y > height) {
           f.y = -10;
           f.x = Math.random() * width;
         }
-        if (f.x > width) f.x = 0;
-        if (f.x < 0) f.x = width;
+        if (f.x > width + 50) f.x = -20;
+        if (f.x < -50) f.x = width + 20;
 
-        ctx.beginPath();
-        ctx.arc(f.x, f.y, f.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${f.opacity})`;
-        ctx.fill();
+        if (isCruising) {
+          ctx.beginPath();
+          ctx.moveTo(f.x, f.y);
+          ctx.lineTo(f.x + 8 + f.speed * 3.5, f.y - 2);
+          ctx.strokeStyle = `rgba(255, 255, 255, ${f.opacity * 0.85})`;
+          ctx.lineWidth = f.radius * 0.85;
+          ctx.lineCap = 'round';
+          ctx.stroke();
+        } else {
+          ctx.beginPath();
+          ctx.arc(f.x, f.y, f.radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 255, 255, ${f.opacity})`;
+          ctx.fill();
+        }
       });
 
       animationId = requestAnimationFrame(render);
