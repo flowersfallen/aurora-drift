@@ -42,6 +42,25 @@ export interface CampDecorations {
   hasGramophone: boolean;
 }
 
+export type WaypointId = 'still_floe' | 'echo_straits' | 'lighthouse' | 'aurora_oasis';
+
+export interface DriftWaypoint {
+  id: WaypointId;
+  name: string;
+  name_zh: string;
+  requiredMiles: number;
+  subtitle: string;
+  subtitle_zh: string;
+  description: string;
+  description_zh: string;
+  story: string;
+  story_zh: string;
+  icon: string;
+  guestId?: string;
+  rewardText: string;
+  rewardText_zh: string;
+}
+
 export interface PlayerProgress {
   pearls: number;
   totalFocusMinutes: number;
@@ -50,4 +69,6 @@ export interface PlayerProgress {
   decorations: CampDecorations;
   streakDays: number;
   lastPlayedDate: string;
+  driftMiles?: number;
+  visitedWaypointIds?: string[];
 }

@@ -48,11 +48,19 @@ interface IceOtterProps {
   decorations: CampDecorations;
   lang?: Language;
   onOtterClick: () => void;
+  hasGuestFox?: boolean;
 }
 
-export const IceOtter: React.FC<IceOtterProps> = ({ state, decorations, lang = 'en', onOtterClick }) => {
+export const IceOtter: React.FC<IceOtterProps> = ({
+  state,
+  decorations,
+  lang = 'en',
+  onOtterClick,
+  hasGuestFox = false,
+}) => {
   const [blink, setBlink] = useState(false);
   const [dialogue, setDialogue] = useState<string | null>(null);
+  const [foxDialogue, setFoxDialogue] = useState<string | null>(null);
   const [supportsBubbleEmoji, setSupportsBubbleEmoji] = useState(false);
 
   useEffect(() => {
@@ -78,6 +86,15 @@ export const IceOtter: React.FC<IceOtterProps> = ({ state, decorations, lang = '
     onOtterClick();
   };
 
+  const handleFoxClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (state === 'diving') return;
+    const foxQuotes = TRANSLATIONS[lang].voyage.foxDialogues;
+    const randomQuote = foxQuotes[Math.floor(Math.random() * foxQuotes.length)];
+    setFoxDialogue(randomQuote);
+    setTimeout(() => setFoxDialogue(null), 4000);
+  };
+
   const isDiving = state === 'diving';
 
   return (
@@ -87,6 +104,15 @@ export const IceOtter: React.FC<IceOtterProps> = ({ state, decorations, lang = '
         <div className="absolute top-1 sm:top-2 z-50 animate-bounce px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl bg-white/95 text-slate-800 text-[11px] sm:text-xs font-semibold max-w-[85vw] sm:max-w-[240px] text-center border-2 border-sky-300 shadow-xl shadow-sky-950/40">
           {dialogue}
           <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[7px] border-l-transparent border-r-[7px] border-r-transparent border-t-[9px] border-t-white"></div>
+        </div>
+      )}
+
+      {/* Aurora Fox Speech Bubble - Floats above the sleeping fox on the left */}
+      {foxDialogue && !isDiving && (
+        <div className="absolute top-8 sm:top-10 left-2 sm:left-6 z-50 animate-bounce px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl bg-orange-50/95 text-slate-800 text-[11px] sm:text-xs font-semibold max-w-[85vw] sm:max-w-[230px] text-center border-2 border-orange-300 shadow-xl shadow-sky-950/40">
+          <span className="text-orange-500 mr-1 font-bold">🦊</span>
+          {foxDialogue}
+          <div className="absolute -bottom-2.5 left-8 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-orange-50"></div>
         </div>
       )}
 
@@ -299,6 +325,79 @@ export const IceOtter: React.FC<IceOtterProps> = ({ state, decorations, lang = '
                 <line x1="-7" y1="4" x2="-9" y2="10" stroke="#bae6fd" strokeWidth="2" strokeLinecap="round" />
                 <line x1="-2" y1="4.5" x2="-3" y2="10.5" stroke="#bae6fd" strokeWidth="2" strokeLinecap="round" />
                 <line x1="3" y1="4.5" x2="3" y2="10.5" stroke="#bae6fd" strokeWidth="2" strokeLinecap="round" />
+              </g>
+            )}
+
+            {/* ========================================================================= */}
+            {/* ANIMAL GUEST: AURORA FOX (极光雪狐)                                       */}
+            {/* Appears when reaching The Echo Straits (100 NM). Curled up peacefully on  */}
+            {/* the wool blanket at X=112, Y=221, sleeping with soft breathing animation   */}
+            {/* ========================================================================= */}
+            {hasGuestFox && (
+              <g
+                transform="translate(112, 221)"
+                className="cursor-pointer group"
+                onClick={handleFoxClick}
+              >
+                {/* Base Shadow (blends with blanket or snow) */}
+                <ellipse cx="0" cy="4" rx="20" ry="6.5" fill="#0f172a" opacity="0.3" />
+
+                {/* Soft Aurora Glow behind Fox */}
+                <ellipse cx="2" cy="-2" rx="24" ry="14" fill="#99f6e4" opacity="0.18" className="animate-pulse" />
+
+                {/* Fluffy Curled Fox Tail wrapped around body */}
+                <path
+                  d="M -15 3 C -27 2 -25 -10 -13 -13 C -6 -15 2 -11 5 -4 C -2 2 -7 5 -15 3 Z"
+                  fill="#f8fafc"
+                  stroke="#94a3b8"
+                  strokeWidth="1.4"
+                />
+                {/* Tail Tip (soft celestial teal) */}
+                <path
+                  d="M -18 -6 C -23 -9 -19 -12 -14 -13 C -15 -9 -17 -7 -18 -6 Z"
+                  fill="#99f6e4"
+                  opacity="0.85"
+                />
+
+                {/* Curled Body */}
+                <ellipse cx="2" cy="-1" rx="16" ry="10" fill="#f8fafc" stroke="#94a3b8" strokeWidth="1.4" />
+                <path d="M -9 -6 Q 2 -11 11 -4 Q 4 -8 -6 -3 Z" fill="#e2e8f0" opacity="0.75" />
+
+                {/* Fox Head resting snugly */}
+                <ellipse cx="10" cy="-4" rx="9" ry="7.5" fill="#ffffff" stroke="#94a3b8" strokeWidth="1.3" />
+
+                {/* Pointy Arctic Fox Ears */}
+                {/* Left Ear */}
+                <polygon points="5,-10 7,-18 12,-11" fill="#f8fafc" stroke="#94a3b8" strokeWidth="1.2" />
+                <polygon points="6,-11 8,-16 11,-12" fill="#fecdd3" />
+                {/* Right Ear */}
+                <polygon points="12,-9 16,-17 19,-8" fill="#f8fafc" stroke="#94a3b8" strokeWidth="1.2" />
+                <polygon points="13,-10 16,-15 18,-9" fill="#fecdd3" />
+
+                {/* Muzzle & Nose */}
+                <ellipse cx="15" cy="-2.5" rx="4.5" ry="3" fill="#f8fafc" />
+                <ellipse cx="18" cy="-3.5" rx="1.3" ry="1" fill="#0f172a" />
+
+                {/* Sleepy Peaceful Curved Eye */}
+                <path
+                  d="M 8 -5 Q 10 -3 12 -5"
+                  stroke="#475569"
+                  strokeWidth="1.3"
+                  strokeLinecap="round"
+                  fill="none"
+                />
+
+                {/* Warm Cheek Blush */}
+                <circle cx="10" cy="-1.5" r="2.2" fill="#fda4af" opacity="0.6" />
+
+                {/* Curled Sleeping Paws */}
+                <ellipse cx="7" cy="6" rx="3.5" ry="2" fill="#f1f5f9" stroke="#cbd5e1" strokeWidth="1" />
+                <ellipse cx="12" cy="5.5" rx="3.5" ry="2" fill="#f1f5f9" stroke="#cbd5e1" strokeWidth="1" />
+
+                {/* Floating Soft Sleeping Zzzs */}
+                <text x="-7" y="-14" fontSize="8" fill="#a5f3fc" fontWeight="bold" className="animate-bounce" style={{ animationDuration: '3s' }}>z</text>
+                <text x="-1" y="-20" fontSize="10" fill="#7dd3fc" fontWeight="bold" className="animate-bounce" style={{ animationDuration: '3s', animationDelay: '0.6s' }}>Z</text>
+                <text x="6" y="-26" fontSize="12" fill="#93c5fd" fontWeight="bold" className="animate-bounce" style={{ animationDuration: '3s', animationDelay: '1.2s' }}>z</text>
               </g>
             )}
 

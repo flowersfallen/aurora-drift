@@ -9,6 +9,7 @@ import {
   Moon,
   HelpCircle,
   Share2,
+  Compass,
 } from 'lucide-react';
 import { ArcticCanvas } from './components/ArcticCanvas';
 import { IceOtter } from './components/IceOtter';
@@ -18,8 +19,10 @@ import { CollectionModal } from './components/CollectionModal';
 import { AudioMixerModal } from './components/AudioMixerModal';
 import { CampDecorModal } from './components/CampDecorModal';
 import { ShareModal } from './components/ShareModal';
+import { DriftMapModal } from './components/DriftMapModal';
 import { OtterState, TimeOfDay, PlayerProgress, AudioSettings, Treasure, Language } from './types';
 import { ALL_TREASURES } from './data/treasures';
+import { DRIFT_WAYPOINTS } from './data/waypoints';
 import { audioEngine } from './services/audioEngine';
 import { TRANSLATIONS } from './i18n/translations';
 
@@ -40,6 +43,8 @@ const DEFAULT_PROGRESS: PlayerProgress = {
   },
   streakDays: 1,
   lastPlayedDate: new Date().toISOString(),
+  driftMiles: 0,
+  visitedWaypointIds: ['still_floe'],
 };
 
 const DEFAULT_AUDIO: AudioSettings = {
@@ -85,11 +90,27 @@ export const App: React.FC = () => {
   const [progress, setProgress] = useState<PlayerProgress>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY_PROGRESS);
-      return saved ? { ...DEFAULT_PROGRESS, ...JSON.parse(saved) } : DEFAULT_PROGRESS;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        const totalMins = parsed.totalFocusMinutes ?? 0;
+        return {
+          ...DEFAULT_PROGRESS,
+          ...parsed,
+          driftMiles: parsed.driftMiles ?? totalMins,
+          visitedWaypointIds: parsed.visitedWaypointIds ?? ['still_floe'],
+        };
+      }
+      return DEFAULT_PROGRESS;
     } catch {
       return DEFAULT_PROGRESS;
     }
   });
+
+  // Derived polar drift metrics
+  const currentMiles = progress.driftMiles ?? progress.totalFocusMinutes;
+  const nextWaypoint =
+    DRIFT_WAYPOINTS.find((wp) => currentMiles < wp.requiredMiles) ||
+    DRIFT_WAYPOINTS[DRIFT_WAYPOINTS.length - 1];
 
   // Persistence: Audio Settings
   const [audioSettings, setAudioSettings] = useState<AudioSettings>(() => {
@@ -102,7 +123,9 @@ export const App: React.FC = () => {
   });
 
   // Modals
-  const [activeModal, setActiveModal] = useState<'collection' | 'audio' | 'decor' | 'info' | 'share' | null>(null);
+  const [activeModal, setActiveModal] = useState<
+    'collection' | 'audio' | 'decor' | 'info' | 'share' | 'voyage' | null
+  >(null);
   const [shareTreasure, setShareTreasure] = useState<Treasure | null>(null);
   const [currentTreasure, setCurrentTreasure] = useState<Treasure | null>(null);
 
@@ -158,10 +181,24 @@ export const App: React.FC = () => {
     audioEngine.init();
     audioEngine.playBubbleSplash();
     setOtterState('diving');
-    setProgress((prev) => ({
-      ...prev,
-      totalFocusMinutes: prev.totalFocusMinutes + durationMinutes,
-    }));
+    setProgress((prev) => {
+      const newMinutes = prev.totalFocusMinutes + durationMinutes;
+      const currentDrift = prev.driftMiles ?? prev.totalFocusMinutes;
+      const newMiles = currentDrift + durationMinutes;
+
+      // Check waypoint unlocks
+      const currentVisited = prev.visitedWaypointIds ?? ['still_floe'];
+      const newlyReached = DRIFT_WAYPOINTS
+        .filter((wp) => newMiles >= wp.requiredMiles && !currentVisited.includes(wp.id))
+        .map((wp) => wp.id);
+
+      return {
+        ...prev,
+        totalFocusMinutes: newMinutes,
+        driftMiles: newMiles,
+        visitedWaypointIds: newlyReached.length > 0 ? [...currentVisited, ...newlyReached] : currentVisited,
+      };
+    });
   };
 
   // Cancel Dive Handler
@@ -389,6 +426,19 @@ export const App: React.FC = () => {
             {audioSettings.isMuted ? <VolumeX className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-400" /> : <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
           </button>
 
+          {/* Polar Drift Navigational Chart Button */}
+          <button
+            onClick={() => setActiveModal('voyage')}
+            className="relative p-1.5 sm:px-3 sm:py-1.5 rounded-2xl glass-panel text-xs font-semibold text-teal-200 hover:text-white hover:scale-105 transition-all border border-teal-400/35 flex items-center sm:gap-1.5 shrink-0 cursor-pointer shadow-sm"
+            title={t.header.voyageTitle}
+          >
+            <Compass className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-teal-300" />
+            <span className="hidden sm:inline">{t.header.voyage}</span>
+            <span className="bg-teal-500/30 text-teal-200 text-[9px] sm:text-[10px] font-mono px-1 sm:px-1.5 py-0.2 rounded-full border border-teal-400/30">
+              {currentMiles} {t.voyage.nmUnit}
+            </span>
+          </button>
+
           {/* Collection Album Button (Mobile: icon with corner badge; Desktop: text pill) */}
           <button
             onClick={() => setActiveModal('collection')}
@@ -440,6 +490,7 @@ export const App: React.FC = () => {
           state={otterState}
           decorations={progress.decorations}
           lang={lang}
+          hasGuestFox={currentMiles >= 100}
           onOtterClick={() => {
             audioEngine.init();
             if (otterState === 'surfaced') {
@@ -452,6 +503,26 @@ export const App: React.FC = () => {
 
       {/* 4. Bottom Focus & Dive Control Dock */}
       <footer className="relative z-30 pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:pb-6 px-3 sm:px-4 w-full">
+        {/* Compact Polar Drift Course Navigation Pill */}
+        <div className="flex justify-center mb-2">
+          <button
+            onClick={() => setActiveModal('voyage')}
+            className="group flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-sky-950/70 hover:bg-sky-900/90 border border-teal-500/35 hover:border-teal-400/60 backdrop-blur-md text-[11px] sm:text-xs text-sky-200 transition-all cursor-pointer shadow-md hover:scale-[1.02] active:scale-95"
+            title={t.header.voyageTitle}
+          >
+            <Compass className="w-3.5 h-3.5 text-teal-300 group-hover:rotate-45 transition-transform" />
+            <span className="font-medium text-teal-200">
+              {t.voyage.sailingTo}:{' '}
+              <strong className="text-white">
+                {lang === 'zh' ? nextWaypoint.name_zh : nextWaypoint.name}
+              </strong>
+            </span>
+            <span className="text-amber-300 font-bold font-mono">
+              ({currentMiles} / {nextWaypoint.requiredMiles} {t.voyage.nmUnit})
+            </span>
+          </button>
+        </div>
+
         <FocusTimer
           otterState={otterState}
           onStartDive={handleStartDive}
@@ -563,6 +634,16 @@ export const App: React.FC = () => {
             </button>
           </div>
         </div>
+      )}
+
+      {/* Polar Drift Navigational Chart Modal */}
+      {activeModal === 'voyage' && (
+        <DriftMapModal
+          currentMiles={currentMiles}
+          visitedWaypointIds={progress.visitedWaypointIds}
+          lang={lang}
+          onClose={() => setActiveModal(null)}
+        />
       )}
     </div>
   );

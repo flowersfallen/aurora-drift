@@ -16,6 +16,25 @@ export interface Translations {
     share: string;
     fullscreen: string;
     langToggle: string;
+    voyage: string;
+    voyageTitle: string;
+  };
+  voyage: {
+    title: string;
+    subtitle: string;
+    sailingTo: string;
+    arrived: string;
+    nauticalMiles: string;
+    nmUnit: string;
+    milesAccumulated: string;
+    milesRemaining: string;
+    waypointReach: string;
+    legendUnlocked: string;
+    legendCurrent: string;
+    legendLocked: string;
+    close: string;
+    guestBadge: string;
+    foxDialogues: string[];
   };
   timer: {
     presets: {
@@ -152,6 +171,8 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       share: 'Share & Generate Poster',
       fullscreen: 'Toggle Fullscreen',
       langToggle: 'Language Switcher',
+      voyage: 'Voyage Map',
+      voyageTitle: 'Open Polar Drift Navigational Chart',
     },
     timer: {
       presets: {
@@ -294,6 +315,29 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       generatePoster: 'Generate Share Poster',
       backToCamp: 'Back to Campsite',
     },
+    voyage: {
+      title: 'Polar Drift Navigational Chart',
+      subtitle: 'Every minute of quiet focus sails your ice floe 1 nautical mile forward',
+      sailingTo: 'Bound for',
+      arrived: 'Arrived',
+      nauticalMiles: 'Nautical Miles',
+      nmUnit: 'NM',
+      milesAccumulated: 'Drift Distance',
+      milesRemaining: 'miles to next waypoint',
+      waypointReach: 'Waypoint Milestone Reached!',
+      legendUnlocked: 'Explored',
+      legendCurrent: 'Current Course',
+      legendLocked: 'Uncharted Ice',
+      close: 'Close Chart',
+      guestBadge: 'Camp Guest',
+      foxDialogues: [
+        '“The hot cocoa smells divine... may I nap here a while?” ☕',
+        '“The brass gramophone melodies are the sweetest sounds in the fjord.” 🎶',
+        '“Your wool quilt is so soft and warm. Deep breaths, keep going!” ❄️',
+        '“The polar lights reflect so beautifully off your iceberg.” ✨',
+        '“Curling up beside a focused friend is my favorite thing.” 🦊',
+      ],
+    },
   },
   zh: {
     header: {
@@ -311,6 +355,8 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       share: '生成分享海报',
       fullscreen: '切换全屏',
       langToggle: '中英文切换',
+      voyage: '航海图',
+      voyageTitle: '打开极地漂流航海图',
     },
     timer: {
       presets: {
@@ -452,6 +498,29 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       quote: '“只要看见雪，就用肚皮尽情滑行吧。随时带好你最喜欢的那颗小石头。”',
       generatePoster: '生成分享海报',
       backToCamp: '返回营地',
+    },
+    voyage: {
+      title: '极地漂流航海图',
+      subtitle: '每一分钟专注，浮冰方舟便向前航行 1 海里',
+      sailingTo: '航向目标',
+      arrived: '已抵泊',
+      nauticalMiles: '海里航程',
+      nmUnit: '海里',
+      milesAccumulated: '已航行里程',
+      milesRemaining: '海里抵达下一坐标',
+      waypointReach: '解锁全新航海坐标！',
+      legendUnlocked: '已抵达',
+      legendCurrent: '当前航向',
+      legendLocked: '未探知冰域',
+      close: '收起航海图',
+      guestBadge: '营地萌宠访客',
+      foxDialogues: [
+        '“热可可的香气好浓郁呀……我可以在羊绒毯上打个盹吗？” ☕',
+        '“黑胶唱片悠扬的旋律，是这片海峡里最治愈的回音呢。” 🎶',
+        '“这里的羊绒毯暖烘烘的。深吸一口气，继续专注前行吧！” ❄️',
+        '“天空中翩跹起舞的极光，倒映在你的浮冰上真美。” ✨',
+        '“蜷缩在自律又温柔的朋友身边，是世界上最惬意的事。” 🦊',
+      ],
     },
   },
 };
