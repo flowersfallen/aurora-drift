@@ -45,37 +45,37 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-fadeIn"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-2xl max-h-[85dvh] sm:max-h-[88vh] bg-[#0a1b2e] rounded-3xl p-4 sm:p-6 flex flex-col overflow-hidden border border-sky-400/40 shadow-2xl modal-crisp"
+        className="relative w-full max-w-2xl max-h-[calc(var(--app-height,100svh)-2rem)] sm:max-h-[88vh] bg-[#0a1b2e] rounded-3xl p-4 sm:p-6 flex flex-col overflow-hidden border border-sky-400/40 shadow-2xl modal-crisp"
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-sky-800/50">
-          <div className="flex items-center gap-4 sm:gap-4.5">
-            <div className="p-2.5 sm:p-3 rounded-2xl bg-sky-900/80 text-sky-300 border border-sky-500/40 shadow-sm shrink-0 mr-1">
+        <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-sky-800/50 shrink-0">
+          <div className="flex items-center gap-3 sm:gap-4.5">
+            <div className="p-2 sm:p-3 rounded-2xl bg-sky-900/80 text-sky-300 border border-sky-500/40 shadow-sm shrink-0 mr-1">
               <BookOpen className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-lg sm:text-xl font-bold text-white tracking-wide flex items-center gap-2">
+              <h3 className="text-base sm:text-xl font-bold text-white tracking-wide flex items-center gap-2">
                 Polar Memory Album
               </h3>
-              <p className="text-xs text-sky-300 font-medium mt-0.5">
+              <p className="text-[11px] sm:text-xs text-sky-300 font-medium mt-0.5">
                 Unlocked {unlockedCount} of {totalCount} polar treasures ({Math.round((unlockedCount / totalCount) * 100)}%)
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl text-sky-300 hover:text-white hover:bg-sky-800/50 transition-colors"
+            className="p-2 rounded-xl text-sky-300 hover:text-white hover:bg-sky-800/50 transition-colors shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Category Tabs */}
-        <div className="flex items-center gap-3 sm:gap-3.5 py-3.5 px-1 overflow-x-auto no-scrollbar scrollbar-none">
+        <div className="flex items-center gap-2 sm:gap-3.5 py-2.5 sm:py-3.5 px-0.5 overflow-x-auto no-scrollbar scrollbar-none shrink-0">
           {[
             { id: 'all', label: 'All Items', shortLabel: 'All', icon: Sparkles },
             { id: 'postcard', label: 'Postcards', shortLabel: 'Postcards', icon: BookOpen },
@@ -103,7 +103,10 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
         </div>
 
         {/* Grid of Treasures */}
-        <div className="flex-1 overflow-y-auto pr-1 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 py-2">
+        <div
+          className="flex-1 min-h-0 overflow-y-auto pr-1 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-3 py-2 modal-scrollbar overscroll-contain"
+          style={{ WebkitOverflowScrolling: 'touch' }}
+        >
           {filteredTreasures.map((treasure) => {
             const isUnlocked = unlockedIds.includes(treasure.id);
 
@@ -155,8 +158,8 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
         {/* Detail Inspection Modal */}
         {selectedTreasure && (
           <div
-            style={{ backgroundColor: '#07172b' }}
-            className="absolute inset-0 z-30 bg-[#07172b] rounded-3xl p-4 sm:p-6 flex flex-col items-center justify-center text-center animate-scaleUp border-2 border-sky-400/50 shadow-2xl overflow-y-auto"
+            style={{ backgroundColor: '#07172b', WebkitOverflowScrolling: 'touch' }}
+            className="absolute inset-0 z-30 bg-[#07172b] rounded-3xl p-4 sm:p-6 flex flex-col items-center justify-center text-center animate-scaleUp border-2 border-sky-400/50 shadow-2xl overflow-y-auto modal-scrollbar overscroll-contain"
           >
             <button
               onClick={() => setSelectedTreasure(null)}

@@ -179,30 +179,30 @@ export const CampDecorModal: React.FC<CampDecorModalProps> = ({
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-fadeIn"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-md bg-[#0a1b2e] rounded-3xl p-4 sm:p-6 flex flex-col overflow-hidden border border-sky-400/40 shadow-2xl modal-crisp"
+        className="relative w-full max-w-md max-h-[calc(var(--app-height,100svh)-2rem)] sm:max-h-[88vh] bg-[#0a1b2e] rounded-3xl p-4 sm:p-6 flex flex-col overflow-hidden border border-sky-400/40 shadow-2xl modal-crisp"
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-sky-800/50">
+        <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-sky-800/50 shrink-0">
           <div>
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+            <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
               <span>⛺</span> Iceberg Camp Decor
             </h3>
-            <p className="text-xs text-sky-300">Make your floating ice sanctuary warm & cozy</p>
+            <p className="text-[11px] sm:text-xs text-sky-300">Make your floating ice sanctuary warm & cozy</p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl text-sky-300 hover:text-white hover:bg-sky-800/50 transition-colors"
+            className="p-2 rounded-xl text-sky-300 hover:text-white hover:bg-sky-800/50 transition-colors shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Currency Display */}
-        <div className="flex items-center justify-between py-3 px-4 bg-sky-900/40 rounded-2xl border border-sky-700/50 my-3">
+        <div className="flex items-center justify-between py-2.5 px-3.5 bg-sky-900/40 rounded-2xl border border-sky-700/50 my-2.5 shrink-0">
           <span className="text-xs text-sky-200 font-medium">Your Ice Pearls:</span>
           <span className="text-sm font-bold text-amber-300 flex items-center gap-1.5">
             <span>🦪</span> {pearls} Pearls
@@ -210,7 +210,10 @@ export const CampDecorModal: React.FC<CampDecorModalProps> = ({
         </div>
 
         {/* Shop Items List */}
-        <div className="flex flex-col gap-4 sm:gap-4.5 py-2 overflow-y-auto max-h-[50vh] pr-0.5">
+        <div
+          className="flex-1 min-h-0 flex flex-col gap-3.5 sm:gap-4.5 py-2 overflow-y-auto pr-1 modal-scrollbar overscroll-contain"
+          style={{ WebkitOverflowScrolling: 'touch' }}
+        >
           {SHOP_ITEMS.map((item) => {
             const isOwned = decorations[item.key];
             const canAfford = pearls >= item.cost;

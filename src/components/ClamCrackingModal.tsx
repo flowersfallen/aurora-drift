@@ -75,8 +75,11 @@ export const ClamCrackingModal: React.FC<ClamCrackingModalProps> = ({ treasure, 
   const earnedPearls = treasure.rarity === 'legendary' ? 50 : treasure.rarity === 'rare' ? 25 : 15;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-md bg-[#0a1b2e] rounded-3xl p-6 text-center flex flex-col items-center overflow-hidden border border-sky-400/40 shadow-2xl modal-crisp">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
+      <div
+        className="relative w-full max-w-md max-h-[calc(var(--app-height,100svh)-2rem)] sm:max-h-[88vh] bg-[#0a1b2e] rounded-3xl p-5 sm:p-6 text-center flex flex-col items-center overflow-y-auto modal-scrollbar overscroll-contain border border-sky-400/40 shadow-2xl modal-crisp"
+        style={{ WebkitOverflowScrolling: 'touch' }}
+      >
         {/* Background glow behind clam */}
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-sky-400/15 rounded-full blur-3xl pointer-events-none"></div>
 

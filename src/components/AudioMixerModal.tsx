@@ -66,33 +66,33 @@ export const AudioMixerModal: React.FC<AudioMixerModalProps> = ({
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-fadeIn"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-md bg-[#0a1b2e] rounded-3xl p-4 sm:p-6 flex flex-col overflow-hidden border border-sky-400/40 shadow-2xl modal-crisp"
+        className="relative w-full max-w-md max-h-[calc(var(--app-height,100svh)-2rem)] sm:max-h-[88vh] bg-[#0a1b2e] rounded-3xl p-4 sm:p-6 flex flex-col overflow-hidden border border-sky-400/40 shadow-2xl modal-crisp"
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-sky-800/50">
+        <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-sky-800/50 shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-xl bg-sky-500/20 text-sky-300">
               <Volume2 className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white">Ambient Sound Mixer</h3>
-              <p className="text-xs text-sky-300/80">Craft your personal arctic focus sanctuary</p>
+              <h3 className="text-base sm:text-lg font-bold text-white">Ambient Sound Mixer</h3>
+              <p className="text-[11px] sm:text-xs text-sky-300/80">Craft your personal arctic focus sanctuary</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl text-sky-400 hover:text-white hover:bg-sky-800/40"
+            className="p-2 rounded-xl text-sky-400 hover:text-white hover:bg-sky-800/40 shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Master Mute & Volume */}
-        <div className="py-3.5 border-b border-sky-900/40 flex flex-col gap-2.5">
+        <div className="py-3 border-b border-sky-900/40 flex flex-col gap-2 shrink-0">
           <div className="flex items-center justify-between">
             <button
               onClick={toggleMute}
@@ -128,7 +128,10 @@ export const AudioMixerModal: React.FC<AudioMixerModalProps> = ({
         </div>
 
         {/* Individual Sound Sliders */}
-        <div className="flex flex-col gap-4 py-3.5">
+        <div
+          className="flex-1 min-h-0 flex flex-col gap-3 sm:gap-4 py-3 overflow-y-auto pr-1 modal-scrollbar overscroll-contain"
+          style={{ WebkitOverflowScrolling: 'touch' }}
+        >
           {soundChannels.map((ch) => {
             const IconComp = ch.icon;
             return (
