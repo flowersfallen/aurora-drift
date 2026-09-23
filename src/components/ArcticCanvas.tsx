@@ -43,6 +43,10 @@ export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({ timeOfDay, isDiving 
       initStars();
     };
     window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleResize);
+    }
 
     // Initialize Stars
     let stars: Star[] = [];
@@ -434,6 +438,10 @@ export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({ timeOfDay, isDiving 
     return () => {
       cancelAnimationFrame(animationId);
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', handleResize);
+      }
     };
   }, [timeOfDay, isDiving]);
 

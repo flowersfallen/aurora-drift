@@ -89,6 +89,29 @@ export const App: React.FC = () => {
     localStorage.setItem(STORAGE_KEY_AUDIO, JSON.stringify(audioSettings));
   }, [audioSettings]);
 
+  // Cross-browser & iOS Safari dynamic viewport height handler
+  useEffect(() => {
+    const updateAppHeight = () => {
+      const vh = window.innerHeight;
+      document.documentElement.style.setProperty('--app-height', `${vh}px`);
+    };
+
+    updateAppHeight();
+    window.addEventListener('resize', updateAppHeight);
+    window.addEventListener('orientationchange', updateAppHeight);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', updateAppHeight);
+    }
+
+    return () => {
+      window.removeEventListener('resize', updateAppHeight);
+      window.removeEventListener('orientationchange', updateAppHeight);
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', updateAppHeight);
+      }
+    };
+  }, []);
+
   // Start Dive Handler
   const handleStartDive = (durationMinutes: number) => {
     audioEngine.init();
@@ -158,7 +181,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="relative w-full app-viewport overflow-hidden flex flex-col justify-between select-none">
+    <div className="relative w-full app-viewport overflow-x-hidden flex flex-col justify-between select-none">
       {/* 1. Dynamic Canvas Layer (Aurora, Stars, Snow, Waves) */}
       <ArcticCanvas timeOfDay={timeOfDay} isDiving={otterState === 'diving'} />
 
@@ -370,7 +393,7 @@ export const App: React.FC = () => {
       </main>
 
       {/* 4. Bottom Focus & Dive Control Dock */}
-      <footer className="relative z-30 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:pb-6 px-3 sm:px-4 w-full">
+      <footer className="relative z-30 pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:pb-6 px-3 sm:px-4 w-full">
         <FocusTimer
           otterState={otterState}
           onStartDive={handleStartDive}

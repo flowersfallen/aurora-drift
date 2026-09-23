@@ -100,7 +100,7 @@ export const IceOtter: React.FC<IceOtterProps> = ({ state, decorations, onOtterC
       {/* Main Unified Stage: Fluid width on mobile, max 460px on desktop */}
       <div
         onClick={handleInteraction}
-        className="relative w-[92vw] max-w-[460px] max-h-[38vh] sm:max-h-none aspect-[460/320] flex items-center justify-center"
+        className="relative w-auto max-w-[88vw] max-h-[30vh] sm:max-h-[35vh] md:w-[92vw] md:max-w-[460px] md:max-h-none aspect-[460/320] flex items-center justify-center mx-auto"
       >
         {/* Soft, natural water bobbing physics applied to the whole floe */}
         <div className="animate-float-slow relative w-full h-full">
