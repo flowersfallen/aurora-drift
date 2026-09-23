@@ -112,34 +112,16 @@ export const App: React.FC = () => {
     };
   }, []);
 
-  // Lock body scroll and prevent background scroll bounce when any modal is open on iOS Safari
+  // Prevent background scrolling when any modal is open
   const isAnyModalOpen = Boolean(activeModal || (otterState === 'surfaced' && currentTreasure));
 
   useEffect(() => {
     if (isAnyModalOpen) {
-      const scrollY = window.scrollY;
-      const originalPosition = document.body.style.position;
-      const originalTop = document.body.style.top;
-      const originalLeft = document.body.style.left;
-      const originalRight = document.body.style.right;
-      const originalWidth = document.body.style.width;
       const originalOverflow = document.body.style.overflow;
-
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.left = '0';
-      document.body.style.right = '0';
-      document.body.style.width = '100%';
       document.body.style.overflow = 'hidden';
 
       return () => {
-        document.body.style.position = originalPosition;
-        document.body.style.top = originalTop;
-        document.body.style.left = originalLeft;
-        document.body.style.right = originalRight;
-        document.body.style.width = originalWidth;
         document.body.style.overflow = originalOverflow;
-        window.scrollTo(0, scrollY);
       };
     }
   }, [isAnyModalOpen]);
@@ -491,11 +473,11 @@ export const App: React.FC = () => {
       {activeModal === 'info' && (
         <div
           onClick={() => setActiveModal(null)}
-          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-fadeIn"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-fadeIn touch-none"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-md max-h-[calc(var(--app-height,100svh)-2rem)] sm:max-h-[88vh] bg-[#0a1b2e] rounded-3xl p-5 sm:p-6 text-center flex flex-col items-center border border-sky-400/40 shadow-2xl modal-crisp overflow-y-auto modal-scrollbar overscroll-contain"
+            className="relative w-full max-w-md max-h-[calc(var(--app-height,100svh)-2rem)] sm:max-h-[88vh] bg-[#0a1b2e] rounded-3xl p-5 sm:p-6 text-center flex flex-col items-center border border-sky-400/40 shadow-2xl modal-crisp overflow-y-auto modal-scrollbar overscroll-contain touch-auto"
             style={{ WebkitOverflowScrolling: 'touch' }}
           >
             <div className="w-16 h-16 rounded-2xl bg-sky-400/20 border border-sky-300/30 flex items-center justify-center text-3xl mb-3 shadow-inner">

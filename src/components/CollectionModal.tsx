@@ -45,11 +45,11 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({ unlockedIds, o
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-fadeIn touch-none"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-2xl max-h-[calc(var(--app-height,100svh)-2rem)] sm:max-h-[88vh] bg-[#0a1b2e] rounded-3xl p-4 sm:p-6 flex flex-col overflow-hidden border border-sky-400/40 shadow-2xl modal-crisp"
+        className="relative w-full max-w-2xl max-h-[calc(var(--app-height,100svh)-2rem)] sm:max-h-[88vh] bg-[#0a1b2e] rounded-3xl p-4 sm:p-6 flex flex-col overflow-hidden border border-sky-400/40 shadow-2xl modal-crisp touch-auto"
       >
         {/* Header */}
         <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-sky-800/50 shrink-0">

@@ -947,11 +947,11 @@ export const ShareModal: React.FC<ShareModalProps> = ({ onClose, treasure, progr
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-fadeIn touch-none"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-lg bg-[#07172b] rounded-3xl p-4 sm:p-6 flex flex-col border border-sky-400/50 shadow-2xl modal-crisp max-h-[calc(var(--app-height,100svh)-2rem)] sm:max-h-[90vh] overflow-y-auto modal-scrollbar overscroll-contain"
+        className="relative w-full max-w-lg bg-[#07172b] rounded-3xl p-4 sm:p-6 flex flex-col border border-sky-400/50 shadow-2xl modal-crisp max-h-[calc(var(--app-height,100svh)-2rem)] sm:max-h-[90vh] overflow-y-auto modal-scrollbar overscroll-contain touch-auto"
         style={{ WebkitOverflowScrolling: 'touch' }}
       >
         {/* Hidden rendering canvas */}

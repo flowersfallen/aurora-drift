@@ -87,7 +87,7 @@ export const FocusTimer: React.FC<FocusTimerProps> = ({
   const progressPercent = Math.max(0, Math.min(100, ((totalTime - timeLeft) / totalTime) * 100));
 
   return (
-    <div className="glass-panel-glow px-3.5 sm:px-6 py-2.5 sm:py-4 rounded-2xl sm:rounded-3xl flex flex-col items-center justify-between min-h-[138px] sm:min-h-[175px] w-full max-w-md mx-auto shadow-2xl transition-all">
+    <div className="glass-panel-glow px-3.5 sm:px-6 py-2.5 sm:py-4 rounded-2xl sm:rounded-3xl flex flex-col items-center justify-between min-h-[138px] sm:min-h-[175px] w-full max-w-md mx-auto shadow-2xl">
       {/* Top Header Row: Preset buttons (when idle) or Diving Depth Indicator (when diving) - Same Height */}
       <div className="h-8 flex items-center justify-center w-full">
         {!isDiving ? (
