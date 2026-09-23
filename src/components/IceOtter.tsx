@@ -111,15 +111,11 @@ export const IceOtter: React.FC<IceOtterProps> = ({
       {/* Speech Bubble - Floats right above otter */}
       {dialogue && !isDiving && (
         <div
-          className={`absolute z-50 animate-bounce px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl bg-white/95 text-slate-800 text-[11px] sm:text-xs font-semibold max-w-[85vw] sm:max-w-[240px] text-center border-2 border-sky-300 shadow-xl shadow-sky-950/40 ${
-            isCruising ? 'top-12 sm:top-14 left-4 sm:left-12' : 'top-1 sm:top-2 left-1/2 -translate-x-1/2'
-          }`}
+          className="absolute z-50 animate-bounce px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl bg-white/95 text-slate-800 text-[11px] sm:text-xs font-semibold max-w-[85vw] sm:max-w-[240px] text-center border-2 border-sky-300 shadow-xl shadow-sky-950/40 top-1 sm:top-2 left-1/2 -translate-x-1/2"
         >
           {dialogue}
           <div
-            className={`absolute -bottom-2.5 w-0 h-0 border-l-[7px] border-l-transparent border-r-[7px] border-r-transparent border-t-[9px] border-t-white ${
-              isCruising ? 'left-6' : 'left-1/2 -translate-x-1/2'
-            }`}
+            className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[7px] border-l-transparent border-r-[7px] border-r-transparent border-t-[9px] border-t-white"
           ></div>
         </div>
       )}
@@ -654,9 +650,9 @@ export const IceOtter: React.FC<IceOtterProps> = ({
             {/* 7. THE ICE OTTER MASCOT (Sitting dead-center on the snow plateau)     */}
             {/* Feet rest firmly at Y=224, body center at X=220. Visible when !diving */}
             {/* --------------------------------------------------------------------- */}
-            {!isDiving && !isCruising ? (
+            {!isDiving ? (
               <g id="ice-otter" transform="translate(140, 82)">
-                <g className="cursor-pointer transition-all duration-200 hover:brightness-105 hover:drop-shadow-[0_0_12px_rgba(56,189,248,0.7)]">
+                <g className={`cursor-pointer transition-all duration-200 hover:brightness-105 hover:drop-shadow-[0_0_12px_rgba(56,189,248,0.7)] ${isCruising ? 'animate-otter-rowing' : ''}`}>
                   {/* 1. TAIL */}
                 <path
                   d="M50 128 C22 128 12 136 15 144 C18 151 46 150 60 140 Z"
@@ -708,7 +704,46 @@ export const IceOtter: React.FC<IceOtterProps> = ({
                 <ellipse cx="56" cy="142" rx="11" ry="13" fill="#3c4556" stroke="#2e384d" strokeWidth="3.5" />
                 <ellipse cx="104" cy="142" rx="11" ry="13" fill="#3c4556" stroke="#2e384d" strokeWidth="3.5" />
 
-                {/* 8. HELD ITEM */}
+                {/* 8. EXPEDITION EXPLORER SCARF (Active when Cruising) */}
+                {isCruising && (
+                  <g id="explorer-scarf">
+                    {/* Main scarf loop around neck */}
+                    <path
+                      d="M 46 81 C 64 94 96 94 114 81"
+                      stroke="#0284c7"
+                      strokeWidth="8"
+                      strokeLinecap="round"
+                      fill="none"
+                    />
+                    {/* Inner bright sky-blue highlight stripe */}
+                    <path
+                      d="M 48 81 C 64 92 96 92 112 81"
+                      stroke="#38bdf8"
+                      strokeWidth="3.5"
+                      strokeLinecap="round"
+                      fill="none"
+                    />
+                    {/* Golden compass emblem clasp on scarf */}
+                    <circle cx="56" cy="85" r="3.2" fill="#fde047" stroke="#b45309" strokeWidth="1" />
+                    {/* Fluttering scarf tails drifting back in the wind */}
+                    <g className="animate-pulse">
+                      <path
+                        d="M 106 81 C 118 79 128 84 136 93 C 130 95 120 89 108 87 Z"
+                        fill="#0284c7"
+                        stroke="#0369a1"
+                        strokeWidth="1.2"
+                      />
+                      <path
+                        d="M 108 84 C 122 83 132 89 140 101 C 133 102 124 93 110 89 Z"
+                        fill="#38bdf8"
+                        stroke="#0284c7"
+                        strokeWidth="1.2"
+                      />
+                    </g>
+                  </g>
+                )}
+
+                {/* 9. HELD ITEM */}
                 {state === 'surfaced' || state === 'cracking' ? (
                   /* Surfaced Giant Clam */
                   <g className="animate-pulse">
@@ -717,6 +752,43 @@ export const IceOtter: React.FC<IceOtterProps> = ({
                     <polygon points="80,101 88,112 80,123 72,112" fill="#ffffff" opacity="0.85" />
                     <path d="M54 104 C62 104 70 110 64 122" stroke="#2e384d" strokeWidth="3.8" strokeLinecap="round" fill="none" />
                     <path d="M106 104 C98 104 90 110 96 122" stroke="#2e384d" strokeWidth="3.8" strokeLinecap="round" fill="none" />
+                  </g>
+                ) : isCruising ? (
+                  /* Cruising Expedition: Wooden Polar Paddle dipping into sea with water spray */
+                  <g id="cruising-paddle">
+                    {/* Paddle Shaft (Held diagonally across paws, extending down to left waterline) */}
+                    <line x1="120" y1="78" x2="-22" y2="166" stroke="#78350f" strokeWidth="6" strokeLinecap="round" />
+                    <line x1="118" y1="79" x2="-20" y2="165" stroke="#b45309" strokeWidth="3" strokeLinecap="round" />
+                    {/* Wooden handle grip knob */}
+                    <circle cx="121" cy="77" r="4.5" fill="#78350f" stroke="#451a03" strokeWidth="1.2" />
+
+                    {/* Wooden Paddle Blade Dipping into Sea */}
+                    <g transform="translate(-28, 172) rotate(-38)">
+                      <path
+                        d="M 0 -22 C 9 -12 9 12 0 24 C -9 12 -9 -12 0 -22 Z"
+                        fill="#b45309"
+                        stroke="#78350f"
+                        strokeWidth="2.5"
+                        strokeLinejoin="round"
+                      />
+                      {/* Blade Wood Grain Center Spine */}
+                      <line x1="0" y1="-18" x2="0" y2="20" stroke="#78350f" strokeWidth="1.8" strokeLinecap="round" />
+                      <line x1="-3" y1="-6" x2="-3" y2="12" stroke="#92400e" strokeWidth="1" strokeLinecap="round" />
+                    </g>
+
+                    {/* Sea Water Splashes & Ripple at Paddle Entry */}
+                    <ellipse cx="-40" cy="182" rx="14" ry="4.5" fill="#ffffff" opacity="0.85" className="animate-ping" style={{ animationDuration: '2s' }} />
+                    <ellipse cx="-40" cy="182" rx="10" ry="3.5" fill="#7dd3fc" opacity="0.6" />
+                    <circle cx="-48" cy="176" r="2.8" fill="#ffffff" className="animate-bounce" />
+                    <circle cx="-34" cy="172" r="2.2" fill="#bae6fd" className="animate-bounce" style={{ animationDelay: '0.4s' }} />
+
+                    {/* Otter Paws Gripping the Wooden Shaft Firmly */}
+                    {/* Right Paw (Upper grip) */}
+                    <path d="M 106 98 C 100 98 94 104 98 114" stroke="#2e384d" strokeWidth="3.8" strokeLinecap="round" fill="none" />
+                    <ellipse cx="102" cy="106" rx="6" ry="5.5" fill="#3c4556" stroke="#2e384d" strokeWidth="3" />
+                    {/* Left Paw (Lower grip) */}
+                    <path d="M 52 110 C 58 110 66 116 62 126" stroke="#2e384d" strokeWidth="3.8" strokeLinecap="round" fill="none" />
+                    <ellipse cx="58" cy="118" rx="6" ry="5.5" fill="#3c4556" stroke="#2e384d" strokeWidth="3" />
                   </g>
                 ) : (
                   /* Iconic Glowing Ice Cube */
@@ -732,78 +804,6 @@ export const IceOtter: React.FC<IceOtterProps> = ({
                   </g>
                 )}
                 </g>
-              </g>
-            ) : isCruising ? (
-              /* ----------------------------------------------------------------- */
-              /* CRUISING STATE: Otter In-Water Pushing the Ice Sanctuary           */
-              /* ----------------------------------------------------------------- */
-              <g
-                id="cruising-otter"
-                transform="translate(48, 236)"
-                className="cursor-pointer group"
-                onClick={handleInteraction}
-              >
-                {/* 1. Water Ripple Spray around Otter */}
-                <ellipse cx="0" cy="18" rx="22" ry="7" fill="none" stroke="#ffffff" strokeWidth="2.4" opacity="0.8" className="animate-ping" style={{ animationDuration: '2.5s' }} />
-                <ellipse cx="0" cy="18" rx="16" ry="5.5" fill="#38bdf8" opacity="0.3" />
-
-                {/* 2. Hind Flippers & Little Tail Swimming Kicks */}
-                {/* Back Left Leg & Webbed Flipper */}
-                <g className="animate-bounce" style={{ animationDuration: '0.45s' }}>
-                  <path d="M -12 14 C -22 12 -26 22 -18 25 C -13 25 -10 18 -12 14 Z" fill="#3c4556" stroke="#2e384d" strokeWidth="1.8" />
-                </g>
-                {/* Back Right Leg & Webbed Flipper */}
-                <g className="animate-bounce" style={{ animationDuration: '0.45s', animationDelay: '0.22s' }}>
-                  <path d="M -8 18 C -18 18 -22 28 -14 30 C -9 29 -6 22 -8 18 Z" fill="#3c4556" stroke="#2e384d" strokeWidth="1.8" />
-                </g>
-                {/* Fluttering Tail */}
-                <path d="M -16 12 Q -28 10 -26 22 Q -20 18 -16 14" fill="#3c4556" stroke="#2e384d" strokeWidth="2" />
-
-                {/* 3. Churning Jet Stream Foam & Bubbles */}
-                <circle cx="-28" cy="18" r="3.2" fill="#ffffff" opacity="0.9" className="animate-ping" style={{ animationDuration: '0.6s' }} />
-                <circle cx="-36" cy="22" r="4.5" fill="#bae6fd" opacity="0.8" className="animate-ping" style={{ animationDuration: '0.9s' }} />
-                <circle cx="-46" cy="16" r="3.5" fill="#7dd3fc" opacity="0.7" className="animate-ping" style={{ animationDuration: '1.2s' }} />
-                <circle cx="-56" cy="24" r="2.5" fill="#e0f2fe" opacity="0.6" className="animate-ping" style={{ animationDuration: '0.8s' }} />
-
-                {/* 4. Chubby Body (Half in water) */}
-                <path
-                  d="M -15 14 C -12 4 8 2 16 8 C 18 16 12 24 -6 24 C -12 24 -16 20 -15 14 Z"
-                  fill="#fdfbf7"
-                  stroke="#2e384d"
-                  strokeWidth="2.5"
-                />
-
-                {/* 5. Front Paws Gripping the Ice Shelf */}
-                <ellipse cx="15" cy="5" rx="5" ry="3.5" fill="#3c4556" stroke="#2e384d" strokeWidth="2" />
-                <ellipse cx="20" cy="11" rx="5" ry="3.5" fill="#3c4556" stroke="#2e384d" strokeWidth="2" />
-
-                {/* 6. Cute Head Peeking Above Water Line */}
-                <ellipse cx="6" cy="2" rx="11" ry="9.5" fill="#fdfbf7" stroke="#2e384d" strokeWidth="2.5" />
-
-                {/* Tiny Ears */}
-                <ellipse cx="-2" cy="-6" rx="4" ry="5.5" fill="#3c4556" stroke="#2e384d" strokeWidth="2" transform="rotate(-20 -2 -6)" />
-                <ellipse cx="14" cy="-6" rx="4" ry="5.5" fill="#3c4556" stroke="#2e384d" strokeWidth="2" transform="rotate(20 14 -6)" />
-
-                {/* Whiskers */}
-                <path d="M 0 4 Q -6 3 -10 2" stroke="#2e384d" strokeWidth="1.6" strokeLinecap="round" fill="none" />
-                <path d="M 10 4 Q 16 3 20 2" stroke="#2e384d" strokeWidth="1.6" strokeLinecap="round" fill="none" />
-
-                {/* Happy Determined Squinting Eyes (⌒ ⌒) */}
-                <path d="M 1 0 Q 4 -3 7 0" stroke="#2e384d" strokeWidth="2.2" strokeLinecap="round" fill="none" />
-                <path d="M 9 0 Q 12 -3 15 0" stroke="#2e384d" strokeWidth="2.2" strokeLinecap="round" fill="none" />
-
-                {/* Tiny Button Nose & Rosy Cheeks */}
-                <ellipse cx="7" cy="2" rx="2.2" ry="1.5" fill="#2e384d" />
-                <ellipse cx="0" cy="3.5" rx="3.5" ry="2.2" fill="#fecdd3" opacity="0.85" />
-                <ellipse cx="14" cy="3.5" rx="3.5" ry="2.2" fill="#fecdd3" opacity="0.85" />
-
-                {/* Swimming Goggles on Forehead */}
-                <ellipse cx="3" cy="-4" rx="4.5" ry="3.2" fill="#38bdf8" opacity="0.85" stroke="#0284c7" strokeWidth="1.5" />
-                <ellipse cx="11" cy="-4" rx="4.5" ry="3.2" fill="#38bdf8" opacity="0.85" stroke="#0284c7" strokeWidth="1.5" />
-                <path d="M -3 -4 Q 7 -6 17 -4" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" fill="none" />
-
-                {/* Churning Splash Water at Chest */}
-                <path d="M 7 14 Q 18 16 28 12" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" opacity="0.9" fill="none" />
               </g>
             ) : (
               /* ----------------------------------------------------------------- */
@@ -828,7 +828,7 @@ export const IceOtter: React.FC<IceOtterProps> = ({
           {isCruising && (
             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-40 bg-teal-950/90 text-teal-200 font-bold px-4 py-1.5 rounded-full text-xs shadow-xl border border-teal-400/40 animate-pulse flex items-center gap-2 whitespace-nowrap backdrop-blur-sm">
               <span className="animate-spin inline-block text-sm" style={{ animationDuration: '4s' }}>🧭</span>
-              <span>{lang === 'zh' ? '小水獭正在奋力推冰巡航中 🌊' : 'Otter cruising & pushing the ice 🌊'}</span>
+              <span>{lang === 'zh' ? '浮冰方舟全速巡航中 🌊' : 'Sanctuary floe cruising ahead 🌊'}</span>
             </div>
           )}
 
