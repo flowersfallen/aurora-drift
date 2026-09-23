@@ -734,6 +734,59 @@ export const App: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Dev Testing Bar (Only visible in development mode on localhost) */}
+      {Boolean((import.meta as any).env?.DEV) && (
+        <div className="fixed bottom-2 left-2 z-[9999] opacity-80 hover:opacity-100 transition-opacity">
+          <div className="bg-slate-900/95 border border-sky-500/50 rounded-xl p-2 shadow-2xl backdrop-blur-md text-[11px] text-sky-200 flex flex-wrap gap-1.5 max-w-sm">
+            <span className="font-bold text-amber-300 w-full mb-0.5">🛠️ 本地调试快捷面板 (线上自动隐藏):</span>
+            <button
+              onClick={() => {
+                setProgress(prev => ({
+                  ...prev,
+                  unlockedTreasureIds: ALL_TREASURES.map(t => t.id),
+                  driftMiles: Math.max(prev.driftMiles ?? 0, 105),
+                  visitedWaypointIds: ['still_floe', 'echo_straits'],
+                }));
+              }}
+              className="px-2 py-1 bg-teal-800/80 hover:bg-teal-700 rounded text-white font-medium cursor-pointer"
+            >
+              一键集齐16件(进二阶)
+            </button>
+            <button
+              onClick={() => {
+                setProgress(prev => ({
+                  ...prev,
+                  unlockedTreasureIds: ['postcard-aurora-fox'],
+                  driftMiles: 0,
+                  visitedWaypointIds: ['still_floe'],
+                }));
+                setOtterState('idle');
+              }}
+              className="px-2 py-1 bg-slate-700 hover:bg-slate-600 rounded text-white font-medium cursor-pointer"
+            >
+              重置为1件(初阶)
+            </button>
+            <button
+              onClick={() => {
+                setProgress(prev => ({
+                  ...prev,
+                  unlockedTreasureIds: ALL_TREASURES.slice(0, 15).map(t => t.id),
+                }));
+              }}
+              className="px-2 py-1 bg-indigo-800/80 hover:bg-indigo-700 rounded text-white font-medium cursor-pointer"
+            >
+              设为15件(测启航庆典)
+            </button>
+            <button
+              onClick={() => setOtterState(prev => prev === 'cruising' ? 'idle' : 'cruising')}
+              className="px-2 py-1 bg-amber-800/80 hover:bg-amber-700 rounded text-white font-medium cursor-pointer"
+            >
+              {otterState === 'cruising' ? '停船(idle)' : '划桨巡航(cruising)'}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
