@@ -5,6 +5,8 @@ interface ArcticCanvasProps {
   timeOfDay: TimeOfDay;
   isDiving: boolean;
   isCruising?: boolean;
+  hasLighthouse?: boolean;
+  isOasisMeteorShower?: boolean;
 }
 
 interface Snowflake {
@@ -24,7 +26,13 @@ interface Star {
   blinkSpeed: number;
 }
 
-export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({ timeOfDay, isDiving, isCruising = false }) => {
+export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({
+  timeOfDay,
+  isDiving,
+  isCruising = false,
+  hasLighthouse = false,
+  isOasisMeteorShower = false,
+}) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -80,19 +88,20 @@ export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({ timeOfDay, isDiving,
       });
     }
 
-    // Shooting star state for Quiet Midnight mode
-    const shootingStar = {
-      x: 0,
-      y: 0,
-      vx: 9,
-      vy: 6,
-      length: 80,
-      speed: 12,
-      life: 0,
-      maxLife: 40,
-      active: false,
-      nextSpawn: 90, // First meteor shortly after entering night mode
-    };
+    // Shooting star & Oasis meteor shower state
+    interface ActiveMeteor {
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      length: number;
+      speed: number;
+      life: number;
+      maxLife: number;
+      color: string;
+    }
+    const meteors: ActiveMeteor[] = [];
+    let meteorCooldown = isOasisMeteorShower ? 15 : 90;
 
     // Parallax Layer 1: Seamless Glacial Mountain Ridge
     let mountainScroll = 0;
@@ -174,13 +183,13 @@ export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({ timeOfDay, isDiving,
         });
       }
 
-      // 3. Moon & Shooting Stars (Quiet Midnight ONLY)
+      // 3. Moon (Quiet Midnight)
       const moonX = width * (width < 640 ? 0.78 : 0.82);
       const moonY = Math.max(70, Math.min(130, height * 0.16));
       const moonRadius = width < 640 ? 18 : 24;
 
       if (timeOfDay === 'night') {
-        // A. Ambient Lunar Halo
+        // Ambient Lunar Halo
         ctx.save();
         const halo = ctx.createRadialGradient(moonX, moonY, moonRadius * 0.2, moonX, moonY, moonRadius * 3.8);
         halo.addColorStop(0, 'rgba(224, 242, 254, 0.32)');
@@ -192,7 +201,7 @@ export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({ timeOfDay, isDiving,
         ctx.arc(moonX, moonY, moonRadius * 3.8, 0, Math.PI * 2);
         ctx.fill();
 
-        // B. Crisp Radiant Crescent Moon
+        // Crisp Radiant Crescent Moon
         ctx.beginPath();
         ctx.arc(moonX, moonY, moonRadius, Math.PI * 0.3, Math.PI * 1.7, false);
         ctx.arc(moonX + moonRadius * 0.5, moonY, moonRadius * 0.85, Math.PI * 1.6, Math.PI * 0.4, true);
@@ -202,62 +211,74 @@ export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({ timeOfDay, isDiving,
         ctx.shadowBlur = 14;
         ctx.fill();
         ctx.restore();
+      }
 
-        // C. Occasional Gentle Shooting Star (Meteor)
-        shootingStar.nextSpawn--;
-        if (!shootingStar.active && shootingStar.nextSpawn <= 0) {
-          shootingStar.active = true;
-          shootingStar.x = Math.random() * (width * 0.65);
-          shootingStar.y = Math.random() * (height * 0.22) + 15;
-          const angle = Math.PI * 0.18 + Math.random() * 0.12;
+      // 3B. Shooting Stars & Oasis Celestial Meteor Shower
+      const canSpawnMeteor = timeOfDay === 'night' || isOasisMeteorShower;
+      if (canSpawnMeteor) {
+        meteorCooldown--;
+        if (meteorCooldown <= 0) {
+          const angle = Math.PI * 0.18 + Math.random() * 0.14;
           const speed = Math.random() * 4 + 11;
-          shootingStar.speed = speed;
-          shootingStar.vx = Math.cos(angle) * speed;
-          shootingStar.vy = Math.sin(angle) * speed;
-          shootingStar.length = Math.random() * 35 + 65;
-          shootingStar.life = 0;
-          shootingStar.maxLife = Math.floor(Math.random() * 20 + 35);
-          // Spawn next meteor in ~5-9 seconds
-          shootingStar.nextSpawn = Math.floor(Math.random() * 240 + 300);
+          const colors = isOasisMeteorShower
+            ? ['#34d399', '#7dd3fc', '#fef08a', '#c084fc', '#ffffff']
+            : ['#ffffff', '#bae6fd'];
+          const chosenColor = colors[Math.floor(Math.random() * colors.length)];
+          meteors.push({
+            x: Math.random() * (width * 0.75),
+            y: Math.random() * (height * 0.25) + 10,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            length: Math.random() * 35 + 65,
+            speed,
+            life: 0,
+            maxLife: Math.floor(Math.random() * 20 + 35),
+            color: chosenColor,
+          });
+          meteorCooldown = isOasisMeteorShower
+            ? Math.floor(Math.random() * 20 + 15) // High-frequency celestial meteor shower!
+            : Math.floor(Math.random() * 240 + 260); // Quiet midnight occasional meteor
         }
+      }
 
-        if (shootingStar.active) {
-          shootingStar.life++;
-          shootingStar.x += shootingStar.vx;
-          shootingStar.y += shootingStar.vy;
+      // Render and update active meteors
+      for (let i = meteors.length - 1; i >= 0; i--) {
+        const m = meteors[i];
+        m.life++;
+        m.x += m.vx;
+        m.y += m.vy;
 
-          const progress = shootingStar.life / shootingStar.maxLife;
-          const meteorAlpha = Math.sin(progress * Math.PI) * 0.85;
+        const progress = m.life / m.maxLife;
+        const meteorAlpha = Math.sin(progress * Math.PI) * 0.9;
+        const tailX = m.x - (m.vx / m.speed) * m.length;
+        const tailY = m.y - (m.vy / m.speed) * m.length;
 
-          const tailX = shootingStar.x - (shootingStar.vx / shootingStar.speed) * shootingStar.length;
-          const tailY = shootingStar.y - (shootingStar.vy / shootingStar.speed) * shootingStar.length;
+        const meteorGrad = ctx.createLinearGradient(tailX, tailY, m.x, m.y);
+        meteorGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+        meteorGrad.addColorStop(0.7, m.color + 'aa');
+        meteorGrad.addColorStop(1, '#ffffff');
 
-          const meteorGrad = ctx.createLinearGradient(tailX, tailY, shootingStar.x, shootingStar.y);
-          meteorGrad.addColorStop(0, 'rgba(224, 242, 254, 0)');
-          meteorGrad.addColorStop(0.7, `rgba(224, 242, 254, ${meteorAlpha * 0.6})`);
-          meteorGrad.addColorStop(1, `rgba(255, 255, 255, ${meteorAlpha})`);
+        ctx.save();
+        ctx.globalAlpha = meteorAlpha;
+        ctx.strokeStyle = meteorGrad;
+        ctx.lineWidth = isOasisMeteorShower ? 2.2 : 1.6;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(tailX, tailY);
+        ctx.lineTo(m.x, m.y);
+        ctx.stroke();
 
-          ctx.save();
-          ctx.strokeStyle = meteorGrad;
-          ctx.lineWidth = 1.6;
-          ctx.lineCap = 'round';
-          ctx.beginPath();
-          ctx.moveTo(tailX, tailY);
-          ctx.lineTo(shootingStar.x, shootingStar.y);
-          ctx.stroke();
+        // Meteor Head Spark
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, isOasisMeteorShower ? 2.8 : 2, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.shadowColor = m.color;
+        ctx.shadowBlur = isOasisMeteorShower ? 12 : 8;
+        ctx.fill();
+        ctx.restore();
 
-          // Small meteor head glow
-          ctx.beginPath();
-          ctx.arc(shootingStar.x, shootingStar.y, 2, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255, 255, 255, ${meteorAlpha})`;
-          ctx.shadowColor = '#bae6fd';
-          ctx.shadowBlur = 8;
-          ctx.fill();
-          ctx.restore();
-
-          if (shootingStar.life >= shootingStar.maxLife || shootingStar.x > width || shootingStar.y > height * 0.5) {
-            shootingStar.active = false;
-          }
+        if (m.life >= m.maxLife || m.x > width || m.y > height * 0.55) {
+          meteors.splice(i, 1);
         }
       }
 
@@ -460,6 +481,141 @@ export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({ timeOfDay, isDiving,
         drawIceberg(b.x, by, b.w, b.h);
       });
 
+      // 7B. World's End Ancient Lighthouse (世界尽头的灯塔 - 300 NM Waypoint)
+      if (hasLighthouse) {
+        ctx.save();
+        const lhX = width * (width < 640 ? 0.82 : 0.86);
+        const lhY = oceanY + 4; // Rooted firmly on the horizon waterline
+
+        // 1. Rocky Islet Base
+        ctx.fillStyle = '#061727';
+        ctx.beginPath();
+        ctx.moveTo(lhX - 32, lhY + 6);
+        ctx.quadraticCurveTo(lhX - 22, lhY - 8, lhX, lhY - 10);
+        ctx.quadraticCurveTo(lhX + 22, lhY - 8, lhX + 32, lhY + 6);
+        ctx.closePath();
+        ctx.fill();
+
+        // Snow dusting on rocks
+        ctx.fillStyle = 'rgba(224, 242, 254, 0.4)';
+        ctx.beginPath();
+        ctx.moveTo(lhX - 16, lhY - 7);
+        ctx.lineTo(lhX, lhY - 10);
+        ctx.lineTo(lhX + 16, lhY - 7);
+        ctx.lineTo(lhX + 10, lhY - 4);
+        ctx.lineTo(lhX - 10, lhY - 4);
+        ctx.closePath();
+        ctx.fill();
+
+        // 2. Tapered Stone Lighthouse Tower
+        const towerBottomY = lhY - 10;
+        const towerHeight = 52;
+        const towerTopY = towerBottomY - towerHeight;
+        const bW = 15; // half-width at bottom
+        const tW = 9;  // half-width at top
+
+        // Main Tower Body (Dark frost stone)
+        ctx.fillStyle = '#1e293b';
+        ctx.beginPath();
+        ctx.moveTo(lhX - bW, towerBottomY);
+        ctx.lineTo(lhX - tW, towerTopY);
+        ctx.lineTo(lhX + tW, towerTopY);
+        ctx.lineTo(lhX + bW, towerBottomY);
+        ctx.closePath();
+        ctx.fill();
+
+        // Lighthouse Crimson Decorative Bands
+        ctx.fillStyle = '#991b1b';
+        const yb1 = towerBottomY - 16;
+        ctx.fillRect(lhX - 13, yb1, 26, 9);
+        const yb2 = towerBottomY - 36;
+        ctx.fillRect(lhX - 11, yb2, 22, 9);
+
+        // Tower Highlights
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+        ctx.beginPath();
+        ctx.moveTo(lhX - 3, towerBottomY);
+        ctx.lineTo(lhX - 2, towerTopY);
+        ctx.lineTo(lhX + 2, towerTopY);
+        ctx.lineTo(lhX + 3, towerBottomY);
+        ctx.closePath();
+        ctx.fill();
+
+        // 3. Lantern Room & Balcony
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(lhX - tW - 4, towerTopY - 3, (tW + 4) * 2, 4);
+
+        ctx.fillStyle = '#fef08a';
+        ctx.fillRect(lhX - tW + 1, towerTopY - 14, (tW - 1) * 2, 11);
+
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.arc(lhX, towerTopY - 14, tW + 1, Math.PI, 0);
+        ctx.closePath();
+        ctx.fill();
+
+        // Spire
+        ctx.strokeStyle = '#fef08a';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(lhX, towerTopY - 14 - (tW + 1));
+        ctx.lineTo(lhX, towerTopY - 26);
+        ctx.stroke();
+
+        // 4. Rotating Conical Golden Searchlight Beam (Volumetric Ray)
+        const lightY = towerTopY - 8.5;
+        const beamAngle = Math.sin(time * 0.7) * 0.52 - Math.PI * 0.72;
+        const beamLength = Math.max(320, width * 0.45);
+        const beamSpread = 0.24;
+
+        const beamLeftAngle = beamAngle - beamSpread;
+        const beamRightAngle = beamAngle + beamSpread;
+
+        const p1x = lhX + Math.cos(beamLeftAngle) * beamLength;
+        const p1y = lightY + Math.sin(beamLeftAngle) * beamLength;
+        const p2x = lhX + Math.cos(beamRightAngle) * beamLength;
+        const p2y = lightY + Math.sin(beamRightAngle) * beamLength;
+
+        const beamGrad = ctx.createRadialGradient(lhX, lightY, 4, lhX, lightY, beamLength);
+        beamGrad.addColorStop(0, 'rgba(254, 240, 138, 0.75)');
+        beamGrad.addColorStop(0.2, 'rgba(253, 224, 71, 0.4)');
+        beamGrad.addColorStop(0.6, 'rgba(125, 211, 252, 0.15)');
+        beamGrad.addColorStop(1, 'rgba(125, 211, 252, 0)');
+
+        ctx.globalCompositeOperation = 'screen';
+        ctx.fillStyle = beamGrad;
+        ctx.beginPath();
+        ctx.moveTo(lhX, lightY);
+        ctx.lineTo(p1x, p1y);
+        ctx.lineTo(p2x, p2y);
+        ctx.closePath();
+        ctx.fill();
+
+        // Pulsing Light Flare at Lantern Core
+        const flareGrad = ctx.createRadialGradient(lhX, lightY, 1, lhX, lightY, 28);
+        flareGrad.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
+        flareGrad.addColorStop(0.3, 'rgba(254, 240, 138, 0.7)');
+        flareGrad.addColorStop(0.7, 'rgba(250, 204, 21, 0.25)');
+        flareGrad.addColorStop(1, 'rgba(250, 204, 21, 0)');
+        ctx.fillStyle = flareGrad;
+        ctx.beginPath();
+        ctx.arc(lhX, lightY, 28, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Water reflection below lighthouse
+        ctx.globalCompositeOperation = 'source-over';
+        for (let wr = 0; wr < 6; wr++) {
+          const wry = lhY + 8 + wr * 6;
+          const wrWidth = 16 - wr * 2 + Math.sin(time * 2 + wr) * 3;
+          ctx.fillStyle = 'rgba(254, 240, 138, 0.22)';
+          ctx.beginPath();
+          ctx.ellipse(lhX, wry, wrWidth, 1.8, 0, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        ctx.restore();
+      }
+
       // 8. Diving Bubbles Effect (when isDiving is true)
       if (isDiving) {
         ctx.fillStyle = 'rgba(186, 230, 253, 0.45)';
@@ -548,7 +704,7 @@ export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({ timeOfDay, isDiving,
         window.visualViewport.removeEventListener('resize', handleResize);
       }
     };
-  }, [timeOfDay, isDiving, isCruising]);
+  }, [timeOfDay, isDiving, isCruising, hasLighthouse, isOasisMeteorShower]);
 
   return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-0" />;
 };

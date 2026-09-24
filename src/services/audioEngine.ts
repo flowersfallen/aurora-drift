@@ -358,6 +358,59 @@ class AudioEngine {
     });
   }
 
+  // --- 7. Deep Oceanic Whale Song Hum ---
+  public playWhaleSong() {
+    this.init();
+    if (!this.ctx || !this.masterGain) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(140, now);
+    osc.frequency.exponentialRampToValueAtTime(260, now + 1.2);
+    osc.frequency.exponentialRampToValueAtTime(110, now + 2.8);
+
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.linearRampToValueAtTime(0.28, now + 0.6);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 3.0);
+
+    osc.connect(gain);
+    gain.connect(this.masterGain);
+    osc.start(now);
+    osc.stop(now + 3.1);
+
+    // Subtle overtone
+    const osc2 = this.ctx.createOscillator();
+    const gain2 = this.ctx.createGain();
+    osc2.type = 'triangle';
+    osc2.frequency.setValueAtTime(280, now);
+    osc2.frequency.exponentialRampToValueAtTime(390, now + 1.2);
+    osc2.frequency.exponentialRampToValueAtTime(220, now + 2.6);
+
+    gain2.gain.setValueAtTime(0.001, now);
+    gain2.gain.linearRampToValueAtTime(0.12, now + 0.5);
+    gain2.gain.exponentialRampToValueAtTime(0.001, now + 2.8);
+
+    osc2.connect(gain2);
+    gain2.connect(this.masterGain);
+    osc2.start(now);
+    osc2.stop(now + 2.9);
+  }
+
+  // --- 8. Waypoint Arrival Celestial Fanfare ---
+  public playWaypointFanfare() {
+    this.init();
+    if (!this.ctx || !this.masterGain) return;
+
+    const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
+    notes.forEach((freq, idx) => {
+      setTimeout(() => {
+        this.playGentleChime(freq, 2.5);
+      }, idx * 160);
+    });
+  }
+
   // --- Volume Controls ---
   public setMasterVolume(v: number) {
     if (this.masterGain && this.ctx) {

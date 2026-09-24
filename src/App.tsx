@@ -20,7 +20,8 @@ import { AudioMixerModal } from './components/AudioMixerModal';
 import { CampDecorModal } from './components/CampDecorModal';
 import { ShareModal } from './components/ShareModal';
 import { DriftMapModal } from './components/DriftMapModal';
-import { OtterState, TimeOfDay, PlayerProgress, AudioSettings, Treasure, Language } from './types';
+import { WaypointArrivalModal } from './components/WaypointArrivalModal';
+import { OtterState, TimeOfDay, PlayerProgress, AudioSettings, Treasure, Language, DriftWaypoint } from './types';
 import { ALL_TREASURES } from './data/treasures';
 import { DRIFT_WAYPOINTS } from './data/waypoints';
 import { audioEngine } from './services/audioEngine';
@@ -131,6 +132,33 @@ export const App: React.FC = () => {
   >(null);
   const [shareTreasure, setShareTreasure] = useState<Treasure | null>(null);
   const [currentTreasure, setCurrentTreasure] = useState<Treasure | null>(null);
+  const [arrivalWaypoint, setArrivalWaypoint] = useState<DriftWaypoint | null>(null);
+
+  // Dev Testing: Support query params in DEV mode (e.g. ?test_miles=300&test_arrival=300)
+  useEffect(() => {
+    if ((import.meta as any).env?.DEV && typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const testMilesStr = params.get('test_miles');
+      if (testMilesStr !== null) {
+        const testMiles = parseInt(testMilesStr, 10);
+        const reached = DRIFT_WAYPOINTS.filter((wp) => testMiles >= wp.requiredMiles).map((wp) => wp.id);
+        setProgress((prev) => ({
+          ...prev,
+          unlockedTreasureIds: ALL_TREASURES.map((t) => t.id),
+          driftMiles: testMiles,
+          visitedWaypointIds: reached.length > 0 ? reached : ['still_floe'],
+        }));
+      }
+      const testArrival = params.get('test_arrival');
+      if (testArrival !== null) {
+        const wp = DRIFT_WAYPOINTS.find((w) => w.id === testArrival || String(w.requiredMiles) === testArrival);
+        if (wp) setArrivalWaypoint(wp);
+      }
+      if (params.get('test_cruising') === '1') {
+        setOtterState('cruising');
+      }
+    }
+  }, []);
 
   // Save Progress
   useEffect(() => {
@@ -166,7 +194,7 @@ export const App: React.FC = () => {
   }, []);
 
   // Prevent background scrolling when any modal is open
-  const isAnyModalOpen = Boolean(activeModal || (otterState === 'surfaced' && currentTreasure));
+  const isAnyModalOpen = Boolean(activeModal || arrivalWaypoint || (otterState === 'surfaced' && currentTreasure));
 
   useEffect(() => {
     if (isAnyModalOpen) {
@@ -300,6 +328,8 @@ export const App: React.FC = () => {
         timeOfDay={timeOfDay}
         isDiving={otterState === 'diving'}
         isCruising={otterState === 'cruising'}
+        hasLighthouse={currentMiles >= 300}
+        isOasisMeteorShower={currentMiles >= 600}
       />
 
       {/* 2. Top Header Navigation Bar */}
@@ -532,6 +562,8 @@ export const App: React.FC = () => {
           decorations={progress.decorations}
           lang={lang}
           hasGuestFox={currentMiles >= 100}
+          hasGuestWhale={currentMiles >= 300}
+          hasOasisBlossoms={currentMiles >= 600}
           onOtterClick={() => {
             audioEngine.init();
             if (otterState === 'surfaced') {
@@ -735,55 +767,149 @@ export const App: React.FC = () => {
         </div>
       )}
 
+      {/* Waypoint Arrival Celebration Modal */}
+      {arrivalWaypoint && (
+        <WaypointArrivalModal
+          waypoint={arrivalWaypoint}
+          lang={lang}
+          onClose={() => setArrivalWaypoint(null)}
+          onOpenMap={() => {
+            setArrivalWaypoint(null);
+            setActiveModal('voyage');
+          }}
+        />
+      )}
+
       {/* Dev Testing Bar (Only visible in development mode on localhost) */}
       {Boolean((import.meta as any).env?.DEV) && (
-        <div className="fixed bottom-2 left-2 z-[9999] opacity-80 hover:opacity-100 transition-opacity">
-          <div className="bg-slate-900/95 border border-sky-500/50 rounded-xl p-2 shadow-2xl backdrop-blur-md text-[11px] text-sky-200 flex flex-wrap gap-1.5 max-w-sm">
-            <span className="font-bold text-amber-300 w-full mb-0.5">🛠️ 本地调试快捷面板 (线上自动隐藏):</span>
-            <button
-              onClick={() => {
-                setProgress(prev => ({
-                  ...prev,
-                  unlockedTreasureIds: ALL_TREASURES.map(t => t.id),
-                  driftMiles: Math.max(prev.driftMiles ?? 0, 105),
-                  visitedWaypointIds: ['still_floe', 'echo_straits'],
-                }));
-              }}
-              className="px-2 py-1 bg-teal-800/80 hover:bg-teal-700 rounded text-white font-medium cursor-pointer"
-            >
-              一键集齐16件(进二阶)
-            </button>
-            <button
-              onClick={() => {
-                setProgress(prev => ({
-                  ...prev,
-                  unlockedTreasureIds: ['postcard-aurora-fox'],
-                  driftMiles: 0,
-                  visitedWaypointIds: ['still_floe'],
-                }));
-                setOtterState('idle');
-              }}
-              className="px-2 py-1 bg-slate-700 hover:bg-slate-600 rounded text-white font-medium cursor-pointer"
-            >
-              重置为1件(初阶)
-            </button>
-            <button
-              onClick={() => {
-                setProgress(prev => ({
-                  ...prev,
-                  unlockedTreasureIds: ALL_TREASURES.slice(0, 15).map(t => t.id),
-                }));
-              }}
-              className="px-2 py-1 bg-indigo-800/80 hover:bg-indigo-700 rounded text-white font-medium cursor-pointer"
-            >
-              设为15件(测启航庆典)
-            </button>
-            <button
-              onClick={() => setOtterState(prev => prev === 'cruising' ? 'idle' : 'cruising')}
-              className="px-2 py-1 bg-amber-800/80 hover:bg-amber-700 rounded text-white font-medium cursor-pointer"
-            >
-              {otterState === 'cruising' ? '停船(idle)' : '推冰巡航(cruising)'}
-            </button>
+        <div className="fixed bottom-2 left-2 z-[9999] opacity-90 hover:opacity-100 transition-opacity">
+          <div className="bg-slate-900/95 border border-sky-500/50 rounded-2xl p-2.5 shadow-2xl backdrop-blur-md text-[11px] text-sky-200 flex flex-col gap-1.5 max-w-sm sm:max-w-md">
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-amber-300">🛠️ 本地调试面板 (点击直达各目的地看效果):</span>
+            </div>
+
+            {/* Row 1: 4 Destination Arrival Buttons */}
+            <div className="grid grid-cols-2 gap-1.5 bg-slate-950/60 p-1.5 rounded-xl border border-sky-800/40">
+              <button
+                onClick={() => {
+                  setProgress((prev) => ({
+                    ...prev,
+                    driftMiles: 0,
+                    visitedWaypointIds: ['still_floe'],
+                  }));
+                  setArrivalWaypoint(DRIFT_WAYPOINTS[0]);
+                  audioEngine.init();
+                  audioEngine.playWaypointFanfare();
+                }}
+                className="px-2 py-1 bg-sky-900/80 hover:bg-sky-800 rounded-lg text-sky-100 font-medium text-left truncate cursor-pointer transition-all hover:scale-[1.02]"
+                title="抵达 孤寂浮冰 (0 NM)"
+              >
+                🧊 孤寂浮冰 (0NM)
+              </button>
+
+              <button
+                onClick={() => {
+                  setProgress((prev) => ({
+                    ...prev,
+                    unlockedTreasureIds: ALL_TREASURES.map((t) => t.id),
+                    driftMiles: 100,
+                    visitedWaypointIds: ['still_floe', 'echo_straits'],
+                  }));
+                  setArrivalWaypoint(DRIFT_WAYPOINTS[1]);
+                  audioEngine.init();
+                  audioEngine.playWaypointFanfare();
+                }}
+                className="px-2 py-1 bg-orange-950/80 hover:bg-orange-900/90 border border-orange-500/40 rounded-lg text-orange-200 font-medium text-left truncate cursor-pointer transition-all hover:scale-[1.02]"
+                title="抵达 回音海峡 (100 NM): 极光雪狐登岛"
+              >
+                🦊 回音海峡 (100NM)
+              </button>
+
+              <button
+                onClick={() => {
+                  setProgress((prev) => ({
+                    ...prev,
+                    unlockedTreasureIds: ALL_TREASURES.map((t) => t.id),
+                    driftMiles: 300,
+                    visitedWaypointIds: ['still_floe', 'echo_straits', 'lighthouse'],
+                  }));
+                  setArrivalWaypoint(DRIFT_WAYPOINTS[2]);
+                  audioEngine.init();
+                  audioEngine.playWaypointFanfare();
+                }}
+                className="px-2 py-1 bg-amber-950/80 hover:bg-amber-900/90 border border-amber-500/40 rounded-lg text-amber-200 font-medium text-left truncate cursor-pointer transition-all hover:scale-[1.02]"
+                title="抵达 世界尽头灯塔 (300 NM): 远景旋转灯塔探照灯 + 伴航座头鲸喷泉"
+              >
+                🗼 尽头灯塔 (300NM)
+              </button>
+
+              <button
+                onClick={() => {
+                  setProgress((prev) => ({
+                    ...prev,
+                    unlockedTreasureIds: ALL_TREASURES.map((t) => t.id),
+                    driftMiles: 600,
+                    visitedWaypointIds: ['still_floe', 'echo_straits', 'lighthouse', 'aurora_oasis'],
+                  }));
+                  setArrivalWaypoint(DRIFT_WAYPOINTS[3]);
+                  audioEngine.init();
+                  audioEngine.playWaypointFanfare();
+                }}
+                className="px-2 py-1 bg-teal-950/80 hover:bg-teal-900/90 border border-teal-500/40 rounded-lg text-teal-200 font-medium text-left truncate cursor-pointer transition-all hover:scale-[1.02]"
+                title="抵达 极光终极绿洲 (600 NM): 天空流星雨 + 冰台绽放极光晶霜花 + 冰下地热"
+              >
+                🌌 极光绿洲 (600NM)
+              </button>
+            </div>
+
+            {/* Row 2: Status & Stage Toggles */}
+            <div className="flex flex-wrap gap-1">
+              <button
+                onClick={() => {
+                  setProgress((prev) => ({
+                    ...prev,
+                    unlockedTreasureIds: ALL_TREASURES.map((t) => t.id),
+                    driftMiles: Math.max(prev.driftMiles ?? 0, 105),
+                    visitedWaypointIds: ['still_floe', 'echo_straits'],
+                  }));
+                }}
+                className="px-2 py-1 bg-teal-800/70 hover:bg-teal-700 rounded text-white font-medium cursor-pointer"
+              >
+                一键16件(进二阶)
+              </button>
+              <button
+                onClick={() => {
+                  setProgress((prev) => ({
+                    ...prev,
+                    unlockedTreasureIds: ['postcard-aurora-fox'],
+                    driftMiles: 0,
+                    visitedWaypointIds: ['still_floe'],
+                  }));
+                  setOtterState('idle');
+                  setArrivalWaypoint(null);
+                }}
+                className="px-2 py-1 bg-slate-700 hover:bg-slate-600 rounded text-white font-medium cursor-pointer"
+              >
+                重置初阶
+              </button>
+              <button
+                onClick={() => {
+                  setProgress((prev) => ({
+                    ...prev,
+                    unlockedTreasureIds: ALL_TREASURES.slice(0, 15).map((t) => t.id),
+                  }));
+                }}
+                className="px-2 py-1 bg-indigo-800/70 hover:bg-indigo-700 rounded text-white font-medium cursor-pointer"
+              >
+                15件(测启航)
+              </button>
+              <button
+                onClick={() => setOtterState((prev) => (prev === 'cruising' ? 'idle' : 'cruising'))}
+                className="px-2 py-1 bg-amber-800/70 hover:bg-amber-700 rounded text-white font-medium cursor-pointer"
+              >
+                {otterState === 'cruising' ? '停船' : '推冰巡航'}
+              </button>
+            </div>
           </div>
         </div>
       )}

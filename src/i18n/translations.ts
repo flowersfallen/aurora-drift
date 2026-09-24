@@ -40,6 +40,12 @@ export interface Translations {
     ceremonyText: string;
     ceremonyBtn: string;
     pushingDialogues: string[];
+    whaleDialogues: string[];
+    arrivalTitle: string;
+    arrivalSubtitle: string;
+    arrivalEffectTitle: string;
+    arrivalContinueBtn: string;
+    arrivalViewMapBtn: string;
   };
   timer: {
     presets: {
@@ -364,6 +370,17 @@ export const TRANSLATIONS: Record<Language, Translations> = {
         '“Deep breath, next destination is the Echo Straits! 🧭”',
         '“The ocean breeze feels refreshing! Sailing onward together ✨”',
       ],
+      whaleDialogues: [
+        '“Huuuuum... Greetings from the ancient deep, brave voyagers!” 🐋',
+        '“The lighthouse shines so bright tonight. Let my song guide your journey.” 🌊',
+        '“Deep breaths, steady strokes. The vast ocean belongs to patient souls.” ✨',
+        '“I shall swim alongside your floating ice as your guardian of the deep.” 🗼',
+      ],
+      arrivalTitle: '🎉 Destination Reached!',
+      arrivalSubtitle: 'A new chapter of your polar voyage unfolds',
+      arrivalEffectTitle: 'Unlocked Polar Wonders & Companions',
+      arrivalContinueBtn: 'Continue Voyage 🧭',
+      arrivalViewMapBtn: 'View Chart 🗺️',
     },
   },
   zh: {
@@ -564,6 +581,17 @@ export const TRANSLATIONS: Record<Language, Translations> = {
         '“深吸一口气，下一个目标是美丽的回音海峡！🧭”',
         '“迎面的海浪好凉爽呀！和专注的朋友一起航行真棒 ✨”',
       ],
+      whaleDialogues: [
+        '“呜—— 来自深海古老鲸群的问候，勇敢的极地漂流者！” 🐋',
+        '“灯塔的光芒今夜格外明亮，让我的歌声伴随你们远航。” 🌊',
+        '“深呼吸，沉静前行。辽阔的冰海属于每一个坚持自律的灵魂。” ✨',
+        '“我会一直在浮冰身旁护航，愿风浪永远化作你们的推力。” 🗼',
+      ],
+      arrivalTitle: '🎉 抵达全新航海目的地！',
+      arrivalSubtitle: '极地漂流的全新篇章悄然开启',
+      arrivalEffectTitle: '已解锁极地新奇迹与常驻景致',
+      arrivalContinueBtn: '继续前行 🧭',
+      arrivalViewMapBtn: '查看航海图 🗺️',
     },
   },
 };

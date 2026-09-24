@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { OtterState, CampDecorations, Language } from '../types';
 import { TRANSLATIONS } from '../i18n/translations';
+import { audioEngine } from '../services/audioEngine';
 
 // Feature detection for Unicode 14 bubble emoji 🫧
 function checkBubbleEmojiSupport(): boolean {
@@ -49,6 +50,8 @@ interface IceOtterProps {
   lang?: Language;
   onOtterClick: () => void;
   hasGuestFox?: boolean;
+  hasGuestWhale?: boolean;
+  hasOasisBlossoms?: boolean;
 }
 
 export const IceOtter: React.FC<IceOtterProps> = ({
@@ -57,10 +60,13 @@ export const IceOtter: React.FC<IceOtterProps> = ({
   lang = 'en',
   onOtterClick,
   hasGuestFox = false,
+  hasGuestWhale = false,
+  hasOasisBlossoms = false,
 }) => {
   const [blink, setBlink] = useState(false);
   const [dialogue, setDialogue] = useState<string | null>(null);
   const [foxDialogue, setFoxDialogue] = useState<string | null>(null);
+  const [whaleDialogue, setWhaleDialogue] = useState<string | null>(null);
   const [supportsBubbleEmoji, setSupportsBubbleEmoji] = useState(false);
 
   useEffect(() => {
@@ -106,6 +112,17 @@ export const IceOtter: React.FC<IceOtterProps> = ({
     setTimeout(() => setFoxDialogue(null), 4000);
   };
 
+  const handleWhaleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isDiving) return;
+    audioEngine.init();
+    audioEngine.playWhaleSong();
+    const whaleQuotes = TRANSLATIONS[lang].voyage.whaleDialogues;
+    const randomQuote = whaleQuotes[Math.floor(Math.random() * whaleQuotes.length)];
+    setWhaleDialogue(randomQuote);
+    setTimeout(() => setWhaleDialogue(null), 4500);
+  };
+
   return (
     <div className="relative flex flex-col items-center justify-end select-none">
       {/* Speech Bubble - Floats right above otter */}
@@ -130,6 +147,15 @@ export const IceOtter: React.FC<IceOtterProps> = ({
           <span className="text-orange-500 mr-1 font-bold">🦊</span>
           {foxDialogue}
           <div className="absolute -bottom-2.5 left-8 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-orange-50"></div>
+        </div>
+      )}
+
+      {/* Humpback Whale Speech Bubble - Floats above the breaching whale on the right */}
+      {whaleDialogue && !isDiving && (
+        <div className="absolute top-4 sm:top-6 right-2 sm:right-6 z-50 animate-bounce px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl bg-slate-900/95 text-cyan-200 text-[11px] sm:text-xs font-semibold max-w-[85vw] sm:max-w-[240px] text-center border-2 border-cyan-400/60 shadow-xl shadow-cyan-950/70">
+          <span className="text-cyan-400 mr-1 font-bold">🐋</span>
+          {whaleDialogue}
+          <div className="absolute -bottom-2.5 right-10 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-slate-900"></div>
         </div>
       )}
 
@@ -206,6 +232,14 @@ export const IceOtter: React.FC<IceOtterProps> = ({
               </linearGradient>
             </defs>
 
+            {/* Geothermal Emerald Warmth (Aurora Oasis - 600 NM) */}
+            {hasOasisBlossoms && (
+              <g>
+                <ellipse cx="230" cy="275" rx="190" ry="38" fill="#10b981" opacity="0.25" filter="url(#campfireGlow)" className="animate-pulse" style={{ animationDuration: '3s' }} />
+                <ellipse cx="230" cy="285" rx="150" ry="25" fill="#34d399" opacity="0.2" filter="url(#campfireGlow)" />
+              </g>
+            )}
+
             {/* --------------------------------------------------------------------- */}
             {/* 1. DEEP SUBMERGED ICE BODY (Below Waterline Y=255)                     */}
             {/* --------------------------------------------------------------------- */}
@@ -221,6 +255,82 @@ export const IceOtter: React.FC<IceOtterProps> = ({
             {/* --------------------------------------------------------------------- */}
             <ellipse cx="230" cy="255" rx="205" ry="22" fill="none" stroke="#7dd3fc" strokeWidth="2" opacity="0.6" />
             <ellipse cx="230" cy="255" rx="220" ry="26" fill="none" stroke="#38bdf8" strokeWidth="1.2" opacity="0.35" />
+
+            {/* ========================================================================= */}
+            {/* OCEAN COMPANION: HUMPBACK WHALE (伴航座头鲸)                             */}
+            {/* Appears when reaching The World's End Lighthouse (300 NM). Breaches in the */}
+            {/* deep ocean beside the floe at X=382, Y=218 with animated blowhole spout.  */}
+            {/* ========================================================================= */}
+            {hasGuestWhale && (
+              <g
+                transform="translate(414, 214)"
+                className="cursor-pointer group"
+                onClick={handleWhaleClick}
+              >
+                {/* 1. Whale Sea Surface Ripple & Splash Ring */}
+                <ellipse cx="0" cy="18" rx="34" ry="8" fill="none" stroke="#7dd3fc" strokeWidth="2" opacity="0.75" />
+                <ellipse cx="0" cy="18" rx="26" ry="5.5" fill="#38bdf8" opacity="0.25" />
+
+                {/* 2. Rhythmic Blowhole Water Spout Vapor */}
+                <g className="animate-pulse" style={{ animationDuration: '2.2s' }}>
+                  {/* Water spray columns */}
+                  <path d="M -2 -14 C -6 -28 -14 -38 -22 -44" stroke="#e0f2fe" strokeWidth="2.2" strokeLinecap="round" fill="none" opacity="0.85" />
+                  <path d="M 0 -14 C 0 -30 2 -42 4 -48" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.95" />
+                  <path d="M 2 -14 C 6 -28 14 -38 22 -44" stroke="#bae6fd" strokeWidth="2.2" strokeLinecap="round" fill="none" opacity="0.85" />
+
+                  {/* Water spout spray droplets */}
+                  <circle cx="-18" cy="-42" r="2.2" fill="#ffffff" className="animate-bounce" style={{ animationDuration: '0.8s' }} />
+                  <circle cx="4" cy="-50" r="2.5" fill="#e0f2fe" className="animate-bounce" style={{ animationDuration: '1.0s', animationDelay: '0.2s' }} />
+                  <circle cx="18" cy="-42" r="2.2" fill="#bae6fd" className="animate-bounce" style={{ animationDuration: '0.9s', animationDelay: '0.4s' }} />
+                  <circle cx="0" cy="-36" r="3" fill="#ffffff" opacity="0.7" className="animate-ping" style={{ animationDuration: '1.5s' }} />
+                </g>
+
+                {/* 3. Whale Body Arc (Breaching above water) */}
+                {/* Dark Blue/Slate Whale Back */}
+                <path
+                  d="M -36 18 
+                     C -32 -6 -18 -16 4 -16 
+                     C 26 -16 42 -4 48 18 
+                     C 30 14 10 12 -12 14 
+                     C -24 16 -32 17 -36 18 Z"
+                  fill="#1e293b"
+                  stroke="#0f172a"
+                  strokeWidth="2.5"
+                  strokeLinejoin="round"
+                />
+
+                {/* Whale Belly Highlight (Light slate/teal) */}
+                <path
+                  d="M 12 16 
+                     C 22 14 36 16 46 18 
+                     C 40 8 28 0 16 -4 
+                     C 14 4 13 10 12 16 Z"
+                  fill="#94a3b8"
+                  opacity="0.8"
+                />
+
+                {/* Dorsal Fin */}
+                <path
+                  d="M -12 -14 C -16 -24 -24 -26 -22 -14 Z"
+                  fill="#0f172a"
+                  stroke="#0f172a"
+                  strokeWidth="1.5"
+                  strokeLinejoin="round"
+                />
+
+                {/* Whale Cute Gentle Eye */}
+                <circle cx="28" cy="4" r="2.5" fill="#0f172a" />
+                <circle cx="27.2" cy="3.2" r="0.8" fill="#ffffff" />
+                {/* Whale Smile crease */}
+                <path d="M 24 10 Q 32 13 38 9" stroke="#0f172a" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+
+                {/* Blowhole on top */}
+                <ellipse cx="0" cy="-15" rx="3.5" ry="1.2" fill="#0f172a" />
+
+                {/* Tiny Floating Sparkles */}
+                <text x="36" y="-8" fontSize="12" fill="#38bdf8" className="animate-bounce" style={{ animationDuration: '2.8s' }}>✨</text>
+              </g>
+            )}
 
             {/* --------------------------------------------------------------------- */}
             {/* 3. ICE WALL (Vertical thickness from snow plateau down to sea level)  */}
@@ -670,6 +780,60 @@ export const IceOtter: React.FC<IceOtterProps> = ({
                     style={{ animationDelay: `${idx * 0.3}s` }}
                   />
                 ))}
+              </g>
+            )}
+
+            {/* ========================================================================= */}
+            {/* OASIS WONDER: CRYSTAL FROST LILIES (极光晶霜花)                           */}
+            {/* Appears when reaching The Aurora Oasis (600 NM). Blooms along snow rim    */}
+            {/* ========================================================================= */}
+            {hasOasisBlossoms && (
+              <g id="oasis-blossoms">
+                {/* Cluster 1: Left Rim (X=78, Y=230) */}
+                <g transform="translate(78, 230)">
+                  <ellipse cx="0" cy="2" rx="10" ry="3.5" fill="#047857" opacity="0.25" />
+                  <path d="M 0 2 Q -2 -6 -1 -12" stroke="#6ee7b7" strokeWidth="2" strokeLinecap="round" fill="none" />
+                  <path d="M -1 -4 Q -6 -7 -8 -5 Q -5 -2 -1 -3" fill="#6ee7b7" stroke="#059669" strokeWidth="0.8" />
+                  <path d="M 0 -7 Q 6 -10 8 -8 Q 5 -5 0 -6" fill="#a7f3d0" stroke="#059669" strokeWidth="0.8" />
+                  <circle cx="-1" cy="-14" r="7" fill="#34d399" opacity="0.35" className="animate-pulse" />
+                  <path d="M -1 -12 L -6 -16 L -1 -22 L 4 -16 Z" fill="#ecfdf5" stroke="#34d399" strokeWidth="1.2" />
+                  <path d="M -1 -12 L -7 -12 L -1 -19 L 5 -12 Z" fill="#a7f3d0" stroke="#10b981" strokeWidth="1" opacity="0.9" />
+                  <circle cx="-1" cy="-15" r="2.2" fill="#fde047" />
+
+                  {/* Left Mini Bud */}
+                  <g transform="translate(-10, 4) scale(0.75)">
+                    <path d="M 0 0 Q -2 -6 -1 -10" stroke="#6ee7b7" strokeWidth="1.8" strokeLinecap="round" fill="none" />
+                    <path d="M -1 -10 L -4 -14 L -1 -18 L 2 -14 Z" fill="#c084fc" stroke="#a855f7" strokeWidth="1.2" />
+                    <circle cx="-1" cy="-13" r="1.8" fill="#fef08a" />
+                  </g>
+
+                  {/* Floating Pollen Sparkles */}
+                  <circle cx="-3" cy="-24" r="1.2" fill="#6ee7b7" className="animate-bounce" style={{ animationDuration: '2s' }} />
+                  <circle cx="5" cy="-20" r="1.4" fill="#fef08a" className="animate-bounce" style={{ animationDuration: '2.5s', animationDelay: '0.4s' }} />
+                </g>
+
+                {/* Cluster 2: Right Rim (X=325, Y=244) */}
+                <g transform="translate(325, 244)">
+                  <ellipse cx="0" cy="2" rx="12" ry="4" fill="#047857" opacity="0.25" />
+                  <path d="M 0 2 Q 2 -6 1 -14" stroke="#6ee7b7" strokeWidth="2" strokeLinecap="round" fill="none" />
+                  <path d="M 1 -5 Q -6 -8 -7 -6 Q -4 -3 1 -4" fill="#a7f3d0" stroke="#059669" strokeWidth="0.8" />
+                  <path d="M 1 -8 Q 7 -11 9 -9 Q 6 -6 1 -7" fill="#6ee7b7" stroke="#059669" strokeWidth="0.8" />
+                  <circle cx="1" cy="-16" r="8" fill="#38bdf8" opacity="0.35" className="animate-pulse" />
+                  <path d="M 1 -14 L -5 -18 L 1 -25 L 7 -18 Z" fill="#f0fdf4" stroke="#38bdf8" strokeWidth="1.2" />
+                  <path d="M 1 -14 L -6 -14 L 1 -21 L 8 -14 Z" fill="#7dd3fc" stroke="#0284c7" strokeWidth="1" opacity="0.9" />
+                  <circle cx="1" cy="-17" r="2.2" fill="#fde047" />
+
+                  {/* Right Bud */}
+                  <g transform="translate(12, 3) scale(0.8)">
+                    <path d="M 0 0 Q 2 -5 1 -9" stroke="#6ee7b7" strokeWidth="1.8" strokeLinecap="round" fill="none" />
+                    <path d="M 1 -9 L -3 -13 L 1 -17 L 5 -13 Z" fill="#34d399" stroke="#059669" strokeWidth="1.2" />
+                    <circle cx="1" cy="-12" r="1.6" fill="#fef08a" />
+                  </g>
+
+                  {/* Floating Pollen Sparkles */}
+                  <circle cx="0" cy="-27" r="1.3" fill="#38bdf8" className="animate-bounce" style={{ animationDuration: '2.2s' }} />
+                  <circle cx="8" cy="-22" r="1.5" fill="#fde047" className="animate-bounce" style={{ animationDuration: '2.8s', animationDelay: '0.6s' }} />
+                </g>
               </g>
             )}
 
