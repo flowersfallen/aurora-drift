@@ -132,7 +132,11 @@ export const IceOtter: React.FC<IceOtterProps> = ({
   };
 
   return (
-    <div className="relative flex flex-col items-center justify-end select-none">
+    <div
+      className={`relative flex flex-col items-center justify-end select-none transition-transform duration-1000 ease-out ${
+        hasGuestWhale ? 'sm:-translate-x-24 md:-translate-x-28' : 'translate-x-0'
+      }`}
+    >
       {/* Speech Bubble - Floats right above otter */}
       {dialogue && !isDiving && (
         <div
