@@ -137,7 +137,11 @@ export const IceOtter: React.FC<IceOtterProps> = ({
       {dialogue && !isDiving && (
         <div
           className={`absolute z-50 animate-bounce px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl bg-white/95 text-slate-800 text-[11px] sm:text-xs font-semibold max-w-[85vw] sm:max-w-[240px] text-center border-2 border-sky-300 shadow-xl shadow-sky-950/40 ${
-            isCruising ? 'top-4 sm:top-6 left-0 sm:left-2' : 'top-1 sm:top-2 left-1/2 -translate-x-1/2'
+            isCruising
+              ? 'top-4 sm:top-6 left-0 sm:left-2'
+              : hasGuestWhale
+              ? 'top-1 sm:top-2 left-[20%] -translate-x-1/2 sm:left-1/2'
+              : 'top-1 sm:top-2 left-1/2 -translate-x-1/2'
           }`}
         >
           {dialogue}
@@ -151,37 +155,38 @@ export const IceOtter: React.FC<IceOtterProps> = ({
 
       {/* Aurora Fox Speech Bubble - Floats above the sleeping fox on the blanket */}
       {foxDialogue && !isDiving && (
-        <div className="absolute top-8 sm:top-10 left-16 sm:left-24 z-50 animate-bounce px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl bg-orange-50/95 text-slate-800 text-[11px] sm:text-xs font-semibold max-w-[85vw] sm:max-w-[230px] text-center border-2 border-orange-300 shadow-xl shadow-sky-950/40">
+        <div className={`absolute top-8 sm:top-10 ${hasGuestWhale ? 'left-1 sm:left-24' : 'left-16 sm:left-24'} z-50 animate-bounce px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl bg-orange-50/95 text-slate-800 text-[11px] sm:text-xs font-semibold max-w-[85vw] sm:max-w-[230px] text-center border-2 border-orange-300 shadow-xl shadow-sky-950/40`}>
           <span className="text-orange-500 mr-1 font-bold">🦊</span>
           {foxDialogue}
-          <div className="absolute -bottom-2.5 left-10 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-orange-50"></div>
+          <div className="absolute -bottom-2.5 left-6 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-orange-50"></div>
         </div>
       )}
 
-      {/* Main Unified Stage: Fluid width on mobile, max 460px on desktop */}
-      <div className="relative w-auto max-w-[76vw] max-h-[28vh] sm:max-w-[88vw] sm:max-h-[35vh] md:w-[92vw] md:max-w-[460px] md:max-h-none aspect-[460/320] flex items-center justify-center mx-auto">
+      {/* Main Unified Stage: Accommodates both Floe and leading Whale seamlessly */}
+      <div className={`relative w-full ${
+        hasGuestWhale ? 'max-w-[380px]' : 'max-w-[76vw]'
+      } max-h-[28vh] sm:max-w-[88vw] sm:max-h-[35vh] md:w-[92vw] md:max-w-[460px] md:max-h-none aspect-[460/320] flex items-center justify-center mx-auto`}>
         {/* ========================================================================= */}
         {/* 1. SEPARATE OCEAN COMPANION: HUMPBACK WHALE (300 NM Waypoint)             */}
         {/* Truly Iconic, Majestic Biological Hallmarks: Tubercles, Arched Hump,     */}
         {/* Falcate Dorsal Fin, Huge Megaptera Wing Flipper, Butterfly Tail Fluke,   */}
         {/* Luminous Ventral Throat Pleats, and Dual Water Spout Cloud!              */}
-        {/* Completely decoupled from the floe: swims in open ocean with its own      */}
-        {/* independent swimming dynamics & wake streams.                             */}
+        {/* Swims in open ocean ahead of the floe, leading the polar drift!          */}
         {/* ========================================================================= */}
         {hasGuestWhale && (
           <div
             className={`absolute pointer-events-auto cursor-pointer z-20 ${
               isCruising ? 'animate-whale-cruise' : 'animate-whale-idle'
-            } w-[195px] sm:w-[280px] md:w-[325px] h-[120px] sm:h-[160px] md:h-[185px] -right-1 sm:-right-72 md:-right-84 lg:-right-92 -bottom-14 sm:-bottom-2`}
+            } w-[150px] sm:w-[280px] md:w-[325px] h-[92px] sm:h-[160px] md:h-[185px] right-2 sm:-right-72 md:-right-84 lg:-right-92 -bottom-2 sm:-bottom-2 transition-all duration-700`}
             onClick={handleWhaleClick}
             title={lang === 'zh' ? '点击与伴航座头鲸互动 (聆听深海鲸鸣)' : 'Click to interact with Humpback Whale'}
           >
-            {/* Whale Speech Bubble - Anchored directly above the whale */}
+            {/* Whale Speech Bubble - Anchored above the whale */}
             {whaleDialogue && !isDiving && (
-              <div className="absolute -top-12 left-1/2 -translate-x-1/2 z-50 animate-bounce px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl bg-slate-900/95 text-cyan-200 text-[11px] sm:text-xs font-semibold whitespace-nowrap text-center border-2 border-cyan-400/60 shadow-xl shadow-cyan-950/70">
+              <div className="absolute -top-12 right-1 sm:left-1/2 sm:-translate-x-1/2 z-50 animate-bounce px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl bg-slate-900/95 text-cyan-200 text-[11px] sm:text-xs font-semibold whitespace-nowrap text-center border-2 border-cyan-400/60 shadow-xl shadow-cyan-950/70">
                 <span className="text-cyan-400 mr-1 font-bold">🐋</span>
                 {whaleDialogue}
-                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-slate-900"></div>
+                <div className="absolute -bottom-2 right-8 sm:left-1/2 sm:-translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-slate-900"></div>
               </div>
             )}
 
@@ -241,9 +246,13 @@ export const IceOtter: React.FC<IceOtterProps> = ({
               {/* Cruising Dynamic Wake Streaks */}
               {isCruising && (
                 <g>
-                  <path d="M 55 117 C 25 122 -15 128 -55 135" stroke="#ffffff" strokeWidth="3" strokeDasharray="8 4" opacity="0.85" fill="none" className="animate-wake-stream" />
-                  <path d="M 60 121 C 30 127 0 133 -35 140" stroke="#bae6fd" strokeWidth="2.2" strokeDasharray="6 3" opacity="0.7" fill="none" className="animate-wake-stream" />
+                  {/* Gentle slipstream wake trailing back from whale flukes towards the floe */}
+                  <path d="M 50 116 C 20 119 -10 122 -40 125" stroke="#bae6fd" strokeWidth="2" strokeDasharray="6 4" opacity="0.6" fill="none" className="animate-wake-stream" />
+                  
+                  {/* Leading Bow Wave cutting forward ahead of the whale */}
                   <path d="M 265 115 Q 285 120 305 126" stroke="#ffffff" strokeWidth="2.8" strokeLinecap="round" fill="none" opacity="0.9" />
+                  <circle cx="305" cy="122" r="2.2" fill="#ffffff" className="animate-bounce" style={{ animationDuration: '0.8s' }} />
+                  <circle cx="312" cy="126" r="1.8" fill="#bae6fd" className="animate-bounce" style={{ animationDuration: '1.0s', animationDelay: '0.2s' }} />
                 </g>
               )}
 
@@ -476,10 +485,18 @@ export const IceOtter: React.FC<IceOtterProps> = ({
         )}
 
         {/* 2. THE ICE FLOE SANCTUARY (Floe, campfire, otter, fox, props) */}
+        {/* Dedicated Responsive Positioning Wrapper: Safely shifts & scales floe on mobile without keyframe override */}
         <div
-          onClick={handleInteraction}
-          className={`${isCruising ? 'animate-cruise-surge' : 'animate-float-slow'} relative w-full h-full z-10`}
+          className={`relative w-full h-full transition-transform duration-700 ${
+            hasGuestWhale
+              ? '-translate-x-[105px] sm:translate-x-0 scale-[0.74] sm:scale-100 origin-center'
+              : ''
+          }`}
         >
+          <div
+            onClick={handleInteraction}
+            className={`${isCruising ? 'animate-cruise-surge' : 'animate-float-slow'} relative w-full h-full z-10`}
+          >
 
           {/* ========================================================================= */}
           {/* COMPLETE UNIFIED VECTOR SVG STAGE                                         */}
@@ -605,30 +622,34 @@ export const IceOtter: React.FC<IceOtterProps> = ({
                 <path d="M 48 260 C 25 270 5 280 -25 288" stroke="#bae6fd" strokeWidth="2.2" strokeDasharray="8 4" opacity="0.75" fill="none" className="animate-wake-stream" />
 
                 {/* 2. Right Bow Wave & Splashing Spray (Front edge of Floe slicing forward through water) */}
-                {/* Foaming Bow Wave Slicing Forward */}
-                <path
-                  d="M 406 253 C 424 250 442 255 454 263 C 440 267 424 264 410 259 Z"
-                  fill="#ffffff"
-                  opacity="0.95"
-                  className="animate-pulse"
-                />
-                <path
-                  d="M 412 254 C 430 252 448 259 465 270"
-                  stroke="#7dd3fc"
-                  strokeWidth="3.2"
-                  strokeLinecap="round"
-                  fill="none"
-                  opacity="0.85"
-                />
-                {/* Splashing Bow Spray Drops */}
-                <circle cx="438" cy="249" r="3" fill="#ffffff" className="animate-bounce" style={{ animationDuration: '0.8s' }} />
-                <circle cx="448" cy="253" r="2.2" fill="#bae6fd" className="animate-bounce" style={{ animationDuration: '1.0s', animationDelay: '0.2s' }} />
-                <circle cx="456" cy="261" r="2.5" fill="#e0f2fe" className="animate-bounce" style={{ animationDuration: '0.9s', animationDelay: '0.4s' }} />
-                <circle cx="432" cy="246" r="2" fill="#ffffff" className="animate-ping" style={{ animationDuration: '1.2s' }} />
+                {/* When companion whale is leading ahead, floe follows smoothly in slipstream (no cutting right bow wake) */}
+                {!hasGuestWhale && (
+                  <>
+                    <path
+                      d="M 406 253 C 424 250 442 255 454 263 C 440 267 424 264 410 259 Z"
+                      fill="#ffffff"
+                      opacity="0.95"
+                      className="animate-pulse"
+                    />
+                    <path
+                      d="M 412 254 C 430 252 448 259 465 270"
+                      stroke="#7dd3fc"
+                      strokeWidth="3.2"
+                      strokeLinecap="round"
+                      fill="none"
+                      opacity="0.85"
+                    />
+                    {/* Splashing Bow Spray Drops */}
+                    <circle cx="438" cy="249" r="3" fill="#ffffff" className="animate-bounce" style={{ animationDuration: '0.8s' }} />
+                    <circle cx="448" cy="253" r="2.2" fill="#bae6fd" className="animate-bounce" style={{ animationDuration: '1.0s', animationDelay: '0.2s' }} />
+                    <circle cx="456" cy="261" r="2.5" fill="#e0f2fe" className="animate-bounce" style={{ animationDuration: '0.9s', animationDelay: '0.4s' }} />
+                    <circle cx="432" cy="246" r="2" fill="#ffffff" className="animate-ping" style={{ animationDuration: '1.2s' }} />
 
-                {/* 3. Right streaming wake streaks (peeling away from the cutting bow) */}
-                <path d="M 412 256 C 440 264 470 274 500 282" stroke="#ffffff" strokeWidth="3" strokeDasharray="10 5" opacity="0.85" fill="none" className="animate-wake-stream" />
-                <path d="M 408 260 C 435 270 455 280 485 288" stroke="#bae6fd" strokeWidth="2" strokeDasharray="8 4" opacity="0.7" fill="none" className="animate-wake-stream" />
+                    {/* 3. Right streaming wake streaks (peeling away from the cutting bow) */}
+                    <path d="M 412 256 C 440 264 470 274 500 282" stroke="#ffffff" strokeWidth="3" strokeDasharray="10 5" opacity="0.85" fill="none" className="animate-wake-stream" />
+                    <path d="M 408 260 C 435 270 455 280 485 288" stroke="#bae6fd" strokeWidth="2" strokeDasharray="8 4" opacity="0.7" fill="none" className="animate-wake-stream" />
+                  </>
+                )}
               </g>
             )}
 
@@ -1391,5 +1412,6 @@ export const IceOtter: React.FC<IceOtterProps> = ({
         </div>
       </div>
     </div>
+  </div>
   );
 };
