@@ -10,6 +10,8 @@ import {
   HelpCircle,
   Share2,
   Compass,
+  Settings,
+  X,
 } from 'lucide-react';
 import { ArcticCanvas } from './components/ArcticCanvas';
 import { IceOtter } from './components/IceOtter';
@@ -128,11 +130,14 @@ export const App: React.FC = () => {
 
   // Modals
   const [activeModal, setActiveModal] = useState<
-    'collection' | 'audio' | 'decor' | 'info' | 'share' | 'voyage' | 'ceremony' | null
+    'collection' | 'audio' | 'decor' | 'info' | 'share' | 'voyage' | 'ceremony' | 'settings' | null
   >(null);
   const [shareTreasure, setShareTreasure] = useState<Treasure | null>(null);
   const [currentTreasure, setCurrentTreasure] = useState<Treasure | null>(null);
   const [arrivalWaypoint, setArrivalWaypoint] = useState<DriftWaypoint | null>(null);
+  const [debugCollapsed, setDebugCollapsed] = useState<boolean>(() => {
+    return typeof window !== 'undefined' && window.innerWidth < 640;
+  });
 
   // Dev Testing: Support query params in DEV mode (e.g. ?test_miles=300&test_arrival=300)
   useEffect(() => {
@@ -333,10 +338,10 @@ export const App: React.FC = () => {
       />
 
       {/* 2. Top Header Navigation Bar */}
-      <header className="relative z-30 px-4 sm:px-6 pt-[max(0.5rem,env(safe-area-inset-top))] pb-1 sm:py-3 flex items-center justify-between w-full max-w-6xl mx-auto">
+      <header className="relative z-30 px-2.5 sm:px-6 pt-[max(0.5rem,env(safe-area-inset-top))] pb-1 sm:py-3 flex items-center justify-between w-full max-w-full sm:max-w-6xl mx-auto box-border">
         {/* Brand & Mascot */}
-        <div className="flex items-center gap-2 sm:gap-3.5 shrink-0">
-          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-2xl bg-sky-950/80 border border-sky-400/40 flex items-center justify-center shadow-lg overflow-hidden p-0.5 shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-3.5 shrink-0">
+          <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-2xl bg-sky-950/80 border border-sky-400/40 flex items-center justify-center shadow-lg overflow-hidden p-0.5 shrink-0">
             <svg viewBox="0 0 64 64" className="w-full h-full drop-shadow-sm">
               <defs>
                 <linearGradient id="logoIceTop" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -397,62 +402,90 @@ export const App: React.FC = () => {
             </svg>
           </div>
           <div>
-            <h1 className="text-xs sm:text-base font-bold text-white tracking-wide flex items-center gap-1.5 sm:gap-2 leading-none whitespace-nowrap">
+            <h1 className="text-[11px] sm:text-base font-bold text-white tracking-wide flex items-center gap-1 sm:gap-2 leading-none whitespace-nowrap">
               <span>Aurora Drift</span>
               <span className="hidden sm:inline-flex items-center justify-center h-[18px] px-2 text-[10px] font-semibold leading-none rounded-full bg-sky-400/20 text-sky-300 border border-sky-400/30 self-center">
                 {t.header.brandBadge}
               </span>
             </h1>
-            <p className="text-[10px] sm:text-[11px] text-sky-300/80 font-medium leading-none mt-1">iceotter.com</p>
+            <p className="hidden sm:block text-[10px] sm:text-[11px] text-sky-300/80 font-medium leading-none mt-1">iceotter.com</p>
           </div>
         </div>
 
         {/* Currency & Quick Toggles */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
-          {/* Language Toggle: 中 / EN */}
-          <button
-            onClick={toggleLanguage}
-            className="px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-2xl glass-panel text-[11px] sm:text-xs font-bold text-sky-200 hover:text-white hover:scale-105 active:scale-95 transition-all border border-sky-400/35 flex items-center justify-center shrink-0 cursor-pointer"
-            title={t.header.langToggle}
-          >
-            {lang === 'en' ? '中' : 'EN'}
-          </button>
-
-          {/* Pearls Currency Badge */}
+        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+          {/* Pearls Currency Badge (Always visible) */}
           <div
             onClick={() => setActiveModal('decor')}
-            className="flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 rounded-2xl glass-panel text-[11px] sm:text-xs font-bold text-amber-300 hover:scale-105 cursor-pointer transition-all border border-amber-400/30 shrink-0"
+            className="flex items-center gap-1 px-1.5 sm:px-3 py-1 sm:py-1.5 rounded-2xl glass-panel text-[10px] sm:text-xs font-bold text-amber-300 hover:scale-105 cursor-pointer transition-all border border-amber-400/30 shrink-0"
             title={t.header.pearlsTitle}
           >
             <span>🦪</span>
             <span>{progress.pearls}</span>
           </div>
 
-          {/* Sky / Time Switcher (Mobile: 1-click cycle button; Desktop: 3-button segmented pill) */}
-          <div className="flex items-center shrink-0">
-            {/* Mobile: single cycle button */}
+          {/* Polar Drift Navigational Chart Button (Desktop header pill; on mobile accessible via bottom pill & settings) */}
+          {isAlbumCompleted && (
             <button
-              onClick={() => {
-                const next = timeOfDay === 'aurora' ? 'sunset' : timeOfDay === 'sunset' ? 'night' : 'aurora';
-                setTimeOfDay(next);
-              }}
-              className="sm:hidden p-1.5 rounded-2xl glass-panel text-xs flex items-center justify-center border border-sky-800/50 shadow-sm transition-transform active:scale-95 shrink-0 cursor-pointer"
-              title={t.header.themeCycle.replace(
-                '{theme}',
-                timeOfDay === 'aurora'
-                  ? t.header.themeAurora
-                  : timeOfDay === 'sunset'
-                  ? t.header.themeSunset
-                  : t.header.themeNight
-              )}
+              onClick={() => setActiveModal('voyage')}
+              className="hidden sm:flex relative px-2 sm:px-3 py-1 sm:py-1.5 rounded-2xl glass-panel text-xs font-semibold text-teal-200 hover:text-white hover:scale-105 transition-all border border-teal-400/35 items-center gap-1 sm:gap-1.5 shrink-0 cursor-pointer shadow-sm animate-fade-in"
+              title={t.header.voyageTitle}
             >
-              {timeOfDay === 'aurora' && <Sparkles className="w-3.5 h-3.5 text-sky-400" />}
-              {timeOfDay === 'sunset' && <Sun className="w-3.5 h-3.5 text-amber-400" />}
-              {timeOfDay === 'night' && <Moon className="w-3.5 h-3.5 text-indigo-300" />}
+              <Compass className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-teal-300" />
+              <span className="hidden sm:inline">{t.header.voyage}</span>
+              <span className="bg-teal-500/30 text-teal-200 text-[9px] sm:text-[10px] font-mono px-1 sm:px-1.5 py-0.2 rounded-full border border-teal-400/30">
+                {currentMiles} {t.voyage.nmUnit}
+              </span>
+            </button>
+          )}
+
+          {/* Collection Album Button (Always visible) */}
+          <button
+            onClick={() => setActiveModal('collection')}
+            className="relative px-1.5 sm:px-3 py-1 sm:py-1.5 rounded-2xl glass-panel text-[10px] sm:text-xs font-semibold text-sky-200 hover:text-white hover:scale-105 transition-all border border-sky-400/30 flex items-center gap-1 sm:gap-1.5 shrink-0 cursor-pointer"
+            title={t.header.albumTitle}
+          >
+            <BookOpen className="w-3 h-3 sm:w-4 sm:h-4 text-sky-400" />
+            <span className="hidden sm:inline">{t.header.album}</span>
+            <span className="bg-sky-400 text-sky-950 text-[8.5px] sm:text-[10px] font-black px-1.5 py-0.2 rounded-full flex items-center justify-center shadow-sm">
+              {progress.unlockedTreasureIds.length}
+            </span>
+          </button>
+
+          {/* Sound Mixer Toggle (Always visible) */}
+          <button
+            onClick={() => {
+              audioEngine.init();
+              setActiveModal('audio');
+            }}
+            className="p-1 sm:p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all hover:scale-105 shrink-0 cursor-pointer"
+            title={t.header.mixer}
+          >
+            {audioSettings.isMuted ? <VolumeX className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-400" /> : <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
+          </button>
+
+          {/* Mobile Settings Drawer Trigger (sm:hidden) */}
+          <button
+            onClick={() => setActiveModal('settings')}
+            className="sm:hidden p-1 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all active:scale-95 shrink-0 cursor-pointer border border-sky-400/30"
+            title={lang === 'zh' ? '极地设置与快捷' : 'Settings & Themes'}
+          >
+            <Settings className="w-3.5 h-3.5" />
+          </button>
+
+          {/* Desktop-Only Inline Controls */}
+          <div className="hidden sm:flex items-center gap-2">
+            {/* Language Toggle: 中 / EN */}
+            <button
+              onClick={toggleLanguage}
+              className="px-2.5 py-1.5 rounded-2xl glass-panel text-xs font-bold text-sky-200 hover:text-white hover:scale-105 active:scale-95 transition-all border border-sky-400/35 flex items-center justify-center shrink-0 cursor-pointer"
+              title={t.header.langToggle}
+            >
+              {lang === 'en' ? '中' : 'EN'}
             </button>
 
-            {/* Desktop: 3-button segmented pill */}
-            <div className="hidden sm:flex items-center glass-panel rounded-2xl p-0.5 sm:p-1 border border-sky-800/40">
+            {/* Sky / Time Switcher */}
+            <div className="flex items-center glass-panel rounded-2xl p-0.5 sm:p-1 border border-sky-800/40">
               <button
                 onClick={() => setTimeOfDay('aurora')}
                 className={`p-1 sm:p-1.5 rounded-xl text-xs transition-all border-none outline-none cursor-pointer ${
@@ -481,77 +514,37 @@ export const App: React.FC = () => {
                 <Moon className="w-3.5 h-3.5" />
               </button>
             </div>
-          </div>
 
-          {/* Sound Mixer Toggle */}
-          <button
-            onClick={() => {
-              audioEngine.init();
-              setActiveModal('audio');
-            }}
-            className="p-1.5 sm:p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all hover:scale-105 shrink-0 cursor-pointer"
-            title={t.header.mixer}
-          >
-            {audioSettings.isMuted ? <VolumeX className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-400" /> : <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
-          </button>
-
-          {/* Polar Drift Navigational Chart Button (Unlocked after all 16 memories collected) */}
-          {isAlbumCompleted && (
+            {/* Info Modal */}
             <button
-              onClick={() => setActiveModal('voyage')}
-              className="relative p-1.5 sm:px-3 sm:py-1.5 rounded-2xl glass-panel text-xs font-semibold text-teal-200 hover:text-white hover:scale-105 transition-all border border-teal-400/35 flex items-center sm:gap-1.5 shrink-0 cursor-pointer shadow-sm animate-fade-in"
-              title={t.header.voyageTitle}
+              onClick={() => setActiveModal('info')}
+              className="p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all shrink-0 cursor-pointer"
+              title={t.header.info}
             >
-              <Compass className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-teal-300" />
-              <span className="hidden sm:inline">{t.header.voyage}</span>
-              <span className="bg-teal-500/30 text-teal-200 text-[9px] sm:text-[10px] font-mono px-1 sm:px-1.5 py-0.2 rounded-full border border-teal-400/30">
-                {currentMiles} {t.voyage.nmUnit}
-              </span>
+              <HelpCircle className="w-4 h-4" />
             </button>
-          )}
 
-          {/* Collection Album Button (Mobile: icon with corner badge; Desktop: text pill) */}
-          <button
-            onClick={() => setActiveModal('collection')}
-            className="relative p-1.5 sm:px-3 sm:py-1.5 rounded-2xl glass-panel text-xs font-semibold text-sky-200 hover:text-white hover:scale-105 transition-all border border-sky-400/30 flex items-center sm:gap-1.5 shrink-0 cursor-pointer"
-            title={t.header.albumTitle}
-          >
-            <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sky-400" />
-            <span className="hidden sm:inline">{t.header.album}</span>
-            <span className="absolute -top-1 -right-1 sm:static sm:top-auto sm:right-auto bg-sky-400 text-sky-950 text-[9px] sm:text-[10px] font-black w-3.5 h-3.5 sm:w-auto sm:h-auto sm:px-1.5 sm:py-0.2 rounded-full flex items-center justify-center shadow-sm">
-              {progress.unlockedTreasureIds.length}
-            </span>
-          </button>
+            {/* Share Poster Generator */}
+            <button
+              onClick={() => {
+                setShareTreasure(null);
+                setActiveModal('share');
+              }}
+              className="p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all hover:scale-105 shrink-0 cursor-pointer"
+              title={t.header.share}
+            >
+              <Share2 className="w-4 h-4" />
+            </button>
 
-          {/* Info Modal */}
-          <button
-            onClick={() => setActiveModal('info')}
-            className="p-1.5 sm:p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all shrink-0 cursor-pointer"
-            title={t.header.info}
-          >
-            <HelpCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-          </button>
-
-          {/* Share Poster Generator (Desktop) */}
-          <button
-            onClick={() => {
-              setShareTreasure(null);
-              setActiveModal('share');
-            }}
-            className="hidden sm:flex p-1.5 sm:p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all hover:scale-105 shrink-0 cursor-pointer"
-            title={t.header.share}
-          >
-            <Share2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-          </button>
-
-          {/* Fullscreen Toggle */}
-          <button
-            onClick={toggleFullscreen}
-            className="hidden md:block p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all shrink-0 cursor-pointer"
-            title={t.header.fullscreen}
-          >
-            <Maximize2 className="w-4 h-4" />
-          </button>
+            {/* Fullscreen Toggle */}
+            <button
+              onClick={toggleFullscreen}
+              className="hidden md:block p-2 rounded-2xl glass-panel text-sky-300 hover:text-white transition-all shrink-0 cursor-pointer"
+              title={t.header.fullscreen}
+            >
+              <Maximize2 className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </header>
 
@@ -767,6 +760,160 @@ export const App: React.FC = () => {
         </div>
       )}
 
+      {/* Mobile Quick Settings Modal */}
+      {activeModal === 'settings' && (
+        <div
+          onClick={() => setActiveModal(null)}
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/75 backdrop-blur-md animate-fade-in"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-sm bg-[#091b2e] rounded-t-3xl sm:rounded-3xl p-5 border border-sky-400/40 shadow-2xl modal-crisp"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-sky-800/40 mb-4">
+              <div className="flex items-center gap-2">
+                <Settings className="w-4 h-4 text-sky-400" />
+                <h3 className="text-sm font-bold text-white tracking-wide">
+                  {lang === 'zh' ? '极地设置与快捷' : 'Polar Settings'}
+                </h3>
+              </div>
+              <button
+                onClick={() => setActiveModal(null)}
+                className="p-1 rounded-xl text-sky-400 hover:text-white hover:bg-sky-800/50 transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* 1. Language Toggle */}
+            <div className="mb-4">
+              <label className="text-[11px] font-semibold text-sky-300 block mb-1.5">
+                🌐 {lang === 'zh' ? '界面语言' : 'Language'}
+              </label>
+              <div className="grid grid-cols-2 gap-2 bg-sky-950/70 p-1 rounded-2xl border border-sky-800/40">
+                <button
+                  onClick={() => setLang('zh')}
+                  className={`py-1.5 rounded-xl text-xs font-bold transition-all ${
+                    lang === 'zh' ? 'bg-sky-400 text-sky-950 shadow-md' : 'text-sky-300 hover:text-white'
+                  }`}
+                >
+                  简体中文
+                </button>
+                <button
+                  onClick={() => setLang('en')}
+                  className={`py-1.5 rounded-xl text-xs font-bold transition-all ${
+                    lang === 'en' ? 'bg-sky-400 text-sky-950 shadow-md' : 'text-sky-300 hover:text-white'
+                  }`}
+                >
+                  English
+                </button>
+              </div>
+            </div>
+
+            {/* 2. Sky & Time Theme */}
+            <div className="mb-4">
+              <label className="text-[11px] font-semibold text-sky-300 block mb-1.5">
+                🎨 {lang === 'zh' ? '极地天色' : 'Sky Theme'}
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  onClick={() => setTimeOfDay('aurora')}
+                  className={`flex flex-col items-center gap-1 py-2 px-1 rounded-2xl border transition-all text-xs font-semibold ${
+                    timeOfDay === 'aurora'
+                      ? 'bg-sky-400/20 border-sky-400 text-white shadow-md shadow-sky-500/20'
+                      : 'bg-sky-950/50 border-sky-800/40 text-sky-300 hover:text-white'
+                  }`}
+                >
+                  <Sparkles className="w-4 h-4 text-sky-400" />
+                  <span className="text-[10px]">{t.header.themeAurora}</span>
+                </button>
+                <button
+                  onClick={() => setTimeOfDay('sunset')}
+                  className={`flex flex-col items-center gap-1 py-2 px-1 rounded-2xl border transition-all text-xs font-semibold ${
+                    timeOfDay === 'sunset'
+                      ? 'bg-amber-400/20 border-amber-400 text-white shadow-md shadow-amber-500/20'
+                      : 'bg-sky-950/50 border-sky-800/40 text-amber-300 hover:text-white'
+                  }`}
+                >
+                  <Sun className="w-4 h-4 text-amber-400" />
+                  <span className="text-[10px]">{t.header.themeSunset}</span>
+                </button>
+                <button
+                  onClick={() => setTimeOfDay('night')}
+                  className={`flex flex-col items-center gap-1 py-2 px-1 rounded-2xl border transition-all text-xs font-semibold ${
+                    timeOfDay === 'night'
+                      ? 'bg-indigo-400/20 border-indigo-400 text-white shadow-md shadow-indigo-500/20'
+                      : 'bg-sky-950/50 border-sky-800/40 text-indigo-300 hover:text-white'
+                  }`}
+                >
+                  <Moon className="w-4 h-4 text-indigo-300" />
+                  <span className="text-[10px]">{t.header.themeNight}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* 3. Action Buttons */}
+            <div className="space-y-2 pt-1 border-t border-sky-800/40">
+              {isAlbumCompleted && (
+                <button
+                  onClick={() => {
+                    setActiveModal('voyage');
+                  }}
+                  className="w-full py-2 px-3 rounded-2xl bg-teal-950/60 hover:bg-teal-900/60 border border-teal-500/40 text-teal-200 text-xs font-semibold flex items-center justify-between transition-colors cursor-pointer"
+                >
+                  <span className="flex items-center gap-2">
+                    <Compass className="w-3.5 h-3.5 text-teal-300" />
+                    {lang === 'zh' ? '极地航海图' : 'Polar Drift Map'}
+                  </span>
+                  <span className="bg-teal-500/30 text-teal-200 text-[10px] font-mono px-2 py-0.5 rounded-full border border-teal-400/30">
+                    {currentMiles} {t.voyage.nmUnit}
+                  </span>
+                </button>
+              )}
+
+              <button
+                onClick={() => {
+                  setActiveModal('info');
+                }}
+                className="w-full py-2 px-3 rounded-2xl bg-sky-950/60 hover:bg-sky-900/60 border border-sky-800/40 text-sky-200 text-xs font-semibold flex items-center justify-between transition-colors cursor-pointer"
+              >
+                <span className="flex items-center gap-2">
+                  <HelpCircle className="w-3.5 h-3.5 text-sky-400" />
+                  {t.header.info}
+                </span>
+                <span className="text-sky-400 text-[10px]">›</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setShareTreasure(null);
+                  setActiveModal('share');
+                }}
+                className="w-full py-2 px-3 rounded-2xl bg-sky-950/60 hover:bg-sky-900/60 border border-sky-800/40 text-sky-200 text-xs font-semibold flex items-center justify-between transition-colors cursor-pointer"
+              >
+                <span className="flex items-center gap-2">
+                  <Share2 className="w-3.5 h-3.5 text-teal-300" />
+                  {t.header.share}
+                </span>
+                <span className="text-teal-300 text-[10px]">›</span>
+              </button>
+
+              <button
+                onClick={toggleFullscreen}
+                className="w-full py-2 px-3 rounded-2xl bg-sky-950/60 hover:bg-sky-900/60 border border-sky-800/40 text-sky-200 text-xs font-semibold flex items-center justify-between transition-colors cursor-pointer"
+              >
+                <span className="flex items-center gap-2">
+                  <Maximize2 className="w-3.5 h-3.5 text-sky-300" />
+                  {t.header.fullscreen}
+                </span>
+                <span className="text-sky-400 text-[10px]">⛶</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Waypoint Arrival Celebration Modal */}
       {arrivalWaypoint && (
         <WaypointArrivalModal
@@ -782,11 +929,28 @@ export const App: React.FC = () => {
 
       {/* Dev Testing Bar (Only visible in development mode on localhost) */}
       {Boolean((import.meta as any).env?.DEV) && (
-        <div className="fixed bottom-2 left-2 z-[9999] opacity-90 hover:opacity-100 transition-opacity">
-          <div className="bg-slate-900/95 border border-sky-500/50 rounded-2xl p-2.5 shadow-2xl backdrop-blur-md text-[11px] text-sky-200 flex flex-col gap-1.5 max-w-sm sm:max-w-md">
-            <div className="flex items-center justify-between">
-              <span className="font-bold text-amber-300">🛠️ 本地调试面板 (点击直达各目的地看效果):</span>
-            </div>
+        <div className="fixed bottom-2 left-2 z-[9999] opacity-90 hover:opacity-100 transition-opacity max-w-[calc(100vw-16px)]">
+          {debugCollapsed ? (
+            <button
+              onClick={() => setDebugCollapsed(false)}
+              className="px-2.5 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-sky-400/50 text-[11px] font-bold text-amber-300 shadow-xl backdrop-blur-md cursor-pointer flex items-center gap-1.5"
+            >
+              <span>🛠️</span>
+              <span>调试面板</span>
+              <span className="text-[10px] text-sky-400">▲</span>
+            </button>
+          ) : (
+            <div className="bg-slate-900/95 border border-sky-500/50 rounded-2xl p-2.5 shadow-2xl backdrop-blur-md text-[11px] text-sky-200 flex flex-col gap-1.5 max-w-sm sm:max-w-md">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-amber-300">🛠️ 本地调试面板 (点击直达各目的地):</span>
+                <button
+                  onClick={() => setDebugCollapsed(true)}
+                  className="px-1.5 py-0.5 rounded-lg bg-slate-800 text-sky-300 hover:text-white text-[10px] cursor-pointer"
+                  title="收起调试面板"
+                >
+                  ▼ 收起
+                </button>
+              </div>
 
             {/* Row 1: 4 Destination Arrival Buttons */}
             <div className="grid grid-cols-2 gap-1.5 bg-slate-950/60 p-1.5 rounded-xl border border-sky-800/40">
@@ -911,6 +1075,7 @@ export const App: React.FC = () => {
               </button>
             </div>
           </div>
+          )}
         </div>
       )}
     </div>

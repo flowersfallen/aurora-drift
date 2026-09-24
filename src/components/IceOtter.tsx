@@ -150,194 +150,319 @@ export const IceOtter: React.FC<IceOtterProps> = ({
         </div>
       )}
 
-      {/* Humpback Whale Speech Bubble - Floats above the breaching whale on the right */}
-      {whaleDialogue && !isDiving && (
-        <div className="absolute top-2 sm:top-4 right-0 sm:right-2 z-50 animate-bounce px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl bg-slate-900/95 text-cyan-200 text-[11px] sm:text-xs font-semibold max-w-[85vw] sm:max-w-[240px] text-center border-2 border-cyan-400/60 shadow-xl shadow-cyan-950/70">
-          <span className="text-cyan-400 mr-1 font-bold">🐋</span>
-          {whaleDialogue}
-          <div className="absolute -bottom-2.5 right-12 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-slate-900"></div>
-        </div>
-      )}
-
       {/* Main Unified Stage: Fluid width on mobile, max 460px on desktop */}
       <div className="relative w-auto max-w-[76vw] max-h-[28vh] sm:max-w-[88vw] sm:max-h-[35vh] md:w-[92vw] md:max-w-[460px] md:max-h-none aspect-[460/320] flex items-center justify-center mx-auto">
         {/* ========================================================================= */}
         {/* 1. SEPARATE OCEAN COMPANION: HUMPBACK WHALE (300 NM Waypoint)             */}
-        {/* Completely decoupled from the floe's surge! Swims freely in the open ocean */}
+        {/* Truly Iconic, Majestic Biological Hallmarks: Tubercles, Arched Hump,     */}
+        {/* Falcate Dorsal Fin, Huge Megaptera Wing Flipper, Butterfly Tail Fluke,   */}
+        {/* Luminous Ventral Throat Pleats, and Dual Water Spout Cloud!              */}
+        {/* Completely decoupled from the floe: swims in open ocean with its own      */}
+        {/* independent swimming dynamics & wake streams.                             */}
         {/* ========================================================================= */}
         {hasGuestWhale && (
           <div
             className={`absolute pointer-events-auto cursor-pointer z-20 ${
               isCruising ? 'animate-whale-cruise' : 'animate-whale-idle'
-            } w-[95px] sm:w-[185px] h-[60px] sm:h-[115px] right-2 sm:-right-28 bottom-[6%] sm:bottom-[12%]`}
+            } w-[195px] sm:w-[280px] md:w-[325px] h-[120px] sm:h-[160px] md:h-[185px] -right-1 sm:-right-72 md:-right-84 lg:-right-92 -bottom-14 sm:-bottom-2`}
             onClick={handleWhaleClick}
             title={lang === 'zh' ? '点击与伴航座头鲸互动 (聆听深海鲸鸣)' : 'Click to interact with Humpback Whale'}
           >
-            <svg viewBox="0 0 220 130" className="w-full h-full overflow-visible drop-shadow-[0_12px_24px_rgba(2,132,199,0.3)]">
+            {/* Whale Speech Bubble - Anchored directly above the whale */}
+            {whaleDialogue && !isDiving && (
+              <div className="absolute -top-12 left-1/2 -translate-x-1/2 z-50 animate-bounce px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl bg-slate-900/95 text-cyan-200 text-[11px] sm:text-xs font-semibold whitespace-nowrap text-center border-2 border-cyan-400/60 shadow-xl shadow-cyan-950/70">
+                <span className="text-cyan-400 mr-1 font-bold">🐋</span>
+                {whaleDialogue}
+                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-slate-900"></div>
+              </div>
+            )}
+
+            <svg viewBox="0 0 320 180" className="w-full h-full overflow-visible drop-shadow-[0_16px_36px_rgba(2,132,199,0.42)]">
               <defs>
+                {/* 1. Whale Dorsal Skin Gradient: Deep Oceanic Slate with Midnight Blue Undertone */}
                 <linearGradient id="whaleBackGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#1e293b" />
-                  <stop offset="60%" stopColor="#0f172a" />
-                  <stop offset="100%" stopColor="#091422" />
+                  <stop offset="0%" stopColor="#334155" />
+                  <stop offset="25%" stopColor="#1e293b" />
+                  <stop offset="65%" stopColor="#0f172a" />
+                  <stop offset="100%" stopColor="#020617" />
                 </linearGradient>
 
+                {/* 2. Moonlight Cyan Rim Light across arched back */}
+                <linearGradient id="whaleRimLight" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#bae6fd" />
+                  <stop offset="40%" stopColor="#38bdf8" />
+                  <stop offset="100%" stopColor="#0284c7" />
+                </linearGradient>
+
+                {/* 3. Radiant Ventral Throat Pleats Gradient (Cream to Slate Porcelain) */}
                 <linearGradient id="whaleBellyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stopColor="#ffffff" />
-                  <stop offset="60%" stopColor="#f1f5f9" />
+                  <stop offset="45%" stopColor="#f8fafc" />
+                  <stop offset="80%" stopColor="#e2e8f0" />
                   <stop offset="100%" stopColor="#cbd5e1" />
                 </linearGradient>
 
-                <linearGradient id="whaleSpoutGrad" x1="0%" y1="100%" x2="0%" y2="0%">
-                  <stop offset="0%" stopColor="rgba(255,255,255,0.95)" />
-                  <stop offset="50%" stopColor="rgba(224,242,254,0.75)" />
-                  <stop offset="85%" stopColor="rgba(125,211,252,0.4)" />
-                  <stop offset="100%" stopColor="rgba(186,230,253,0)" />
-                </linearGradient>
-
+                {/* 4. Giant Wing Flipper Gradient */}
                 <linearGradient id="flipperGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#1e293b" />
-                  <stop offset="45%" stopColor="#334155" />
-                  <stop offset="80%" stopColor="#e2e8f0" />
+                  <stop offset="0%" stopColor="#334155" />
+                  <stop offset="40%" stopColor="#1e293b" />
+                  <stop offset="70%" stopColor="#e2e8f0" />
                   <stop offset="100%" stopColor="#ffffff" />
                 </linearGradient>
+
+                {/* 5. Tall Water Spout Vapor Cloud Gradient */}
+                <linearGradient id="whaleSpoutGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+                  <stop offset="0%" stopColor="rgba(255,255,255,0.95)" />
+                  <stop offset="35%" stopColor="rgba(224,242,254,0.9)" />
+                  <stop offset="75%" stopColor="rgba(125,211,252,0.6)" />
+                  <stop offset="100%" stopColor="rgba(186,230,253,0.15)" />
+                </linearGradient>
+
+                {/* 6. Rostrum Tubercle 3D Dome Gradient */}
+                <radialGradient id="tubercleGrad" cx="35%" cy="35%" r="65%">
+                  <stop offset="0%" stopColor="#64748b" />
+                  <stop offset="45%" stopColor="#334155" />
+                  <stop offset="100%" stopColor="#0f172a" />
+                </radialGradient>
               </defs>
 
-              {/* 1. Water Ripple Surface Rings around breaching whale */}
-              <ellipse cx="110" cy="88" rx="85" ry="12" fill="none" stroke="#7dd3fc" strokeWidth="2.2" opacity="0.65" />
-              <ellipse cx="110" cy="88" rx="100" ry="15" fill="none" stroke="#38bdf8" strokeWidth="1.2" opacity="0.35" />
+              {/* A. Concentric Oceanic Ripple Rings at Waterline Y=115 */}
+              <ellipse cx="165" cy="115" rx="140" ry="16" fill="none" stroke="#7dd3fc" strokeWidth="2.2" opacity="0.6" />
+              <ellipse cx="165" cy="115" rx="155" ry="20" fill="none" stroke="#38bdf8" strokeWidth="1.2" opacity="0.3" />
 
-              {/* Cruising water wake peeled from whale's swimming path */}
+              {/* Cruising Dynamic Wake Streaks */}
               {isCruising && (
                 <g>
-                  <path d="M 35 90 C 15 94 -10 100 -35 104" stroke="#ffffff" strokeWidth="2.8" strokeDasharray="8 4" opacity="0.85" fill="none" className="animate-wake-stream" />
-                  <path d="M 40 94 C 18 100 0 106 -20 110" stroke="#bae6fd" strokeWidth="2" strokeDasharray="6 3" opacity="0.7" fill="none" className="animate-wake-stream" />
-                  <path d="M 172 88 Q 186 91 198 96" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.9" />
+                  <path d="M 55 117 C 25 122 -15 128 -55 135" stroke="#ffffff" strokeWidth="3" strokeDasharray="8 4" opacity="0.85" fill="none" className="animate-wake-stream" />
+                  <path d="M 60 121 C 30 127 0 133 -35 140" stroke="#bae6fd" strokeWidth="2.2" strokeDasharray="6 3" opacity="0.7" fill="none" className="animate-wake-stream" />
+                  <path d="M 265 115 Q 285 120 305 126" stroke="#ffffff" strokeWidth="2.8" strokeLinecap="round" fill="none" opacity="0.9" />
                 </g>
               )}
 
-              {/* 2. Submerged Body Shimmer (Underwater depth) */}
+              {/* B. Submerged Oceanic Body Shimmer */}
               <path
-                d="M 28 88 C 28 108 80 120 110 120 C 145 120 182 108 182 88 Z"
+                d="M 50 115 C 50 148 115 165 175 165 C 235 165 295 148 295 115 Z"
                 fill="#0284c7"
-                opacity="0.28"
+                opacity="0.25"
               />
 
-              {/* 3. Twin Water Spout Vapor (Puffing from twin blowholes at X=124, Y=50) */}
-              <g>
+              {/* =================================================================== */}
+              {/* C. THE ICONIC BUTTERFLY TAIL FLUKE (Lifting Gracefully from Water)  */}
+              {/* Flowing seamlessly out of the ocean at left with natural spine curve */}
+              {/* =================================================================== */}
+              <g id="whale-tail">
+                {/* 1. Caudal Peduncle (Curving muscular tail stock rising from water) */}
                 <path
-                  d="M 122 50 C 112 32 98 18 92 4 C 104 12 118 24 123 50 Z"
-                  fill="url(#whaleSpoutGrad)"
-                  className="animate-pulse"
-                  style={{ animationDuration: '2.4s' }}
-                />
-                <path
-                  d="M 125 50 C 126 28 132 12 136 -2 C 142 14 135 30 127 50 Z"
-                  fill="url(#whaleSpoutGrad)"
-                  className="animate-pulse"
-                  style={{ animationDuration: '2.0s', animationDelay: '0.2s' }}
-                />
-                <ellipse cx="134" cy="4" rx="14" ry="10" fill="url(#whaleSpoutGrad)" opacity="0.7" className="animate-bounce" style={{ animationDuration: '1.8s' }} />
-                <ellipse cx="94" cy="10" rx="12" ry="8" fill="url(#whaleSpoutGrad)" opacity="0.6" className="animate-bounce" style={{ animationDuration: '2.2s', animationDelay: '0.3s' }} />
-
-                <circle cx="138" cy="-8" r="2.2" fill="#ffffff" className="animate-bounce" style={{ animationDuration: '0.9s' }} />
-                <circle cx="120" cy="-4" r="1.8" fill="#e0f2fe" className="animate-bounce" style={{ animationDuration: '1.1s', animationDelay: '0.2s' }} />
-                <circle cx="90" cy="2" r="2" fill="#bae6fd" className="animate-bounce" style={{ animationDuration: '1.3s', animationDelay: '0.4s' }} />
-                <circle cx="146" cy="2" r="1.6" fill="#fef08a" className="animate-bounce" style={{ animationDuration: '1.0s', animationDelay: '0.5s' }} />
-                <circle cx="112" cy="14" r="2.4" fill="#ffffff" opacity="0.8" className="animate-ping" style={{ animationDuration: '2s' }} />
-              </g>
-
-              {/* 4. Breaching Whale Body (Sleek, majestic humpback silhouette) */}
-              <path
-                d="M 64 63 C 60 52 50 48 53 65 Z"
-                fill="#0f172a"
-                stroke="#1e293b"
-                strokeWidth="2"
-                strokeLinejoin="round"
-              />
-
-              <path
-                d="M 28 88 
-                   C 32 72 48 62 70 60 
-                   C 95 58 116 50 138 52 
-                   C 162 54 182 68 184 88 
-                   C 160 88 140 89 110 89 
-                   C 75 89 50 88 28 88 Z"
-                fill="url(#whaleBackGrad)"
-                stroke="#0f172a"
-                strokeWidth="2.8"
-                strokeLinejoin="round"
-              />
-
-              {/* Humpback Tubercle Knobs (Cute bumps on snout/rostrum) */}
-              <circle cx="168" cy="62" r="2" fill="#334155" stroke="#1e293b" strokeWidth="0.8" />
-              <circle cx="158" cy="56" r="2.2" fill="#334155" stroke="#1e293b" strokeWidth="0.8" />
-              <circle cx="148" cy="53" r="2" fill="#334155" stroke="#1e293b" strokeWidth="0.8" />
-              <circle cx="178" cy="74" r="1.8" fill="#334155" stroke="#1e293b" strokeWidth="0.8" />
-
-              {/* 5. Creamy Ventral Underside & Parallel Throat Pleats (腹部褶纹) */}
-              <path
-                d="M 120 88 
-                   C 142 88 170 86 182 86 
-                   C 180 78 170 70 156 68 
-                   C 142 66 128 72 120 88 Z"
-                fill="url(#whaleBellyGrad)"
-                stroke="#0f172a"
-                strokeWidth="1.8"
-                strokeLinejoin="round"
-              />
-              <path d="M 132 82 Q 152 76 168 73" stroke="#94a3b8" strokeWidth="1.4" strokeLinecap="round" fill="none" />
-              <path d="M 128 85 Q 150 80 172 78" stroke="#94a3b8" strokeWidth="1.4" strokeLinecap="round" fill="none" />
-              <path d="M 136 88 Q 155 84 176 83" stroke="#94a3b8" strokeWidth="1.4" strokeLinecap="round" fill="none" />
-
-              {/* 6. Wing-like Giant Pectoral Flipper (长胸鳍 Megaptera) */}
-              <g transform="translate(108, 76) rotate(-14)">
-                <path
-                  d="M 0 0 
-                     C 12 10 24 24 26 38 
-                     C 23 38 15 32 8 20 
-                     C 3 12 0 6 0 0 Z"
-                  fill="url(#flipperGrad)"
-                  stroke="#0f172a"
-                  strokeWidth="2"
+                  d="M 85 115 C 72 96 55 86 38 80 C 30 86 48 102 68 115 Z"
+                  fill="url(#whaleBackGrad)"
+                  stroke="#38bdf8"
+                  strokeWidth="2.5"
                   strokeLinejoin="round"
                 />
-                <circle cx="20" cy="24" r="1.2" fill="#ffffff" />
-                <circle cx="24" cy="32" r="1.2" fill="#ffffff" />
-                <path d="M 4 4 Q 14 18 20 30" stroke="#ffffff" strokeWidth="1.2" strokeLinecap="round" fill="none" opacity="0.8" />
+
+                {/* 2. Butterfly Tail Flukes (Wide, Notched, Unmistakable Cetacean Tail) */}
+                <path
+                  d="M 38 78
+                     C 22 60 8 52 4 60
+                     C 1 68 14 78 30 76
+                     C 34 76 36 73 38 72
+                     C 40 73 42 76 46 76
+                     C 62 78 75 68 72 60
+                     C 68 52 54 60 38 78 Z"
+                  fill="url(#whaleBackGrad)"
+                  stroke="#38bdf8"
+                  strokeWidth="2.5"
+                  strokeLinejoin="round"
+                />
+
+                {/* White Underside Markings on Tail Flukes */}
+                <path
+                  d="M 8 61 C 16 68 27 72 34 71 C 27 68 15 60 8 61 Z"
+                  fill="#ffffff"
+                  opacity="0.9"
+                />
+                <path
+                  d="M 68 61 C 60 68 49 72 42 71 C 49 68 61 60 68 61 Z"
+                  fill="#ffffff"
+                  opacity="0.9"
+                />
+
+
+                {/* Splashing Water Droplets cascading off tail tips */}
+                <circle cx="10" cy="74" r="2.2" fill="#bae6fd" className="animate-bounce" style={{ animationDuration: '1.2s' }} />
+                <circle cx="65" cy="73" r="2" fill="#ffffff" className="animate-bounce" style={{ animationDuration: '1.4s', animationDelay: '0.3s' }} />
+                <circle cx="38" cy="84" r="1.8" fill="#e0f2fe" className="animate-bounce" style={{ animationDuration: '1.1s', animationDelay: '0.6s' }} />
               </g>
 
-              {/* 7. Cute Gentle Whale Eye & Smile */}
-              <ellipse cx="144" cy="65" rx="3.5" ry="4.2" fill="#0f172a" />
-              <circle cx="142.8" cy="63.5" r="1.3" fill="#ffffff" />
-              <circle cx="145.5" cy="66.5" r="0.7" fill="#bae6fd" />
-              <ellipse cx="140" cy="71" rx="5" ry="3" fill="#38bdf8" opacity="0.45" />
+              {/* =================================================================== */}
+              {/* D. ARCHED HUMPBACK BODY SILHOUETTE & FALCATE DORSAL FIN             */}
+              {/* Proud arched hump, biological tubercles, throat pleats & giant wing */}
+              {/* =================================================================== */}
+              <g id="whale-body">
+                {/* 1. Main Arched Humpback Torso (X=68 to X=290, Waterline Y=115) */}
+                <path
+                  d="M 68 115 
+                     C 80 88 115 66 165 64 
+                     C 210 62 250 72 278 88 
+                     C 292 96 295 104 290 115 
+                     C 255 116 160 116 68 115 Z"
+                  fill="url(#whaleBackGrad)"
+                  stroke="#38bdf8"
+                  strokeWidth="2.8"
+                  strokeLinejoin="round"
+                />
 
+                {/* 2. FALCATE DORSAL FIN (Classic hooked fin perched on the posterior slope) */}
+                <path
+                  d="M 138 68 C 132 46 118 42 122 66 Z"
+                  fill="#1e293b"
+                  stroke="#38bdf8"
+                  strokeWidth="2.5"
+                  strokeLinejoin="round"
+                />
+                {/* Moonlight Cyan Streak on Dorsal Fin */}
+                <path d="M 124 49 Q 130 58 135 66" stroke="#7dd3fc" strokeWidth="1.6" strokeLinecap="round" fill="none" opacity="0.85" />
+
+                {/* 3. Moonlight Cyan Arch Highlight along Back */}
+                <path
+                  d="M 95 90 C 125 70 165 66 210 68 C 242 70 270 82 284 92"
+                  stroke="url(#whaleRimLight)"
+                  strokeWidth="2.4"
+                  strokeLinecap="round"
+                  fill="none"
+                  opacity="0.9"
+                />
+
+                {/* 4. ROSTRUM TUBERCLES (标志性肉瘤结节 - Distinct Prominent Knobs with 3D Dome) */}
+                {/* Midline Dorsal Snout Knobs */}
+                <g id="snout-tubercles">
+                  <circle cx="284" cy="94" r="3.8" fill="url(#tubercleGrad)" stroke="#1e293b" strokeWidth="1.2" />
+                  <circle cx="283" cy="93" r="1.2" fill="#bae6fd" opacity="0.8" />
+
+                  <circle cx="268" cy="85" r="4.0" fill="url(#tubercleGrad)" stroke="#1e293b" strokeWidth="1.2" />
+                  <circle cx="267" cy="84" r="1.3" fill="#bae6fd" opacity="0.8" />
+
+                  <circle cx="250" cy="77" r="4.2" fill="url(#tubercleGrad)" stroke="#1e293b" strokeWidth="1.2" />
+                  <circle cx="249" cy="76" r="1.3" fill="#bae6fd" opacity="0.8" />
+
+                  <circle cx="230" cy="71" r="3.8" fill="url(#tubercleGrad)" stroke="#1e293b" strokeWidth="1.2" />
+                  <circle cx="229" cy="70" r="1.2" fill="#bae6fd" opacity="0.8" />
+
+                  {/* Lower Jaw / Chin Knobs */}
+                  <circle cx="288" cy="108" r="3.2" fill="url(#tubercleGrad)" stroke="#1e293b" strokeWidth="1" />
+                  <circle cx="274" cy="111" r="3.4" fill="url(#tubercleGrad)" stroke="#1e293b" strokeWidth="1" />
+                  <circle cx="258" cy="113" r="3.4" fill="url(#tubercleGrad)" stroke="#1e293b" strokeWidth="1" />
+                </g>
+
+                {/* 5. LUMINOUS WHITE VENTRAL THROAT PLEATS (下颌纵褶与白肚皮) */}
+                <path
+                  d="M 195 115 
+                     C 220 115 260 113 286 106 
+                     C 282 96 262 90 238 88 
+                     C 212 86 198 98 195 115 Z"
+                  fill="url(#whaleBellyGrad)"
+                  stroke="#1e293b"
+                  strokeWidth="2.2"
+                  strokeLinejoin="round"
+                />
+                {/* 4 Parallel Deep Throat Grooves */}
+                <path d="M 205 106 Q 235 98 268 96" stroke="#94a3b8" strokeWidth="1.8" strokeLinecap="round" fill="none" />
+                <path d="M 200 110 Q 234 103 276 101" stroke="#94a3b8" strokeWidth="1.8" strokeLinecap="round" fill="none" />
+                <path d="M 202 113 Q 236 109 282 105" stroke="#94a3b8" strokeWidth="1.8" strokeLinecap="round" fill="none" />
+
+                {/* 6. GIANT MEGAPTERA PECTORAL WING FLIPPER (大翅鲸专属长胸鳍) */}
+                {/* True anatomical orientation: Sweeps DOWN AND BACKWARD into the sea! */}
+                <g id="whale-flipper">
+                  <path
+                    d="M 182 102 
+                       C 165 116 142 128 116 138 
+                       C 128 140 148 132 166 120 
+                       C 180 110 184 104 182 102 Z"
+                    fill="url(#flipperGrad)"
+                    stroke="#1e293b"
+                    strokeWidth="2.5"
+                    strokeLinejoin="round"
+                  />
+                  {/* Scalloped Knobby Leading Edge Tubercles on Flipper */}
+                  <circle cx="160" cy="118" r="2.2" fill="#ffffff" stroke="#334155" strokeWidth="1" />
+                  <circle cx="140" cy="128" r="2.2" fill="#ffffff" stroke="#334155" strokeWidth="1" />
+                  <circle cx="124" cy="135" r="1.8" fill="#ffffff" stroke="#334155" strokeWidth="1" />
+                  {/* Glowing White Flipper Underside Streak */}
+                  <path d="M 175 106 Q 150 120 126 134" stroke="#ffffff" strokeWidth="2.4" strokeLinecap="round" fill="none" opacity="0.95" />
+                </g>
+
+                {/* 7. SOULFUL, WISE EYE & GENTLE SMILE */}
+                {/* Eye Contour */}
+                <ellipse cx="236" cy="85" rx="4.8" ry="5.5" fill="#0f172a" />
+                {/* Brilliant Star Catchlight */}
+                <circle cx="234.5" cy="83.2" r="2" fill="#ffffff" />
+                <circle cx="238" cy="87" r="1" fill="#38bdf8" />
+                {/* Gentle Eye Reflex */}
+                <ellipse cx="231" cy="92" rx="6.5" ry="3.5" fill="#38bdf8" opacity="0.4" />
+
+                {/* S-curved Humpback Smile Line */}
+                <path
+                  d="M 244 94 Q 260 100 284 94"
+                  stroke="#0f172a"
+                  strokeWidth="2.6"
+                  strokeLinecap="round"
+                  fill="none"
+                />
+
+                {/* Twin Blowhole Nostrils on Head Peak */}
+                <ellipse cx="206" cy="66" rx="3.5" ry="1.5" fill="#0f172a" />
+                <ellipse cx="212" cy="66" rx="3" ry="1.4" fill="#0f172a" />
+              </g>
+
+              {/* =================================================================== */}
+              {/* E. TALL BILLOWING WATER SPOUT FOUNTAIN (高耸双喷水柱与水雾彩虹)     */}
+              {/* =================================================================== */}
+              <g id="whale-spout">
+                {/* Twin Rising Columns */}
+                <path
+                  d="M 207 66 C 198 42 180 24 168 8 C 184 16 200 34 209 66 Z"
+                  fill="url(#whaleSpoutGrad)"
+                  className="animate-pulse"
+                  style={{ animationDuration: '2.5s' }}
+                />
+                <path
+                  d="M 211 66 C 215 38 227 20 234 0 C 240 18 227 40 215 66 Z"
+                  fill="url(#whaleSpoutGrad)"
+                  className="animate-pulse"
+                  style={{ animationDuration: '2.1s', animationDelay: '0.2s' }}
+                />
+
+                {/* Billowing Cumulus Cloud Vapor Puffs */}
+                <ellipse cx="232" cy="6" rx="20" ry="14" fill="url(#whaleSpoutGrad)" opacity="0.85" className="animate-bounce" style={{ animationDuration: '2.0s' }} />
+                <ellipse cx="172" cy="12" rx="18" ry="12" fill="url(#whaleSpoutGrad)" opacity="0.75" className="animate-bounce" style={{ animationDuration: '2.4s', animationDelay: '0.3s' }} />
+                <ellipse cx="202" cy="-4" rx="17" ry="11" fill="url(#whaleSpoutGrad)" opacity="0.9" className="animate-bounce" style={{ animationDuration: '2.1s', animationDelay: '0.1s' }} />
+
+                {/* Floating Sparkling Drops */}
+                <circle cx="238" cy="-10" r="3" fill="#ffffff" className="animate-bounce" style={{ animationDuration: '1.0s' }} />
+                <circle cx="206" cy="-14" r="2.5" fill="#e0f2fe" className="animate-bounce" style={{ animationDuration: '1.2s', animationDelay: '0.2s' }} />
+                <circle cx="164" cy="4" r="2.8" fill="#bae6fd" className="animate-bounce" style={{ animationDuration: '1.4s', animationDelay: '0.4s' }} />
+                <circle cx="248" cy="10" r="2.2" fill="#fef08a" className="animate-bounce" style={{ animationDuration: '1.1s', animationDelay: '0.5s' }} />
+                <circle cx="198" cy="22" r="3.2" fill="#ffffff" opacity="0.9" className="animate-ping" style={{ animationDuration: '2.2s' }} />
+              </g>
+
+              {/* =================================================================== */}
+              {/* F. WATERLINE FROTH & INTERACTIVE CELESTIAL NOTE                     */}
+              {/* =================================================================== */}
+              {/* Froth Spray Line along body waterline */}
               <path
-                d="M 152 74 Q 164 77 174 74"
-                stroke="#0f172a"
-                strokeWidth="2.2"
-                strokeLinecap="round"
-                fill="none"
-              />
-
-              <ellipse cx="123" cy="51" rx="3" ry="1.4" fill="#0f172a" />
-              <ellipse cx="128" cy="51" rx="2.5" ry="1.2" fill="#0f172a" />
-
-              {/* 8. Foaming Breaching Waterline & Splash Froth */}
-              <path
-                d="M 24 88 Q 65 91 105 88 Q 145 91 188 88"
+                d="M 65 115 Q 120 119 175 115 Q 230 119 288 115"
                 stroke="#ffffff"
-                strokeWidth="3.2"
+                strokeWidth="4"
                 strokeLinecap="round"
                 fill="none"
                 opacity="0.95"
               />
-              <circle cx="34" cy="86" r="2.2" fill="#ffffff" className="animate-bounce" />
-              <circle cx="180" cy="85" r="2.5" fill="#bae6fd" className="animate-bounce" style={{ animationDelay: '0.2s' }} />
+              <circle cx="75" cy="113" r="3" fill="#ffffff" className="animate-bounce" />
+              <circle cx="282" cy="112" r="3.2" fill="#bae6fd" className="animate-bounce" style={{ animationDelay: '0.2s' }} />
 
-              {/* 9. Floating Celestial Harmony Note / Sparkle */}
-              <text x="180" y="54" fontSize="14" fill="#38bdf8" className="animate-bounce" style={{ animationDuration: '2.6s' }}>✨</text>
-              <text x="194" y="42" fontSize="11" fill="#7dd3fc" className="animate-bounce" style={{ animationDuration: '3.1s', animationDelay: '0.5s' }}>♪</text>
+              {/* Musical Note & Sparkle */}
+              <text x="272" y="74" fontSize="16" fill="#38bdf8" className="animate-bounce" style={{ animationDuration: '2.6s' }}>✨</text>
+              <text x="286" y="60" fontSize="13" fill="#7dd3fc" className="animate-bounce" style={{ animationDuration: '3.1s', animationDelay: '0.5s' }}>♪</text>
             </svg>
           </div>
         )}
@@ -531,12 +656,12 @@ export const IceOtter: React.FC<IceOtterProps> = ({
             {/* --------------------------------------------------------------------- */}
 
             {/* ========================================================================= */}
-            {/* VINTAGE POLAR GRAMOPHONE (Moved inward to X=135, Y=190, safe from edge!)  */}
+            {/* VINTAGE POLAR GRAMOPHONE (Placed on left-back ice shelf at X=85, Y=192)   */}
             {/* Features mahogany soundbox, spinning record, brass morning-glory horn,     */}
             {/* and floating musical notes (♪ ♫) rising into the arctic night              */}
             {/* ========================================================================= */}
             {decorations.hasGramophone && (
-              <g transform="translate(108, 188)">
+              <g transform="translate(85, 192)">
                 {/* Base Shadow on Snow */}
                 <ellipse cx="0" cy="4" rx="16" ry="5" fill="#0f172a" opacity="0.28" />
 
@@ -569,11 +694,11 @@ export const IceOtter: React.FC<IceOtterProps> = ({
             )}
 
             {/* ========================================================================= */}
-            {/* NORDIC WOOL BLANKET (Moved to X=145, Y=222, safe from pushing otter!)     */}
+            {/* NORDIC WOOL BLANKET (Placed at X=122, Y=224, completely clear of otter!)  */}
             {/* Features soft layered folds, Scandinavian winter stitches, and soft fringes */}
             {/* ========================================================================= */}
             {decorations.hasCozyQuilt && (
-              <g transform="translate(145, 222)">
+              <g transform="translate(122, 224)">
                 {/* Base Shadow on Snow */}
                 <ellipse cx="0" cy="3" rx="22" ry="7" fill="#0f172a" opacity="0.25" />
 
@@ -598,11 +723,12 @@ export const IceOtter: React.FC<IceOtterProps> = ({
             {/* ========================================================================= */}
             {/* ANIMAL GUEST: AURORA FOX (极光雪狐)                                       */}
             {/* Appears when reaching The Echo Straits (100 NM). Curled up peacefully on  */}
-            {/* the wool blanket at X=142, Y=220, sleeping with soft breathing animation   */}
+            {/* the wool blanket at X=120, Y=222, sleeping with soft breathing animation   */}
+            {/* Completely unobstructed by the mascot otter, clear open space in between! */}
             {/* ========================================================================= */}
             {hasGuestFox && (
               <g
-                transform="translate(142, 220)"
+                transform="translate(120, 222)"
                 className="cursor-pointer group"
                 onClick={handleFoxClick}
               >
@@ -947,7 +1073,7 @@ export const IceOtter: React.FC<IceOtterProps> = ({
             {/* Feet rest firmly at Y=224, body center at X=220. Visible when !diving */}
             {/* --------------------------------------------------------------------- */}
             {!isDiving && !isCruising ? (
-              <g id="ice-otter" transform="translate(140, 82)">
+              <g id="ice-otter" transform="translate(150, 80)">
                 <g className="cursor-pointer transition-all duration-200 hover:brightness-105 hover:drop-shadow-[0_0_12px_rgba(56,189,248,0.7)]">
                   {/* 1. TAIL */}
                 <path
@@ -1030,21 +1156,11 @@ export const IceOtter: React.FC<IceOtterProps> = ({
               /* 8. CRUISING STATE: AUTHENTIC 100% ON-MODEL MASCOT PUSHING IN WATER       */
               /* Same Scale, Exact Mascot Face, Same Colors, Waist at Waterline Y=255      */
               /* ========================================================================= */
-              <g
-                id="pushing-otter"
-                transform="translate(-66, 145) rotate(5 78 115)"
-                className="cursor-pointer group hover:brightness-105 transition-all"
-                onClick={handleInteraction}
-              >
-                {/* Subtle pushing heave animation via native SVG transform (never overridden by CSS) */}
-                <animateTransform
-                  attributeName="transform"
-                  type="translate"
-                  values="0,0; 2,-1.5; 0,0"
-                  dur="1.2s"
-                  repeatCount="indefinite"
-                  additive="sum"
-                />
+              <g id="pushing-otter" transform="translate(-66, 145) rotate(5 78 115)">
+                <g
+                  className="animate-otter-push cursor-pointer group hover:brightness-105 transition-all"
+                  onClick={handleInteraction}
+                >
 
                 {/* 1. Water Wake Speed Streaks trailing behind into sea */}
                 <path d="M 28 120 C 5 125 -22 131 -50 135" stroke="#ffffff" strokeWidth="3" strokeDasharray="10 5" opacity="0.9" fill="none" className="animate-wake-stream" />
@@ -1188,6 +1304,7 @@ export const IceOtter: React.FC<IceOtterProps> = ({
                 {/* Soft Pastel Blush Cheeks */}
                 <ellipse cx="52" cy="70" rx="7.5" ry="4.5" fill="#fecdd3" opacity="0.85" />
                 <ellipse cx="108" cy="70" rx="7.5" ry="4.5" fill="#fecdd3" opacity="0.85" />
+                </g>
               </g>
             ) : (
               /* ----------------------------------------------------------------- */
@@ -1209,12 +1326,7 @@ export const IceOtter: React.FC<IceOtterProps> = ({
             </div>
           )}
 
-          {isCruising && (
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-40 bg-teal-950/90 text-teal-200 font-bold px-4 py-1.5 rounded-full text-xs shadow-xl border border-teal-400/40 animate-pulse flex items-center gap-2 whitespace-nowrap backdrop-blur-sm">
-              <span className="animate-spin inline-block text-sm" style={{ animationDuration: '4s' }}>🧭</span>
-              <span>{lang === 'zh' ? '小水獭正在奋力推冰巡航中 🌊' : 'Otter cruising & pushing the ice 🌊'}</span>
-            </div>
-          )}
+          {/* Phase 1 Dive Indicator */}
 
           {isDiving && (
             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-40 bg-sky-950/90 text-sky-200 font-bold px-4 py-1.5 rounded-full text-xs shadow-xl border border-sky-400/40 animate-pulse flex items-center gap-2 whitespace-nowrap backdrop-blur-sm">

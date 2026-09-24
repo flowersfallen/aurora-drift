@@ -119,24 +119,24 @@ export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({
     ];
     const mountainPeriod = 1400;
 
-    // Parallax Layer 2: Midground Floating Icebergs
+    // Parallax Layer 2: Distant Horizon Icebergs (Drifting calmly far at sea)
     const icebergs = [
-      { x: width * 0.15, yOffset: 25, w: 105, h: 44, speed: 1.3, bob: 0 },
-      { x: width * 0.45, yOffset: 42, w: 140, h: 56, speed: 1.8, bob: 1.8 },
-      { x: width * 0.80, yOffset: 28, w: 115, h: 48, speed: 1.4, bob: 3.4 },
-      { x: width * 1.15, yOffset: 48, w: 130, h: 52, speed: 1.9, bob: 5.1 },
+      { x: width * 0.15, yOffset: 2, w: 46, h: 20, speed: 0.38, bob: 0 },
+      { x: width * 0.45, yOffset: -2, w: 58, h: 25, speed: 0.45, bob: 1.8 },
+      { x: width * 0.80, yOffset: 4, w: 42, h: 18, speed: 0.34, bob: 3.4 },
+      { x: width * 1.15, yOffset: 0, w: 52, h: 22, speed: 0.42, bob: 5.1 },
     ];
 
-    // Parallax Layer 3: High-Speed Perspective Ocean Currents & Foaming Wavelets
+    // Parallax Layer 3: Gentle Perspective Ocean Currents & Foaming Wavelets
     const waterCurrents: Array<{ x: number; yRatio: number; len: number; speedMult: number; opacity: number; amp: number }> = [];
     for (let i = 0; i < 32; i++) {
       waterCurrents.push({
         x: Math.random() * (width + 300) - 150,
         yRatio: 0.08 + (i / 32) * 0.84,
-        len: 45 + Math.random() * 65,
+        len: 40 + Math.random() * 55,
         speedMult: 0.85 + Math.random() * 0.35,
         opacity: 0.35 + Math.random() * 0.45,
-        amp: 2 + Math.random() * 2.5,
+        amp: 1.8 + Math.random() * 2.0,
       });
     }
 
@@ -323,7 +323,7 @@ export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({
       // 5. Distant Glacial Mountains (Parallax Layer 1: Seamless Infinitely Scrolling Ridge)
       const oceanY = height * 0.48;
       if (isCruising) {
-        mountainScroll += 0.55;
+        mountainScroll += 0.12;
       }
       const normScroll = mountainScroll % mountainPeriod;
       const startX = -normScroll - mountainPeriod;
@@ -473,18 +473,18 @@ export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({
           b.x -= b.speed;
           if (b.x < -b.w) {
             b.x = width + Math.random() * 200 + 80;
-            b.yOffset = 20 + Math.random() * 35;
-            b.speed = 1.2 + Math.random() * 0.8;
+            b.yOffset = -2 + Math.random() * 6;
+            b.speed = 0.32 + Math.random() * 0.16;
           }
         }
-        const by = oceanY + b.yOffset + Math.sin(time * 0.8 + b.bob) * 2;
+        const by = oceanY + b.yOffset + Math.sin(time * 0.8 + b.bob) * 1.5;
         drawIceberg(b.x, by, b.w, b.h);
       });
 
       // 7B. World's End Ancient Lighthouse (世界尽头的灯塔 - 300 NM Waypoint)
       if (hasLighthouse) {
         ctx.save();
-        const lhX = width * (width < 640 ? 0.82 : 0.86);
+        const lhX = width * (width < 640 ? 0.90 : 0.88);
         const lhY = oceanY + 4; // Rooted firmly on the horizon waterline
 
         // 1. Rocky Islet Base
@@ -508,11 +508,12 @@ export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({
         ctx.fill();
 
         // 2. Tapered Stone Lighthouse Tower
+        const isMobile = width < 640;
+        const towerHeight = isMobile ? 44 : 52;
         const towerBottomY = lhY - 10;
-        const towerHeight = 52;
         const towerTopY = towerBottomY - towerHeight;
-        const bW = 15; // half-width at bottom
-        const tW = 9;  // half-width at top
+        const bW = isMobile ? 12 : 15; // half-width at bottom
+        const tW = isMobile ? 7 : 9;  // half-width at top
 
         // Main Tower Body (Dark frost stone)
         ctx.fillStyle = '#1e293b';
@@ -526,10 +527,10 @@ export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({
 
         // Lighthouse Crimson Decorative Bands
         ctx.fillStyle = '#991b1b';
-        const yb1 = towerBottomY - 16;
-        ctx.fillRect(lhX - 13, yb1, 26, 9);
-        const yb2 = towerBottomY - 36;
-        ctx.fillRect(lhX - 11, yb2, 22, 9);
+        const yb1 = towerBottomY - (towerHeight * 0.32);
+        ctx.fillRect(lhX - bW + 2, yb1, (bW - 2) * 2, 8);
+        const yb2 = towerBottomY - (towerHeight * 0.70);
+        ctx.fillRect(lhX - tW - 1, yb2, (tW + 1) * 2, 8);
 
         // Tower Highlights
         ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
@@ -628,12 +629,12 @@ export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({
         }
       }
 
-      // 9. Cruising Rapid Ocean Currents & Spray (Parallax Layer 3: High-Speed Perspective Foam Lines)
+      // 9. Cruising Serene Ocean Currents & Foam Lines (Parallax Layer 3: Relaxed Perspective Swells)
       if (isCruising) {
         ctx.save();
         waterCurrents.forEach((c) => {
-          // Perspective velocity: foreground moves over 3x faster than horizon!
-          const v = (3.6 + c.yRatio * 8.2) * c.speedMult;
+          // Perspective velocity: gentle, calming, meditative flow
+          const v = (0.75 + c.yRatio * 1.5) * c.speedMult;
           c.x -= v;
           if (c.x < -c.len - 80) {
             c.x = width + Math.random() * 150 + 20;
@@ -662,10 +663,10 @@ export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({
         ctx.restore();
       }
 
-      // 10. Gentle Falling Snowflakes / Cruising Blizzard Wind Streaks (Parallax Layer 4)
+      // 10. Gentle Falling Snowflakes / Soft Cruising Breeze (Parallax Layer 4)
       snowflakes.forEach((f) => {
         f.y += f.speed;
-        const cruiseWind = isCruising ? -(4.0 + f.speed * 2.2) : 0;
+        const cruiseWind = isCruising ? -(0.8 + f.speed * 0.4) : 0;
         f.x += f.wind + cruiseWind + Math.sin(time + f.y * 0.01) * 0.5;
 
         if (f.y > height) {
@@ -678,7 +679,7 @@ export const ArcticCanvas: React.FC<ArcticCanvasProps> = ({
         if (isCruising) {
           ctx.beginPath();
           ctx.moveTo(f.x, f.y);
-          ctx.lineTo(f.x + 8 + f.speed * 3.5, f.y - 2);
+          ctx.lineTo(f.x + 3 + f.speed * 1.2, f.y - 1);
           ctx.strokeStyle = `rgba(255, 255, 255, ${f.opacity * 0.85})`;
           ctx.lineWidth = f.radius * 0.85;
           ctx.lineCap = 'round';
