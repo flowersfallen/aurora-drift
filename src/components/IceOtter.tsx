@@ -90,6 +90,14 @@ export const IceOtter: React.FC<IceOtterProps> = ({
   const handleInteraction = () => {
     if (isDiving) return;
     if (isCruising) {
+      if (hasGuestWhale) {
+        const whaleCruisingQuotes = TRANSLATIONS[lang].voyage.whaleCruisingDialogues;
+        const randomQuote = whaleCruisingQuotes[Math.floor(Math.random() * whaleCruisingQuotes.length)];
+        setDialogue(randomQuote);
+        setTimeout(() => setDialogue(null), 3600);
+        onOtterClick();
+        return;
+      }
       const pushingQuotes = TRANSLATIONS[lang].voyage.pushingDialogues;
       const randomQuote = pushingQuotes[Math.floor(Math.random() * pushingQuotes.length)];
       setDialogue(randomQuote);
@@ -1072,7 +1080,7 @@ export const IceOtter: React.FC<IceOtterProps> = ({
             {/* 7. THE ICE OTTER MASCOT (Sitting dead-center on the snow plateau)     */}
             {/* Feet rest firmly at Y=224, body center at X=220. Visible when !diving */}
             {/* --------------------------------------------------------------------- */}
-            {!isDiving && !isCruising ? (
+            {!isDiving && (!isCruising || hasGuestWhale) ? (
               <g id="ice-otter" transform="translate(150, 80)">
                 <g className="cursor-pointer transition-all duration-200 hover:brightness-105 hover:drop-shadow-[0_0_12px_rgba(56,189,248,0.7)]">
                   {/* 1. TAIL */}
@@ -1136,6 +1144,31 @@ export const IceOtter: React.FC<IceOtterProps> = ({
                     <path d="M54 104 C62 104 70 110 64 122" stroke="#2e384d" strokeWidth="3.8" strokeLinecap="round" fill="none" />
                     <path d="M106 104 C98 104 90 110 96 122" stroke="#2e384d" strokeWidth="3.8" strokeLinecap="round" fill="none" />
                   </g>
+                ) : isCruising && hasGuestWhale ? (
+                  /* 300+ NM Whale Escort: Polar Spyglass Telescope looking towards horizon */
+                  <g id="polar-telescope" transform="translate(76, 110)">
+                    {/* Brass Telescope Body angled up and to the right */}
+                    <g transform="rotate(-18 0 0)">
+                      {/* Eyepiece */}
+                      <rect x="-10" y="-4" width="8" height="8" rx="1.5" fill="#ca8a04" stroke="#854d0e" strokeWidth="1.2" />
+                      {/* Draw tube */}
+                      <rect x="-2" y="-5" width="14" height="10" rx="1.5" fill="#eab308" stroke="#854d0e" strokeWidth="1.4" />
+                      {/* Main barrel */}
+                      <rect x="12" y="-6.5" width="18" height="13" rx="2" fill="#ca8a04" stroke="#78350f" strokeWidth="1.6" />
+                      {/* Lens Rim & Objective */}
+                      <rect x="30" y="-7.5" width="4" height="15" rx="1.5" fill="#eab308" stroke="#854d0e" strokeWidth="1.2" />
+                      {/* Glowing glass reflection */}
+                      <ellipse cx="33" cy="0" rx="2" ry="6.5" fill="#38bdf8" opacity="0.9" />
+                      <circle cx="33.5" cy="-2.5" r="1.5" fill="#ffffff" />
+                      {/* Brass highlight stripe */}
+                      <line x1="-1" y1="-2" x2="28" y2="-2" stroke="#fef08a" strokeWidth="1.4" strokeLinecap="round" />
+                    </g>
+                    {/* Otter Paws gripping the telescope */}
+                    <ellipse cx="-2" cy="4" rx="7.5" ry="6.5" fill="#3c4556" stroke="#2e384d" strokeWidth="2.8" />
+                    <ellipse cx="18" cy="2" rx="7.5" ry="6.5" fill="#3c4556" stroke="#2e384d" strokeWidth="2.8" />
+                    {/* Sparkling Starlight from Lens */}
+                    <text x="36" y="-12" fontSize="13" fill="#fde047" className="animate-bounce" style={{ animationDuration: '2s' }}>✨</text>
+                  </g>
                 ) : (
                   /* Iconic Glowing Ice Cube */
                   <g>
@@ -1151,9 +1184,9 @@ export const IceOtter: React.FC<IceOtterProps> = ({
                 )}
                 </g>
               </g>
-            ) : isCruising ? (
+            ) : isCruising && !hasGuestWhale ? (
               /* ========================================================================= */
-              /* 8. CRUISING STATE: AUTHENTIC 100% ON-MODEL MASCOT PUSHING IN WATER       */
+              /* 8. 0~299 NM CRUISING: AUTHENTIC 100% ON-MODEL MASCOT PUSHING IN WATER     */
               /* Same Scale, Exact Mascot Face, Same Colors, Waist at Waterline Y=255      */
               /* ========================================================================= */
               <g id="pushing-otter" transform="translate(-66, 145) rotate(5 78 115)">

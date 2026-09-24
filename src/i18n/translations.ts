@@ -40,6 +40,7 @@ export interface Translations {
     ceremonyText: string;
     ceremonyBtn: string;
     pushingDialogues: string[];
+    whaleCruisingDialogues: string[];
     whaleDialogues: string[];
     arrivalTitle: string;
     arrivalSubtitle: string;
@@ -370,6 +371,12 @@ export const TRANSLATIONS: Record<Language, Translations> = {
         '“Deep breath, next destination is the Echo Straits! 🧭”',
         '“The ocean breeze feels refreshing! Sailing onward together ✨”',
       ],
+      whaleCruisingDialogues: [
+        '“Look! The gentle giant whale is leading our voyage! 🔭”',
+        '“Sipping hot cocoa by the campfire while cruising the open sea~ ☕”',
+        '“Steady ahead, great guardian! The Aurora Oasis awaits! 🌊”',
+        '“The ocean breeze is so warm now, full speed ahead! ✨”',
+      ],
       whaleDialogues: [
         '“Huuuuum... Greetings from the ancient deep, brave voyagers!” 🐋',
         '“The lighthouse shines so bright tonight. Let my song guide your journey.” 🌊',
@@ -580,6 +587,12 @@ export const TRANSLATIONS: Record<Language, Translations> = {
         '“抓稳热可可，浮冰方舟全速前进！☕”',
         '“深吸一口气，下一个目标是美丽的回音海峡！🧭”',
         '“迎面的海浪好凉爽呀！和专注的朋友一起航行真棒 ✨”',
+      ],
+      whaleCruisingDialogues: [
+        '“看！温柔的座头鲸先生正在前方为我们领航呢！🔭”',
+        '“在篝火旁喝着热可可吹海风，坐大鲸鱼的船太舒服啦~ ☕”',
+        '“全速前进，深海守护者！极光绿洲就在前方！🌊”',
+        '“小狐狸睡得好香，浮冰在座头鲸的尾浪里滑得好快呀！✨”',
       ],
       whaleDialogues: [
         '“呜—— 来自深海古老鲸群的问候，勇敢的极地漂流者！” 🐋',
