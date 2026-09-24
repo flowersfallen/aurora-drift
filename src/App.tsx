@@ -61,7 +61,14 @@ const DEFAULT_AUDIO: AudioSettings = {
 
 export const App: React.FC = () => {
   // State
-  const [otterState, setOtterState] = useState<OtterState>('idle');
+  const [otterState, setOtterState] = useState<OtterState>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('test_cruising') === '1') return 'cruising';
+      if (params.get('test_cracking') === '1') return 'surfaced';
+    }
+    return 'idle';
+  });
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('aurora');
 
   // Persistence: Language
@@ -92,6 +99,20 @@ export const App: React.FC = () => {
   // Persistence: Player Progress
   const [progress, setProgress] = useState<PlayerProgress>(() => {
     try {
+      if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search);
+        const testMilesStr = params.get('test_miles');
+        if (testMilesStr !== null) {
+          const testMiles = parseInt(testMilesStr, 10);
+          const reached = DRIFT_WAYPOINTS.filter((wp) => testMiles >= wp.requiredMiles).map((wp) => wp.id);
+          return {
+            ...DEFAULT_PROGRESS,
+            unlockedTreasureIds: ALL_TREASURES.map((t) => t.id),
+            driftMiles: testMiles,
+            visitedWaypointIds: reached.length > 0 ? reached : ['still_floe'],
+          };
+        }
+      }
       const saved = localStorage.getItem(STORAGE_KEY_PROGRESS);
       if (saved) {
         const parsed = JSON.parse(saved);
@@ -131,39 +152,37 @@ export const App: React.FC = () => {
   // Modals
   const [activeModal, setActiveModal] = useState<
     'collection' | 'audio' | 'decor' | 'info' | 'share' | 'voyage' | 'ceremony' | 'settings' | null
-  >(null);
+  >(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const testModal = params.get('test_modal');
+      if (testModal && ['collection', 'audio', 'decor', 'info', 'share', 'voyage', 'ceremony', 'settings'].includes(testModal)) {
+        return testModal as any;
+      }
+    }
+    return null;
+  });
   const [shareTreasure, setShareTreasure] = useState<Treasure | null>(null);
-  const [currentTreasure, setCurrentTreasure] = useState<Treasure | null>(null);
-  const [arrivalWaypoint, setArrivalWaypoint] = useState<DriftWaypoint | null>(null);
+  const [currentTreasure, setCurrentTreasure] = useState<Treasure | null>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('test_cracking') === '1') return ALL_TREASURES[0];
+    }
+    return null;
+  });
+  const [arrivalWaypoint, setArrivalWaypoint] = useState<DriftWaypoint | null>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const testArrival = params.get('test_arrival');
+      if (testArrival !== null) {
+        return DRIFT_WAYPOINTS.find((w) => w.id === testArrival || String(w.requiredMiles) === testArrival) || null;
+      }
+    }
+    return null;
+  });
   const [debugCollapsed, setDebugCollapsed] = useState<boolean>(() => {
     return typeof window !== 'undefined' && window.innerWidth < 640;
   });
-
-  // Dev Testing: Support query params in DEV mode (e.g. ?test_miles=300&test_arrival=300)
-  useEffect(() => {
-    if ((import.meta as any).env?.DEV && typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const testMilesStr = params.get('test_miles');
-      if (testMilesStr !== null) {
-        const testMiles = parseInt(testMilesStr, 10);
-        const reached = DRIFT_WAYPOINTS.filter((wp) => testMiles >= wp.requiredMiles).map((wp) => wp.id);
-        setProgress((prev) => ({
-          ...prev,
-          unlockedTreasureIds: ALL_TREASURES.map((t) => t.id),
-          driftMiles: testMiles,
-          visitedWaypointIds: reached.length > 0 ? reached : ['still_floe'],
-        }));
-      }
-      const testArrival = params.get('test_arrival');
-      if (testArrival !== null) {
-        const wp = DRIFT_WAYPOINTS.find((w) => w.id === testArrival || String(w.requiredMiles) === testArrival);
-        if (wp) setArrivalWaypoint(wp);
-      }
-      if (params.get('test_cruising') === '1') {
-        setOtterState('cruising');
-      }
-    }
-  }, []);
 
   // Save Progress
   useEffect(() => {
@@ -927,8 +946,8 @@ export const App: React.FC = () => {
         />
       )}
 
-      {/* Dev Testing Bar (Only visible in development mode on localhost) */}
-      {Boolean((import.meta as any).env?.DEV) && (
+      {/* Dev Testing Bar (Only visible in development mode on localhost, hidden when modals are open) */}
+      {Boolean((import.meta as any).env?.DEV) && !isAnyModalOpen && (
         <div className="fixed bottom-2 left-2 z-[9999] opacity-90 hover:opacity-100 transition-opacity max-w-[calc(100vw-16px)]">
           {debugCollapsed ? (
             <button
